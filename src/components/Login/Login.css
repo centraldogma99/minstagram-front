@@ -1,0 +1,13 @@
+@font-face {
+  font-family: 'instagramFont';
+  src: local('instagramFont'), url(../../fonts/instagram-font.otf) format('opentype')
+}
+
+#login {
+  text-align: center;
+}
+
+#loginTitle {
+  font-family: 'instagramFont';
+  font-size: 2.3em;
+}

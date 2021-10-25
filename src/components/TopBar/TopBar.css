@@ -1,0 +1,19 @@
+#instaLogo {
+  height: 25px;
+}
+
+#TopBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+}
+
+#TopBarRightSide {
+  display: flex;
+  align-items: center;
+}
+
+#TopBarButtons {
+  margin-right: 10px;
+}
