@@ -5,7 +5,7 @@ import Profile from "../Profile";
 const Likes = (props: { likes: ILike[] }) => {
   return (
     <div className="likes">
-      <Profile id={props.likes[0].authorId} />외 {props.likes.length - 1}명이 좋아합니다.
+      <Profile userId={props.likes[0].authorId} />외 {props.likes.length - 1}명이 좋아합니다.
     </div>
   );
 }

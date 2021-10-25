@@ -6,18 +6,18 @@ import { IPost } from "../../types/postTypes"
 import Likes from "./Likes"
 import Comments from "./Comments"
 
-const Posts = (props: { posts: IPost[] }) => {
-  const PostTopBar = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  `;
+const PostTopBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
 
+const Posts = (props: { posts: IPost[] }) => {
   const renderPost = (post: IPost) => {
     return (
       <div className="post">
         <PostTopBar>
-          <Profile id={post.authorId} />
+          <Profile userId={post.authorId} />
         </PostTopBar>
         <PicturesView pictures={post.pictures} />
         <Likes likes={post.likes} />
