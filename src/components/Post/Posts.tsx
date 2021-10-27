@@ -1,37 +1,30 @@
-import React from "react";
-import styled from "styled-components";
-import Profile from "../Profile";
-import PicturesView from "./PicturesView"
+import axios from "axios";
+import React, { useLayoutEffect } from "react";
+import { backServer } from "../../configs/env";
 import { IPost } from "../../types/postTypes"
-import Likes from "./Likes"
-import Comments from "./Comments"
+import Post from "./Post";
 
-const PostTopBar = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
 
-const Posts = (props: { posts: IPost[] }) => {
-  const renderPost = (post: IPost) => {
-    return (
-      <div className="post">
-        <PostTopBar>
-          <Profile userId={post.authorId} />
-        </PostTopBar>
-        <PicturesView pictures={post.pictures} />
-        <Likes likes={post.likes} />
-        <Comments comments={post.comments} />
-      </div>
-    );
-  }
+const Posts = (props: { posts?: IPost[] }) => {
+  const [posts, setPosts] = React.useState<IPost[]>(props.posts ?? []);
+
+  useLayoutEffect(() => {
+    axios.get(`${backServer}/posts/`)
+      .then(res => {
+        console.log("data: " + res.data);
+        setPosts(res.data as IPost[]);
+      })
+  }, [])
 
   return (
     <div className="posts">
-      {props.posts.map(post => renderPost(post))}
+      {posts.map(post => {
+        console.log(post);
+        const { _id, authorName, pictures, likes, comments } = post;
+        return <Post key={_id} _id={_id} authorId={authorName} pictures={pictures} likes={likes} comments={comments} />
+      })}
     </div>
   )
 }
-
 
 export default Posts;

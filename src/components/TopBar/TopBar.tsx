@@ -3,6 +3,7 @@ import instaLogo from "./logo.png"
 import direct from "./direct.svg"
 import heart from "./heart.svg"
 import Profile from "../Profile"
+import newpost from "./newpost.svg"
 import "./TopBar.css"
 import styled from "styled-components"
 import useContextMenu from "../../hooks/useContext"
@@ -15,16 +16,18 @@ const TopBarButton = styled.img`
 
 //https://mui.com/guides/routing/#list
 
-const TopBar = () => {
+const TopBar = (props: { setContent: any }) => {
   const { show, anchorPoint, handleContext } = useContextMenu();
+  const { setContent } = props;
 
   return (
     <div id="TopBar">
       <img src={instaLogo} id="instaLogo" />
       <span id="TopBarRightSide">
         <span id="TopBarButtons">
-          <TopBarButton src={direct} />
+          <TopBarButton src={direct} onClick={() => { setContent("dm") }} />
           <TopBarButton src={heart} />
+          <TopBarButton src={newpost} onClick={() => { setContent("newPost") }} />
         </span>
         <Profile userId="1234" onClick={handleContext} />
         {show && <ul

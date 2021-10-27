@@ -1,34 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import "./Login.css"
-import TopBar from "../TopBar/TopBar";
-import Posts from "../Post/Posts";
-import blackpink from "./blackpink.jpeg"
 import { backServer } from "../../configs/env";
 import axios from "axios"
 import Cookies from 'js-cookie';
-
-const posts = [
-  {
-    authorId: "1234",
-    pictures: [blackpink],
-    likes: [
-      {
-        authorId: "dogma"
-      },
-      {
-        authorId: "dogma2"
-      }
-    ],
-    comments: [
-      {
-        authorName: "dogma",
-        content: "매우 좋은 포스트에요",
-        likes: []
-      }
-    ]
-  }
-]
+import Mainpage from "../Mainpage/Mainpage";
 
 const LoginInputText = styled.input`
   height: 3em;
@@ -47,7 +23,7 @@ const LoginButton = styled.button`
 const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
+  const [name, setName] = useState<string>("");
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [isRegister, setIsRegister] = useState<boolean>(false);
   const [statusText, setStatusText] = useState<string>("");
@@ -56,12 +32,12 @@ const Login = () => {
     if (localStorage.getItem('user') && Cookies.get('credential')) setIsLoggedIn(true);
   }, [])
 
-  const validate = (userInfo: { email: string, username: string, password: string }) => {
+  const validate = (userInfo: { email: string, name: string, password: string }) => {
     let msg;
-    const { email, username, password } = userInfo;
+    const { email, name, password } = userInfo;
     if (!email.includes("@") || !email.includes(".")) {
       msg = "유효하지 않은 이메일 입니다."
-    } else if (username.includes("dog")) {
+    } else if (name.includes("dog")) {
       msg = "계정 이름에 'dog'을 포함할 수 없습니다."
     } else if (password.length < 8) {
       msg = "비밀번호는 8자 이상이어야 합니다."
@@ -106,7 +82,7 @@ const Login = () => {
         setPassword("");
       }
     } else {
-      const userInfo = { email: email, username: username, password: password }
+      const userInfo = { email: email, name: name, password: password }
       const validCheck = validate(userInfo);
       if (validCheck.isValid) {
         const res = await axios.post(backServer + "/users/register", userInfo)
@@ -122,7 +98,7 @@ const Login = () => {
 
       // 다시 로그인하도록 한다
       setPassword("");
-      setUsername("");
+      setName("");
       setEmail("");
 
       setIsRegister(false);
@@ -144,7 +120,7 @@ const Login = () => {
             <LoginInputText type="text" value={email} onChange={handleChange(setEmail)} placeholder="이메일" />
             <br />
             {isRegister && <span>
-              <LoginInputText type="text" value={username} onChange={handleChange(setUsername)} placeholder="계정 이름" />
+              <LoginInputText type="text" value={name} onChange={handleChange(setName)} placeholder="계정 이름" />
               <br />
             </span>}
             <LoginInputText type="text" value={password} onChange={handleChange(setPassword)} placeholder="비밀번호" />
@@ -157,12 +133,7 @@ const Login = () => {
         </div>
       }
       {isLoggedIn &&
-        <div id="main">
-          <header>
-            <TopBar />
-          </header>
-          <Posts posts={posts} />
-        </div>
+        <Mainpage />
       }
     </>
   )

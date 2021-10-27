@@ -14,9 +14,9 @@ const CommentContent = styled.span`
 `;
 
 const Comments = (props: { comments: IComment[] }) => {
-  const renderComment = (comment: IComment) => {
+  const renderComment = (comment: IComment, index: number) => {
     return (
-      <div className="comment">
+      <div className="comment" key={index}>
         <CommentAuthorName>{comment.authorName}</CommentAuthorName>
         <CommentContent>{comment.content}</CommentContent>
       </div>
@@ -25,7 +25,7 @@ const Comments = (props: { comments: IComment[] }) => {
 
   return (
     <div className="comments">
-      {props.comments.map(comment => renderComment(comment))}
+      {props.comments.map((comment, index) => renderComment(comment, index))}
     </div>
   )
 }

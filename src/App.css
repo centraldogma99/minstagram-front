@@ -14,7 +14,14 @@
 }
 
 .posts {
-  text-align: center;
+  align-items: center;
+  flex-direction: column;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.post {
+  margin: 0 20% 0 20%;
 }
 
 .likes {
