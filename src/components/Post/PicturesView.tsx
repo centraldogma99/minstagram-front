@@ -7,8 +7,7 @@ type PicturesViewProps = {
 }
 
 const PostPicture = styled.img`
-  width: 480px;
-  height: 600px;
+  width: 40em;
 `;
 
 // 넘기기 기능 구현할것

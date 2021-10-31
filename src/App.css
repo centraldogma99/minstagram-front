@@ -18,10 +18,12 @@
   flex-direction: column;
   display: flex;
   flex-wrap: wrap;
+  /* justify-content: center; */
 }
 
 .post {
-  margin: 0 20% 0 20%;
+  width: fit-content;
+  /* margin: 0 20% 0 20%; */
 }
 
 .likes {
@@ -30,6 +32,8 @@
 }
 
 .comments {
+  max-height: 5em;
   text-align: left;
   padding-left: 1em;
+  overflow-y:scroll;
 }

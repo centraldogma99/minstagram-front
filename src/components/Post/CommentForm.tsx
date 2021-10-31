@@ -11,15 +11,20 @@ const CommentForm = (props: { postId: string, onSubmit: (comment: IComment) => v
   }
 
   // text를 현재 포스트에 등록하고
-  // 코멘트 목록 업데이트 #TODO
+  // 코멘트 목록 업데이트
   const handleClick = () => {
     axios.post(`${backServer}/posts/${props.postId}/comment`, {
       content: text,
       likes: []
-    }).then((res) => {
+    }, { withCredentials: true }).then((res) => {
       setText("");
+      console.log("submitted")
+      console.log(res);
       props.onSubmit((res as any).data);
     })
+      .catch(e => {
+        console.log(e);
+      })
   };
 
   return (

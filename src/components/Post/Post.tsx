@@ -17,11 +17,15 @@ const Post = (props: { _id: string, authorId: string, pictures: string[], likes:
   const { _id, authorId, pictures } = props;
 
   // const [showComments, setShowComments] = React.useState(false);
-  const [comments, setComments] = React.useState(props.comments);
+  const [comments, setComments] = React.useState<IComment[]>(props.comments);
   const [likes, setLikes] = React.useState(props.likes);
+  const [isCommentsExpanded, setIsCommentsExpanded] = React.useState<boolean>(false);
 
   const handleCommentSubmit = (comment: IComment) => {
+    console.log("hi")
+    console.log(comment)
     setComments([...comments, comment]);
+    setIsCommentsExpanded(true);
   }
 
   const handleLike = (like: ILike) => {
@@ -36,7 +40,7 @@ const Post = (props: { _id: string, authorId: string, pictures: string[], likes:
       </PostTopBar>
       <PicturesView pictures={pictures} />
       {likes.length > 0 && <Likes likes={likes} />}
-      {comments.length > 0 && <Comments comments={comments} />}
+      {comments.length > 0 && <Comments comments={comments} isExpanded={isCommentsExpanded} />}
       <CommentForm postId={_id} onSubmit={handleCommentSubmit} />
     </div>
   );
