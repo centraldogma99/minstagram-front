@@ -5,7 +5,7 @@ import Likes from "./Likes"
 import Comments from "./Comments"
 import CommentForm from "./CommentForm";
 import styled from "styled-components";
-import { IComment, ILike } from "../../types/postTypes";
+import { IComment, ILike, IUser } from "../../types/postTypes";
 
 const PostTopBar = styled.div`
   display: flex;
@@ -13,8 +13,8 @@ const PostTopBar = styled.div`
   align-items: center;
 `;
 
-const Post = (props: { _id: string, authorId: string, pictures: string[], likes: ILike[], comments: IComment[] }) => {
-  const { _id, authorId, pictures } = props;
+const Post = (props: { _id: string, author: IUser, pictures: string[], likes: ILike[], comments: IComment[] }) => {
+  const { _id, author, pictures } = props;
 
   // const [showComments, setShowComments] = React.useState(false);
   const [comments, setComments] = React.useState<IComment[]>(props.comments);
@@ -22,8 +22,6 @@ const Post = (props: { _id: string, authorId: string, pictures: string[], likes:
   const [isCommentsExpanded, setIsCommentsExpanded] = React.useState<boolean>(false);
 
   const handleCommentSubmit = (comment: IComment) => {
-    console.log("hi")
-    console.log(comment)
     setComments([...comments, comment]);
     setIsCommentsExpanded(true);
   }
@@ -36,7 +34,7 @@ const Post = (props: { _id: string, authorId: string, pictures: string[], likes:
   return (
     <div className="post" key={_id}>
       <PostTopBar>
-        <Profile userId={authorId} />
+        <Profile user={author} />
       </PostTopBar>
       <PicturesView pictures={pictures} />
       {likes.length > 0 && <Likes likes={likes} />}

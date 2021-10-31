@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import instaLogo from "./logo.png"
 import direct from "./direct.svg"
 import heart from "./heart.svg"
@@ -6,7 +6,9 @@ import Profile from "../Profile"
 import newpost from "./newpost.svg"
 import "./TopBar.css"
 import styled from "styled-components"
-import useContextMenu from "../../hooks/useContext"
+// import useContextMenu from "../../hooks/useContext"
+import getUserInfo from "../../modules/getUserInfo"
+import { IUser } from "../../types/postTypes"
 
 const TopBarButton = styled.img`
   width: 25px;
@@ -17,8 +19,20 @@ const TopBarButton = styled.img`
 //https://mui.com/guides/routing/#list
 
 const TopBar = (props: { setContent: any }) => {
-  const { show, anchorPoint, handleContext } = useContextMenu();
+  // const { show, anchorPoint, handleContext } = useContextMenu();
+  const [me, setMe] = useState<IUser>({
+    _id: "",
+    name: "",
+    avatar: ""
+  });
   const { setContent } = props;
+
+  useEffect(() => {
+    getUserInfo()
+      .then(res => {
+        setMe(res);
+      });
+  }, [])
 
   return (
     <div id="TopBar">
@@ -29,8 +43,8 @@ const TopBar = (props: { setContent: any }) => {
           <TopBarButton src={heart} />
           <TopBarButton src={newpost} onClick={() => { setContent("newPost") }} />
         </span>
-        <Profile userId="1234" onClick={handleContext} />
-        {show && <ul
+        <Profile user={me} onClick={() => { setContent("changeProfile") }} />
+        {/* {show && <ul
           className="menu"
           style={{
             top: anchorPoint.y,
@@ -44,7 +58,7 @@ const TopBar = (props: { setContent: any }) => {
           <hr className="divider" />
           <li>Refresh</li>
           <li>Exit</li>
-        </ul>}
+        </ul>} */}
       </span>
     </div>
   )

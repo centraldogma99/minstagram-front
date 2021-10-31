@@ -6,14 +6,20 @@ export interface IComment {
 }
 
 export interface ILike {
-  authorName: string
+  author: IUser
 }
 
 export interface IPost {
   // author은 토큰 또는 objectID와 같은 일련번호.
   _id: string,
-  authorName: string,
+  author: IUser,
   pictures: string[],
   likes: ILike[],
   comments: IComment[],
+}
+
+export interface IUser {
+  _id: string,
+  name: string,
+  avatar: string
 }

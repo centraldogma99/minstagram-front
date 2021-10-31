@@ -3,6 +3,7 @@ import TopBar from "../TopBar/TopBar";
 import Posts from "../Post/Posts";
 import blackpink from "../../assets/blackpink.jpeg";
 import NewPost from "../Post/NewPost";
+import ChangeProfile from "../Mypage/ChangeProfile";
 
 const posts = [
   {
@@ -33,7 +34,8 @@ const posts = [
 ]
 
 const Mainpage = () => {
-  const [content, setContent] = useState<"dm" | "newPost" | "posts" | "profile">("posts");
+  // 아래 내용이 무엇이 들어갈지
+  const [content, setContent] = useState<"dm" | "newPost" | "posts" | "changeProfile">("posts");
 
   return (
     <div id="main">
@@ -42,6 +44,7 @@ const Mainpage = () => {
       </header>
       {content === "posts" && <Posts />}
       {content === "newPost" && <NewPost />}
+      {content === "changeProfile" && <ChangeProfile />}
     </div>
   )
 }
