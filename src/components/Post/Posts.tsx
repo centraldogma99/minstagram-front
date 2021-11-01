@@ -19,7 +19,6 @@ const Posts = (props: { posts?: IPost[] }) => {
   return (
     <div className="posts">
       {posts.map(post => {
-        console.log(post);
         const { _id, author, pictures, likes, comments } = post;
         return <Post key={_id} _id={_id} author={author} pictures={pictures} likes={likes} comments={comments} />
       })}

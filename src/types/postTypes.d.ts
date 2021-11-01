@@ -1,6 +1,6 @@
 // 어떤 post에 속해 있는지 넣어야 하나?
 export interface IComment {
-  authorName: string,
+  author: IUser,
   content: string,
   likes: ILike[]
 }

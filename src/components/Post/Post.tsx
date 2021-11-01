@@ -21,11 +21,13 @@ const Post = (props: { _id: string, author: IUser, pictures: string[], likes: IL
   const [likes, setLikes] = React.useState(props.likes);
   const [isCommentsExpanded, setIsCommentsExpanded] = React.useState<boolean>(false);
 
+  // 코멘트를 등록하고, 확장하기(CommentsForm에 전달되는 함수)
   const handleCommentSubmit = (comment: IComment) => {
     setComments([...comments, comment]);
-    setIsCommentsExpanded(true);
+    if (!isCommentsExpanded) setIsCommentsExpanded(true);
   }
 
+  // TODO: like button 구현
   const handleLike = (like: ILike) => {
     setLikes([...likes, like]);
   };
@@ -38,8 +40,7 @@ const Post = (props: { _id: string, author: IUser, pictures: string[], likes: IL
       </PostTopBar>
       <PicturesView pictures={pictures} />
       {likes.length > 0 && <Likes likes={likes} />}
-      {comments.length > 0 && <Comments comments={comments} isExpanded={isCommentsExpanded} />}
-      <CommentForm postId={_id} onSubmit={handleCommentSubmit} />
+      <Comments postId={_id} comments={comments} isExpanded={isCommentsExpanded} />
     </div>
   );
 }

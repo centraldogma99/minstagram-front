@@ -2,6 +2,7 @@ import React from "react"
 import styled from "styled-components"
 // import useProfile from "../hooks/useProfile";
 import { IUser } from "../types/postTypes";
+import { backServer } from "../configs/env";
 
 const AvatarImage = styled.img`
   width: 25px;
@@ -16,9 +17,10 @@ const Profile = (props: { user: IUser, onClick?: any }) => {
   // const { image, name } = useProfile(props.user);
   const { user, onClick } = props;
   console.log(user);
+  if (!user) return <></>;
   return (
     <span className="profile" onClick={onClick}>
-      <AvatarImage src={user.avatar} />&nbsp;
+      <AvatarImage src={backServer + "/images/" + user.avatar} />&nbsp;
       <AvatarName >{user.name}</AvatarName>
     </span>
   )
