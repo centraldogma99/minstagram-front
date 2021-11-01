@@ -1,13 +1,17 @@
 // 사진을 입력받아 profile 사진 변경
 
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios"
 import { backServer } from "../../configs/env";
+import AuthContext from "../../context/authContext";
 
 // TODO: 이미지 미리보기 어떤 식으로 지원할지?
 // TODO: 이미지 비율 안바뀌도록 조정하기
 const ChangeProfile = () => {
   const [picture, setPicture] = useState<FileList | null>(null);
+  const { setIsAuthenticated } = useContext(AuthContext);
+  // 두 번째 항목에는 에러 코드(404)를 저장하도록
+  // const [isError, setIsError] = useState<{ isError: boolean, error: string }>({ isError: false, error: "" });
 
   const handleClick = () => {
     const formData = new FormData();
@@ -23,12 +27,19 @@ const ChangeProfile = () => {
     })
       .then(res => {
         console.log(res);
+      })
+      .catch(err => {
+        console.log("hi")
+        setIsAuthenticated(false);
       });
   };
 
 
   return (
     <div id="changeProfile">
+      {/* {isError.isError ?
+        <Redirect to="/login" /> :
+        <> */}
       <input type="file" onChange={(e) => setPicture(e.target.files)} accept="image/png, image/jpeg" />
       <br />
       <input type="button" value="저장" onClick={handleClick} />
@@ -38,6 +49,8 @@ const ChangeProfile = () => {
           <img key={index} src={URL.createObjectURL(picture)} width="300em" />
         ))
       }
+      {/* </>
+      } */}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext } from "react"
 import instaLogo from "./logo.png"
 import direct from "./direct.svg"
 import heart from "./heart.svg"
@@ -9,6 +9,8 @@ import styled from "styled-components"
 // import useContextMenu from "../../hooks/useContext"
 import getUserInfo from "../../modules/getUserInfo"
 import { IUser } from "../../types/postTypes"
+import { Link } from "react-router-dom"
+import AuthContext from "../../context/authContext"
 
 const TopBarButton = styled.img`
   width: 25px;
@@ -18,19 +20,25 @@ const TopBarButton = styled.img`
 
 //https://mui.com/guides/routing/#list
 
-const TopBar = (props: { setContent: any }) => {
+const TopBar = () => {
+  const { setIsAuthenticated } = useContext(AuthContext);
   // const { show, anchorPoint, handleContext } = useContextMenu();
   const [me, setMe] = useState<IUser>({
     _id: "",
     name: "",
     avatar: ""
   });
-  const { setContent } = props;
 
+  // TODO: remove this
   useEffect(() => {
-    getUserInfo()
-      .then(res => {
-        setMe(res);
+    async function get() {
+      const user: IUser = await getUserInfo();
+      setMe(user);
+    }
+    get()
+      .catch(() => {
+        console.log("auth error")
+        setIsAuthenticated(false);
       });
   }, [])
 
@@ -39,11 +47,16 @@ const TopBar = (props: { setContent: any }) => {
       <img src={instaLogo} id="instaLogo" />
       <span id="TopBarRightSide">
         <span id="TopBarButtons">
-          <TopBarButton src={direct} onClick={() => { setContent("dm") }} />
+          <TopBarButton src={direct} />
           <TopBarButton src={heart} />
-          <TopBarButton src={newpost} onClick={() => { setContent("newPost") }} />
+          <Link to="/newPost">
+            <TopBarButton src={newpost} />
+          </Link>
         </span>
-        <Profile user={me} onClick={() => { setContent("changeProfile") }} />
+        <Link to="/changeProfile">
+          <Profile user={me} />
+        </Link>
+
         {/* {show && <ul
           className="menu"
           style={{

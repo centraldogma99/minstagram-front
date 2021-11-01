@@ -4,9 +4,9 @@ import { backServer } from "../../configs/env";
 import { IPost } from "../../types/postTypes"
 import Post from "./Post";
 
-
-const Posts = (props: { posts?: IPost[] }) => {
-  const [posts, setPosts] = React.useState<IPost[]>(props.posts ?? []);
+// post를 서버에서 가져오고 저장
+const Posts = () => {
+  const [posts, setPosts] = React.useState<IPost[]>([]);
 
   useLayoutEffect(() => {
     axios.get(`${backServer}/posts/`)

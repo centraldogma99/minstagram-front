@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import "./Login.css"
 import { backServer } from "../../configs/env";
 import axios from "axios"
 import Cookies from 'js-cookie';
-import Mainpage from "../Mainpage/Mainpage";
+import AuthContext from "../../context/authContext";
+
 
 const LoginInputText = styled.input`
   height: 3em;
@@ -24,12 +25,14 @@ const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [name, setName] = useState<string>("");
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [isRegister, setIsRegister] = useState<boolean>(false);
   const [statusText, setStatusText] = useState<string>("");
+  const { setIsAuthenticated } = useContext(AuthContext);
 
+  // 이미 로그인되어 있을 경우
+  // useEffect를 쓸 필요도 없을지도?
   useEffect(() => {
-    if (localStorage.getItem('user') && Cookies.get('credential')) setIsLoggedIn(true);
+    if (localStorage.getItem('user') && Cookies.get('credential')) setIsAuthenticated(true);
   }, [])
 
   const validate = (userInfo: { email: string, name: string, password: string }) => {
@@ -73,7 +76,7 @@ const Login = () => {
 
       if (res?.status === 200) {
         localStorage.setItem('user', (res as any).data.name);
-        setIsLoggedIn(true);
+        setIsAuthenticated(true);
         return;
       } else {
         //FIXME 임시로 alert로 구현했음
@@ -110,32 +113,25 @@ const Login = () => {
   }
 
   return (
-    <>
-      {!isLoggedIn &&
-        <div id="login">
-          <p id="loginTitle">
-            Instagram
-          </p>
-          <form id="loginForm" onSubmit={handleSubmit}>
-            <LoginInputText type="text" value={email} onChange={handleChange(setEmail)} placeholder="이메일" />
-            <br />
-            {isRegister && <span>
-              <LoginInputText type="text" value={name} onChange={handleChange(setName)} placeholder="계정 이름" />
-              <br />
-            </span>}
-            <LoginInputText type="text" value={password} onChange={handleChange(setPassword)} placeholder="비밀번호" />
-            <br />
-            {statusText}
-            <LoginButton>{isRegister ? '가입' : '로그인'}</LoginButton>
-            <br />
-            {!isRegister && <a onClick={handleRegister}>계정이 없으신가요?</a>}
-          </form>
-        </div>
-      }
-      {isLoggedIn &&
-        <Mainpage />
-      }
-    </>
+    <div id="login">
+      <p id="loginTitle">
+        Instagram
+      </p>
+      <form id="loginForm" onSubmit={handleSubmit}>
+        <LoginInputText type="text" value={email} onChange={handleChange(setEmail)} placeholder="이메일" />
+        <br />
+        {isRegister && <span>
+          <LoginInputText type="text" value={name} onChange={handleChange(setName)} placeholder="계정 이름" />
+          <br />
+        </span>}
+        <LoginInputText type="text" value={password} onChange={handleChange(setPassword)} placeholder="비밀번호" />
+        <br />
+        {statusText}
+        <LoginButton>{isRegister ? '가입' : '로그인'}</LoginButton>
+        <br />
+        {!isRegister && <a onClick={handleRegister}>계정이 없으신가요?</a>}
+      </form>
+    </div>
   )
 }
 

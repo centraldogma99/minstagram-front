@@ -17,7 +17,7 @@ const Profile = (props: { user: IUser, onClick?: any }) => {
   // const { image, name } = useProfile(props.user);
   const { user, onClick } = props;
   console.log(user);
-  if (!user) return <></>;
+  if (!user) return <span>hmm, something gone wrong.</span>;
   return (
     <span className="profile" onClick={onClick}>
       <AvatarImage src={backServer + "/images/" + user.avatar} />&nbsp;

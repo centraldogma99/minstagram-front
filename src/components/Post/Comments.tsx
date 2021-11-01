@@ -18,18 +18,17 @@ const CommentContent = styled.span`
 
 const commentsDisplayed = 2;
 
-const Comments = (props: { postId: string, comments: IComment[], isExpanded: boolean }) => {
+const Comments = (props: { postId: string, comments: IComment[] }) => {
   const [comments, setComments] = useState<IComment[]>(props.comments);
-  const [isExpanded, setIsExpanded] = useState<boolean>(props.isExpanded);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   // 처음 로드됐을 때, 댓글이 3개 이상이면 더 보기로 표시
   // 댓글이 추가되어 2개에서 3개로 된다면 더 보기로 표시하지 않고 바로 표시
 
   // 상위 컴포넌트 Post에서 props 변경 시
   useEffect(() => {
-    setIsExpanded(props.isExpanded);
     setComments(props.comments);
-  }, [props.comments, props.isExpanded])
+  }, [props.comments])
 
   // useEffect(() => {
 
