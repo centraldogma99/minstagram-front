@@ -27,12 +27,16 @@ const Login = () => {
   const [name, setName] = useState<string>("");
   const [isRegister, setIsRegister] = useState<boolean>(false);
   const [statusText, setStatusText] = useState<string>("");
-  const { setIsAuthenticated } = useContext(AuthContext);
+  const { setIsAuthenticated, setUser } = useContext(AuthContext);
 
   // 이미 로그인되어 있을 경우
   // useEffect를 쓸 필요도 없을지도?
   useEffect(() => {
-    if (localStorage.getItem('user') && Cookies.get('credential')) setIsAuthenticated(true);
+    const storageUser = localStorage.getItem('user')
+    if (storageUser && Cookies.get('credential')) {
+      setIsAuthenticated(true);
+      setUser(JSON.parse(storageUser))
+    }
   }, [])
 
   const validate = (userInfo: { email: string, name: string, password: string }) => {
@@ -75,8 +79,10 @@ const Login = () => {
         .catch((e: any) => e.response);
 
       if (res?.status === 200) {
-        localStorage.setItem('user', (res as any).data.name);
+        console.log('hi');
+        localStorage.setItem('user', JSON.stringify((res as any).data));
         setIsAuthenticated(true);
+        setUser(res.data);
         return;
       } else {
         //FIXME 임시로 alert로 구현했음

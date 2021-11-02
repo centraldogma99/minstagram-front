@@ -3,6 +3,7 @@ import styled from "styled-components"
 // import useProfile from "../hooks/useProfile";
 import { IUser } from "../types/postTypes";
 import { backServer } from "../configs/env";
+import { Link } from "react-router-dom";
 
 const AvatarImage = styled.img`
   width: 25px;
@@ -19,10 +20,13 @@ const Profile = (props: { user: IUser, onClick?: any }) => {
   console.log(user);
   if (!user) return <span>hmm, something gone wrong.</span>;
   return (
-    <span className="profile" onClick={onClick}>
-      <AvatarImage src={backServer + "/images/" + user.avatar} />&nbsp;
-      <AvatarName >{user.name}</AvatarName>
-    </span>
+    <Link to={`/${user.name}`}>
+      <span className="profile" onClick={onClick}>
+        <AvatarImage src={backServer + "/images/" + user.avatar} />&nbsp;
+        <AvatarName >{user.name}</AvatarName>
+      </span>
+    </Link>
+
   )
 }
 

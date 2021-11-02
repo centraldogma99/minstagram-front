@@ -4,10 +4,12 @@ import { IComment } from "../../types/postTypes";
 import CommentForm from "./CommentForm";
 import axios from 'axios'
 import { backServer } from "../../configs/env";
+import { Link } from "react-router-dom";
 
 const CommentAuthorName = styled.span`
   display: inline-block;
-  width: 80px;
+  min-width: 10em;
+  max-width: 15em;
   font-size: 15px;
   font-weight: bold;
 `;
@@ -56,7 +58,9 @@ const Comments = (props: { postId: string, comments: IComment[] }) => {
   const renderComment = (comment: IComment, index: number) => {
     return (
       <div className="comment" key={index}>
-        <CommentAuthorName>{comment.author.name}</CommentAuthorName>
+        <Link to={`/${comment.author.name}`}>
+          <CommentAuthorName>{comment.author.name}</CommentAuthorName>
+        </Link>
         <CommentContent>{comment.content}</CommentContent>
       </div>
     )

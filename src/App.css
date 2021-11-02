@@ -1,3 +1,19 @@
+a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+a:active {
+  text-decoration: none;
+}
+
 .profile {
   display: flex;
   align-items: center;
@@ -37,3 +53,8 @@
   padding-left: 1em;
   overflow-y:scroll;
 }
+
+.App {
+  text-align: center;
+}
+

@@ -7,7 +7,6 @@ import newpost from "./newpost.svg"
 import "./TopBar.css"
 import styled from "styled-components"
 // import useContextMenu from "../../hooks/useContext"
-import getUserInfo from "../../modules/getUserInfo"
 import { IUser } from "../../types/postTypes"
 import { Link } from "react-router-dom"
 import AuthContext from "../../context/authContext"
@@ -21,30 +20,15 @@ const TopBarButton = styled.img`
 //https://mui.com/guides/routing/#list
 
 const TopBar = () => {
-  const { setIsAuthenticated } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   // const { show, anchorPoint, handleContext } = useContextMenu();
-  const [me, setMe] = useState<IUser>({
-    _id: "",
-    name: "",
-    avatar: ""
-  });
-
-  // TODO: remove this
-  useEffect(() => {
-    async function get() {
-      const user: IUser = await getUserInfo();
-      setMe(user);
-    }
-    get()
-      .catch(() => {
-        console.log("auth error")
-        setIsAuthenticated(false);
-      });
-  }, [])
 
   return (
     <div id="TopBar">
-      <img src={instaLogo} id="instaLogo" />
+      <Link to="/">
+        <img src={instaLogo} id="instaLogo" />
+      </Link>
+
       <span id="TopBarRightSide">
         <span id="TopBarButtons">
           <TopBarButton src={direct} />
@@ -53,8 +37,8 @@ const TopBar = () => {
             <TopBarButton src={newpost} />
           </Link>
         </span>
-        <Link to="/changeProfile">
-          <Profile user={me} />
+        <Link to={"/" + user.name}>
+          <Profile user={user} />
         </Link>
 
         {/* {show && <ul
@@ -73,7 +57,7 @@ const TopBar = () => {
           <li>Exit</li>
         </ul>} */}
       </span>
-    </div>
+    </div >
   )
 }
 

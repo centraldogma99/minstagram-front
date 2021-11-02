@@ -4,12 +4,15 @@ import React, { useState, useContext } from "react";
 import axios from "axios"
 import { backServer } from "../../configs/env";
 import AuthContext from "../../context/authContext";
+import { IUser } from "../../types/postTypes";
+import { Redirect } from "react-router-dom";
 
 // TODO: 이미지 미리보기 어떤 식으로 지원할지?
 // TODO: 이미지 비율 안바뀌도록 조정하기
 const ChangeProfile = () => {
   const [picture, setPicture] = useState<FileList | null>(null);
-  const { setIsAuthenticated } = useContext(AuthContext);
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const { setIsAuthenticated, setUser, user } = useContext(AuthContext);
   // 두 번째 항목에는 에러 코드(404)를 저장하도록
   // const [isError, setIsError] = useState<{ isError: boolean, error: string }>({ isError: false, error: "" });
 
@@ -26,14 +29,15 @@ const ChangeProfile = () => {
       }
     })
       .then(res => {
-        console.log(res);
+        setUser(res.data as IUser);
+        setIsSuccess(true);
       })
       .catch(err => {
-        console.log("hi")
         setIsAuthenticated(false);
       });
   };
 
+  if (isSuccess) return <Redirect to={"/" + user.name} />
 
   return (
     <div id="changeProfile">

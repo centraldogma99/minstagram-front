@@ -18,7 +18,7 @@ const getUserInfo = async (id?: string) => {
   return {
     avatar: res.data.avatar,
     name: res.data.name,
-    _id: res.data.id
+    _id: res.data._id
   }
 }
 

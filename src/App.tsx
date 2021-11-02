@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
 import Login from "./components/Login/Login";
 import Mypage from "./components/Mypage/Mypage";
@@ -13,10 +13,11 @@ import NewPost from "./components/Post/NewPost";
 import Posts from "./components/Post/Posts"
 import ChangeProfile from "./components/Mypage/ChangeProfile";
 import AuthContext from "./context/authContext";
+import { IUser } from "./types/postTypes";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
-
+  const [user, setUser] = useState<IUser>({ _id: "", name: "", avatar: "", email: "" });
   const PrivateRoute = ({ children, ...rest }: any) => {
     return (
       <Route
@@ -33,33 +34,32 @@ function App() {
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
-      <Router>
-        <div className="App">
-          {!isAuthenticated && <Login />}
-          {isAuthenticated && <>
-            <TopBar />
-            <Switch>
-              <Route path="/login">
-                <Login />
-              </Route>
-              <Route path="/newPost">
-                <NewPost />
-              </Route>
-              <Route path="/changeProfile">
-                <ChangeProfile />
-              </Route>
-              <Route path="/:userNameParam">
-                <Mypage />
-              </Route>
-              <Route path="/">
-                <Posts />
-              </Route>
+    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, user, setUser }}>
 
-            </Switch>
-          </>}
-        </div>
-      </Router>
+      <div className="App">
+        {!isAuthenticated && <Login />}
+        {isAuthenticated && <>
+          <TopBar />
+          <Switch>
+            <Route exact path="/login">
+              <Login />
+            </Route>
+            <Route exact path="/newPost">
+              <NewPost />
+            </Route>
+            <Route exact path="/changeProfile">
+              <ChangeProfile />
+            </Route>
+            <Route path="/:userNameParam">
+              <Mypage />
+            </Route>
+            <Route exact path="/">
+              <Posts />
+            </Route>
+
+          </Switch>
+        </>}
+      </div>
     </AuthContext.Provider>
 
 
