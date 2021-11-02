@@ -4,7 +4,10 @@ import PicturesView from "./PicturesView"
 // import Likes from "./Likes"
 import Comments from "./Comments"
 import styled from "styled-components";
-import { IComment, ILike, IUser } from "../../types/postTypes";
+import { IPost } from "../../types/postTypes";
+import option from "../../assets/option.svg"
+import axios from "axios";
+import { backServer } from "../../configs/env";
 
 const PostTopBar = styled.div`
   display: flex;
@@ -12,8 +15,13 @@ const PostTopBar = styled.div`
   align-items: center;
 `;
 
-const Post = (props: { _id: string, author: IUser, pictures: string[], likes: ILike[], comments: IComment[] }) => {
-  const { _id, author, pictures, comments } = props;
+const PostTopBarButton = styled.img`
+  width: 1em;
+  height: 1em;
+`;
+
+const Post = (props: IPost) => {
+  const { _id, author, pictures, comments, text } = props;
   // const [likes, setLikes] = React.useState(props.likes);
 
   // TODO: like button 구현
@@ -21,14 +29,19 @@ const Post = (props: { _id: string, author: IUser, pictures: string[], likes: IL
   //   setLikes([...likes, like]);
   // };
 
+  const handleClick = () => {
+    axios.delete(`${backServer}/posts/${_id}`, { withCredentials: true })
+  }
 
   return (
     <div className="post" key={_id}>
       <PostTopBar>
         <Profile user={author} />
+        <PostTopBarButton src={option} onClick={handleClick} />
       </PostTopBar>
       <PicturesView pictures={pictures} />
       {/* {likes.length > 0 && <Likes likes={likes} />} */}
+      <p>{text && <b>{author.name}</b>} &nbsp; {text}</p>
       <Comments postId={_id} comments={comments} />
     </div>
   );

@@ -11,7 +11,7 @@ const Posts = () => {
   useLayoutEffect(() => {
     axios.get(`${backServer}/posts/`)
       .then(res => {
-        console.log("data: " + res.data);
+        console.log(res.data);
         setPosts(res.data as IPost[]);
       })
   }, [])
@@ -19,8 +19,8 @@ const Posts = () => {
   return (
     <div className="posts">
       {posts.map(post => {
-        const { _id, author, pictures, likes, comments } = post;
-        return <Post key={_id} _id={_id} author={author} pictures={pictures} likes={likes} comments={comments} />
+        const { _id } = post;
+        return <Post key={_id} {...post} />
       })}
     </div>
   )

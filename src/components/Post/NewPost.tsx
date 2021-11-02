@@ -8,6 +8,7 @@ import { backServer } from "../../configs/env";
 // TODO: 이미지 비율 안바뀌도록 조정하기
 const NewPost = () => {
   const [pictures, setPictures] = useState<FileList | null>(null);
+  const [text, setText] = useState<string>("");
 
   const handleClick = () => {
     const formData = new FormData();
@@ -16,6 +17,7 @@ const NewPost = () => {
         formData.append("pictures", pictures[i]);
       }
     }
+    formData.append("text", text);
 
     axios.post(`${backServer}/posts/new`, formData, {
       withCredentials: true,
@@ -33,6 +35,7 @@ const NewPost = () => {
     <div id="newPost">
       <input type="file" multiple onChange={(e) => setPictures(e.target.files)} accept="image/png, image/jpeg" />
       <br />
+      <textarea value={text} onChange={(e) => setText(e.target.value)} />
       <input type="button" value="새 글 작성" onClick={handleClick} />
       <br />
       {pictures && pictures.length > 0 &&

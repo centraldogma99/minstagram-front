@@ -27,6 +27,10 @@ a:active {
   border-radius: 0.5em;
   border-color:gainsboro;
   padding-bottom: 0.5em;
+  text-align: left;
+  padding-left: 0.7em;
+  padding-right: 0.7em;
+  margin-bottom: 1em;
 }
 
 .posts {
@@ -50,8 +54,8 @@ a:active {
 .comments {
   max-height: 5em;
   text-align: left;
-  padding-left: 1em;
   overflow-y:scroll;
+  margin-bottom: 0.5em;
 }
 
 .App {
