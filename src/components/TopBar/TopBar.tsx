@@ -31,7 +31,9 @@ const TopBar = () => {
 
       <span id="TopBarRightSide">
         <span id="TopBarButtons">
-          <TopBarButton src={direct} />
+          <Link to="/directs">
+            <TopBarButton src={direct} />
+          </Link>
           <TopBarButton src={heart} />
           <Link to="/newPost">
             <TopBarButton src={newpost} />

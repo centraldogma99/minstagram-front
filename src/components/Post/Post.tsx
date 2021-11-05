@@ -8,6 +8,7 @@ import { IPost } from "../../types/postTypes";
 import option from "../../assets/option.svg"
 import axios from "axios";
 import { backServer } from "../../configs/env";
+import { Link } from "react-router-dom";
 
 const PostTopBar = styled.div`
   display: flex;
@@ -29,18 +30,30 @@ const Post = (props: IPost) => {
   //   setLikes([...likes, like]);
   // };
 
-  const handleClick = () => {
-    axios.delete(`${backServer}/posts/${_id}`, { withCredentials: true })
+  // const handleClick = () => {
+  //   axios.delete(`${backServer}/posts/${_id}`, { withCredentials: true })
+  // }
+
+  const handleRightClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    console.log("right click")
   }
 
   return (
     <div className="post" key={_id}>
       <PostTopBar>
         <Profile user={author} />
-        <PostTopBarButton src={option} onClick={handleClick} />
+        <Link to={{
+          pathname: `/posts/${_id}/edit`,
+          state: { text }
+        }} >
+          <PostTopBarButton src={option} onContextMenu={handleRightClick} />
+        </Link>
+
       </PostTopBar>
       <PicturesView pictures={pictures} />
       {/* {likes.length > 0 && <Likes likes={likes} />} */}
+
       <p>{text && <b>{author.name}</b>} &nbsp; {text}</p>
       <Comments postId={_id} comments={comments} />
     </div>

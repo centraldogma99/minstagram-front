@@ -14,6 +14,8 @@ import Posts from "./components/Post/Posts"
 import ChangeProfile from "./components/Mypage/ChangeProfile";
 import AuthContext from "./context/authContext";
 import { IUser } from "./types/postTypes";
+import EditPost from "./components/Post/EditPost";
+import DirectList from "./components/direct/DirectList";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
@@ -41,6 +43,9 @@ function App() {
         {isAuthenticated && <>
           <TopBar />
           <Switch>
+            <Route exact path="/directs">
+              <DirectList />
+            </Route>
             <Route exact path="/login">
               <Login />
             </Route>
@@ -49,6 +54,9 @@ function App() {
             </Route>
             <Route exact path="/changeProfile">
               <ChangeProfile />
+            </Route>
+            <Route exact path="/posts/:postId/edit">
+              <EditPost />
             </Route>
             <Route path="/:userNameParam">
               <Mypage />

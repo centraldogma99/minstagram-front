@@ -6,6 +6,7 @@ import { backServer } from "../../configs/env";
 
 // TODO: 이미지 미리보기 어떤 식으로 지원할지?
 // TODO: 이미지 비율 안바뀌도록 조정하기
+// TODO: UI
 const NewPost = () => {
   const [pictures, setPictures] = useState<FileList | null>(null);
   const [text, setText] = useState<string>("");

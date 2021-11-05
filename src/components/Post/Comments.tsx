@@ -8,10 +8,9 @@ import { Link } from "react-router-dom";
 
 const CommentAuthorName = styled.span`
   display: inline-block;
-  min-width: 10em;
-  max-width: 15em;
   font-size: 15px;
   font-weight: bold;
+  margin-right: 1em;
 `;
 
 const CommentContent = styled.span`
@@ -61,6 +60,7 @@ const Comments = (props: { postId: string, comments: IComment[] }) => {
         <Link to={`/${comment.author.name}`}>
           <CommentAuthorName>{comment.author.name}</CommentAuthorName>
         </Link>
+        &nbsp;&nbsp;
         <CommentContent>{comment.content}</CommentContent>
       </div>
     )
