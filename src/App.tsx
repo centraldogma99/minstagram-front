@@ -42,30 +42,33 @@ function App() {
         {!isAuthenticated && <Login />}
         {isAuthenticated && <>
           <TopBar />
-          <Switch>
-            <Route exact path="/directs">
-              <DirectList />
-            </Route>
-            <Route exact path="/login">
-              <Login />
-            </Route>
-            <Route exact path="/newPost">
-              <NewPost />
-            </Route>
-            <Route exact path="/changeProfile">
-              <ChangeProfile />
-            </Route>
-            <Route exact path="/posts/:postId/edit">
-              <EditPost />
-            </Route>
-            <Route path="/:userNameParam">
-              <Mypage />
-            </Route>
-            <Route exact path="/">
-              <Posts />
-            </Route>
+          <div id="contentWrapper">
+            <Switch>
+              <Route exact path="/directs">
+                <DirectList />
+              </Route>
+              <Route exact path="/login">
+                <Login />
+              </Route>
+              <Route exact path="/newPost">
+                <NewPost />
+              </Route>
+              <Route exact path="/changeProfile">
+                <ChangeProfile />
+              </Route>
+              <Route exact path="/posts/:postId/edit">
+                <EditPost />
+              </Route>
+              <Route path="/:userNameParam">
+                <Mypage />
+              </Route>
+              <Route exact path="/">
+                <Posts />
+              </Route>
 
-          </Switch>
+            </Switch>
+          </div>
+
         </>}
       </div>
     </AuthContext.Provider>

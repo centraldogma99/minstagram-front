@@ -10,6 +10,8 @@ import styled from "styled-components"
 import { IUser } from "../../types/postTypes"
 import { Link } from "react-router-dom"
 import AuthContext from "../../context/authContext"
+import axios from "axios"
+import { backServer } from "../../configs/env"
 
 const TopBarButton = styled.img`
   width: 25px;
@@ -20,7 +22,12 @@ const TopBarButton = styled.img`
 //https://mui.com/guides/routing/#list
 
 const TopBar = () => {
-  const { user } = useContext(AuthContext);
+  const { user, setIsAuthenticated, setUser } = useContext(AuthContext);
+  const useLogout = () => {
+    axios.get(`${backServer}/users/logout`, { withCredentials: true })
+    setIsAuthenticated(false);
+    setUser({ _id: "", name: "", avatar: "", email: "" });
+  }
   // const { show, anchorPoint, handleContext } = useContextMenu();
 
   return (
@@ -34,7 +41,7 @@ const TopBar = () => {
           <Link to="/directs">
             <TopBarButton src={direct} />
           </Link>
-          <TopBarButton src={heart} />
+          <TopBarButton src={heart} onClick={useLogout} />
           <Link to="/newPost">
             <TopBarButton src={newpost} />
           </Link>
