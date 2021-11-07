@@ -16,6 +16,7 @@ import AuthContext from "./context/authContext";
 import { IUser } from "./types/postTypes";
 import EditPost from "./components/Post/EditPost";
 import DirectList from "./components/direct/DirectList";
+import Post from "./components/Post/Post"
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
@@ -55,6 +56,9 @@ function App() {
               </Route>
               <Route exact path="/changeProfile">
                 <ChangeProfile />
+              </Route>
+              <Route exact path="/posts/:postId">
+                <Post />
               </Route>
               <Route exact path="/posts/:postId/edit">
                 <EditPost />

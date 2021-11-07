@@ -96,7 +96,9 @@ const Mypage = (props: { userName?: string }) => {
   const renderPost = (post: IPost) => {
     return (
       <div key={post._id}>
-        <PostThumbnail src={backServer + '/images/' + post.pictures[0]} />
+        <Link to={`/posts/${post._id}`}>
+          <PostThumbnail src={backServer + '/images/' + post.pictures[0]} />
+        </Link>
       </div>
     )
   }
