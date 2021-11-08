@@ -5,6 +5,8 @@ import CommentForm from "./CommentForm";
 import axios from 'axios'
 import { backServer } from "../../configs/env";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import PostContext from "../../context/postContext";
 
 const CommentAuthorName = styled.span`
   display: inline-block;
@@ -19,21 +21,18 @@ const CommentContent = styled.span`
 
 const commentsDisplayed = 2;
 
-const Comments = (props: { postId: string, comments: IComment[] }) => {
-  const [comments, setComments] = useState<IComment[]>(props.comments);
+const Comments = () => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const { post } = useContext(PostContext);
+  const [comments, setComments] = useState<IComment[]>(post.comments);
 
   // 처음 로드됐을 때, 댓글이 3개 이상이면 더 보기로 표시
   // 댓글이 추가되어 2개에서 3개로 된다면 더 보기로 표시하지 않고 바로 표시
 
   // 상위 컴포넌트 Post에서 props 변경 시
   useEffect(() => {
-    setComments(props.comments);
-  }, [props.comments])
-
-  // useEffect(() => {
-
-  // }, [comments])
+    setComments(post.comments);
+  }, [post.comments])
 
   // 더 보기 클릭했을 때의 동작.
   const handleClick = () => {
@@ -42,7 +41,7 @@ const Comments = (props: { postId: string, comments: IComment[] }) => {
 
   // 백엔드에 코멘트 등록 및 프론트엔드 컴포넌트 업데이트
   const handleSubmit = (text: string) => {
-    axios.post(`${backServer}/posts/${props.postId}/comment`, {
+    axios.post(`${backServer}/posts/${post._id}/comment`, {
       content: text,
       likes: []
     }, { withCredentials: true }).then((res: any) => {

@@ -12,11 +12,14 @@ import { useEffect, useLayoutEffect } from "react";
 import { useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import AuthContext from "../../context/authContext";
+import PostContext from "../../context/postContext"
 
 const PostTopBar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-top: 0.6em;
+  padding-bottom: 0.6em;
 `;
 
 const PostTopBarButton = styled.img`
@@ -31,13 +34,18 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: 400,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
   boxShadow: 24,
   p: 4,
   padding: 0,
 };
 
-const Post = (props: IPost | Record<string, never>) => {
+interface PostsProps {
+  setPost: (post: IPost) => void,
+  postComeFirst: () => void
+}
+
+
+const Post = (props: (IPost & PostsProps | Record<string, never>)) => {
   const { postId } = useParams<{ postId: string }>();
   const [post, setPost] = useState<IPost>({} as IPost);
   const [show, setShow] = React.useState(false);
@@ -46,9 +54,13 @@ const Post = (props: IPost | Record<string, never>) => {
 
   useLayoutEffect(() => {
     if ('_id' in props) {
-      setPost(props as IPost);
+      // Posts로부터 렌더링 되었을 때
+      const { setPost: s, ...p } = props;
+      setPost(p as IPost);
       setIsInitialLoad(false);
     } else {
+      // <Post /> 로써 렌더링 되었을 때
+      // props.setPost가 없을 것이다.
       // 비동기 작업이 있기 때문에 별도의 변수로 작업 종료를 관리해야 한다.
       getPost(postId)
         .then((res: any) => {
@@ -58,11 +70,6 @@ const Post = (props: IPost | Record<string, never>) => {
     }
   }, [])
 
-
-  // const { _id, author, pictures, comments, text } = post as IPost;
-
-  // const [likes, setLikes] = React.useState(props.likes);
-
   // TODO: like button 구현
   // const handleLike = (like: ILike) => {
   //   setLikes([...likes, like]);
@@ -70,36 +77,50 @@ const Post = (props: IPost | Record<string, never>) => {
 
   const handleClick = (setState: (v: boolean) => void) => { return () => setState(true) };
   const handleClose = (setState: (v: boolean) => void) => { return () => setState(false) };
-  if (!isInitialLoad) {
-    console.log(user._id)
-    console.log(post.author._id)
-    console.log(post)
-  }
 
   return (
-    <>
-      {!isInitialLoad &&
+    <PostContext.Provider value={{
+      // post._id가 undefined일 수도 있다.
+      post: post,
+      deletePost: () => {
+        const { isDeleted: i, ...rest } = post;
+        setPost({ isDeleted: true, ...rest });
+        props.setPost && props.setPost({ isDeleted: true, ...rest })
+        props.postComeFirst()
+      },
+      editPost: (text: string) => {
+        const { text: t, ...rest } = post;
+        setPost({ text: text, ...rest })
+        props.setPost && props.setPost({ text: text, ...rest })
+        props.postComeFirst()
+      }
+    }} >
+      {!isInitialLoad && !post.isDeleted &&
         <div className="post" key={post._id}>
           <PostMenuModal
             open={show}
             onClose={handleClose(setShow)}
-            _id={post._id}
-            text={post.text ?? ""}
             isAuthor={user._id === post.author._id}
           />
           <PostTopBar>
+            {/* FIXME: use context */}
             <Profile user={post.author} />
             {/* <PostMenu /> */}
             <PostTopBarButton src={option} onClick={handleClick(setShow)} />
-
           </PostTopBar>
           <PicturesView pictures={post.pictures} />
           {/* {likes.length > 0 && <Likes likes={likes} />} */}
 
           <p>{post.text && <b>{post.author.name}</b>} &nbsp; {post.text}</p>
-          <Comments postId={post._id} comments={post.comments} />
-        </div >}
-    </>
+          <Comments />
+        </div >
+      }
+      {post.isDeleted && <>
+        <div className="deleted-post">
+          Whoooo! Deleted Post!
+        </div>
+      </>}
+    </PostContext.Provider >
 
   );
 }

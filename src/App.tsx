@@ -76,8 +76,6 @@ function App() {
         </>}
       </div>
     </AuthContext.Provider>
-
-
   );
 }
 

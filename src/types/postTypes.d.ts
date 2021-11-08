@@ -17,6 +17,7 @@ export interface IPost {
   text?: string,
   likes: ILike[],
   comments: IComment[],
+  isDeleted?: boolean
 }
 
 export interface IUser {

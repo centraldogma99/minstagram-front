@@ -33,7 +33,9 @@ const TopBar = () => {
   return (
     <div id="TopBar">
       <Link to="/">
-        <img src={instaLogo} id="instaLogo" />
+        <span className="logo">
+          Minstagram
+        </span>
       </Link>
 
       <span id="TopBarRightSide">

@@ -1,14 +1,18 @@
 import React, { useState } from "react"
 import axios from "axios"
 import { backServer } from "../../configs/env"
-import { useLocation, useParams } from "react-router-dom"
+import { useHistory, useLocation, useParams } from "react-router-dom"
 
 const EditPost = () => {
   const textProp = useLocation<{ text: string }>().state.text;
+  const history = useHistory();
   const { postId } = useParams<{ postId: string }>();
+  // FIXME param URL로 변경시....
   const [text, setText] = useState<string>(textProp)
-  const handleSubmit = () => {
-    axios.post(`${backServer}/posts/${postId}/edit`, { text }, { withCredentials: true })
+
+  const handleSubmit = async () => {
+    await axios.post(`${backServer}/posts/${postId}/edit`, { text }, { withCredentials: true })
+    history.push('/')
   }
 
   return (

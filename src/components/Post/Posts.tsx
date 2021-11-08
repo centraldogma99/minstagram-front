@@ -8,19 +8,28 @@ import Post from "./Post";
 const Posts = () => {
   const [posts, setPosts] = React.useState<IPost[]>([]);
 
+  const setPost = (i: number) => {
+    return (newPost: IPost) => {
+      setPosts([...posts.slice(0, i), newPost, ...posts.slice(i + 1)])
+    }
+  }
+
+  const postComeFirst = (i: number) => {
+    setPosts([posts[i], ...posts.slice(0, i), ...posts.slice(i + 1)])
+  }
+
   useLayoutEffect(() => {
     axios.get(`${backServer}/posts/`)
       .then(res => {
-        console.log(res.data);
         setPosts(res.data as IPost[]);
       })
   }, [])
 
   return (
     <div className="posts">
-      {posts.map(post => {
+      {posts.map((post, i) => {
         const { _id } = post;
-        return <Post key={_id} {...post} />
+        return <Post key={_id} {...post} setPost={setPost(i)} postComeFirst={() => postComeFirst(i)} />
       })}
     </div>
   )

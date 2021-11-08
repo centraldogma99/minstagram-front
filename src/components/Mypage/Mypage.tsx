@@ -58,7 +58,6 @@ const Mypage = (props: { userName?: string }) => {
   const [user, setUser] = useState<IUser>({ _id: "", name: "", avatar: "", email: "" });
   const [posts, setPosts] = useState<IPost[]>([]);
   const { user: me } = useContext(AuthContext);
-  console.log(useLocation());
 
   const ProfileChangeLink = ({ children, ...rest }: any) => {
     if (me._id === user._id) {
