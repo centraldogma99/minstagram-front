@@ -6,20 +6,7 @@ import DeletePostModal from "./DeletePostModal";
 import { useState } from "react";
 import { useEffect } from "react";
 import PostContext from "../../context/postContext";
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  p: 4,
-  padding: 0,
-  borderRadius: "0.5em",
-  outline: 'none'
-};
+import MessageAndButtonsModal from "./MessageAndButtonsModal";
 
 const redBoldStyle = {
   fontWeight: 'bold',
@@ -28,49 +15,51 @@ const redBoldStyle = {
 
 const PostMenuModal = (props: { open: boolean, onClose: any, isAuthor: boolean }) => {
   const [showDelete, setShowDelete] = React.useState(false);
-
   const [open, setOpen] = useState<boolean>(false)
-  const { post } = useContext(PostContext);
+  const { post, } = useContext(PostContext)
 
   useEffect(() => {
     setOpen(props.open)
   }, [props.open])
 
   return (
-    <Modal
+    <MessageAndButtonsModal
       open={open}
-      onClose={props.onClose}
+      onClose={() => {
+        setOpen(false);
+        setShowDelete(false);
+        props.onClose();
+      }}
     >
-      <Box sx={style as any}>
-        <DeletePostModal
-          open={showDelete}
-          onClose={() => {
-            setOpen(false);
-            setShowDelete(false);
-          }}
-        />
-        {props.isAuthor && <>
-          <Link to={{
-            pathname: `/posts/${post._id}/edit`,
-            state: { text: post.text }
-          }}>
-            <ModalMenuItem>
-              수정
-            </ModalMenuItem>
-          </Link>
-          <Divider />
-          <ModalMenuItem onClick={() => setShowDelete(true)} style={redBoldStyle}>
-            삭제
-          </ModalMenuItem>
-          <Divider />
-        </>}
-        <Link to={`/posts/${post._id}`}>
+      <DeletePostModal
+        open={showDelete}
+        onClose={() => {
+          setOpen(false);
+          setShowDelete(false);
+          props.onClose();
+        }}
+      />
+      {props.isAuthor && <>
+        <Link to={{
+          pathname: `/posts/${post._id}/edit`,
+          state: { text: post.text }
+        }}>
           <ModalMenuItem>
-            게시물로 이동
+            수정
           </ModalMenuItem>
         </Link>
-      </Box>
-    </Modal>
+        <Divider />
+        <ModalMenuItem onClick={() => setShowDelete(true)} style={redBoldStyle}>
+          삭제
+        </ModalMenuItem>
+        <Divider />
+      </>}
+      <Link to={`/posts/${post._id}`}>
+        <ModalMenuItem>
+          게시물로 이동
+        </ModalMenuItem>
+      </Link>
+    </MessageAndButtonsModal>
   )
 }
 

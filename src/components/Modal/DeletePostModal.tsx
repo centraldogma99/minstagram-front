@@ -7,35 +7,13 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useContext } from "react";
 import PostContext from "../../context/postContext";
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  p: 4,
-  padding: 0,
-  borderRadius: "0.5em",
-  outline: 'none'
-};
-
-const msgStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  fontWeight: 'bold'
-}
+import styled from '@emotion/styled'
+import MessageAndButtonsModal from "./MessageAndButtonsModal";
 
 const redBoldStyle = {
   fontWeight: 'bold',
   color: 'red'
 }
-
-
 
 const DeletePostModal = (props: { open: boolean, onClose: any }) => {
   const [open, setOpen] = useState(props.open);
@@ -58,21 +36,19 @@ const DeletePostModal = (props: { open: boolean, onClose: any }) => {
   }
 
   return (
-    <Modal open={open} onClose={props.onClose}>
-      <Box sx={style as any}>
-        <div style={{ position: 'relative', height: "5em" }}>
-          <span style={msgStyle as any}>이 게시물을 삭제하시겠어요?</span>
-        </div>
-        <Divider />
-        <ModalMenuItem onClick={onDeleteClick} style={redBoldStyle}>
-          삭제
-        </ModalMenuItem>
-        <Divider />
-        <ModalMenuItem>
-          취소
-        </ModalMenuItem>
-      </Box>
-    </Modal>
+    <MessageAndButtonsModal
+      open={open}
+      onClose={props.onClose}
+      message={"이 게시물을 삭제하시겠어요?"}
+    >
+      <ModalMenuItem onClick={onDeleteClick} style={redBoldStyle}>
+        삭제
+      </ModalMenuItem>
+      <Divider />
+      <ModalMenuItem>
+        취소
+      </ModalMenuItem>
+    </MessageAndButtonsModal>
   )
 }
 

@@ -8,11 +8,17 @@ import { IPost } from "../../types/postTypes";
 import option from "../../assets/option.svg"
 import PostMenuModal from "../Modal/PostMenuModal";
 import getPost from "../../modules/getPost";
-import { useEffect, useLayoutEffect } from "react";
+import { useLayoutEffect } from "react";
 import { useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import AuthContext from "../../context/authContext";
 import PostContext from "../../context/postContext"
+import axios from "axios"
+import { backServer } from "../../configs/env";
+import CommentForm from "./CommentForm";
+import { Divider } from "@mui/material";
+
+const commentsDisplayed = 2;
 
 const PostTopBar = styled.div`
   display: flex;
@@ -27,18 +33,6 @@ const PostTopBarButton = styled.img`
   height: 1em;
 `;
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  p: 4,
-  padding: 0,
-};
-
 interface PostsProps {
   setPost: (post: IPost) => void,
   postComeFirst: () => void
@@ -51,6 +45,23 @@ const Post = (props: (IPost & PostsProps | Record<string, never>)) => {
   const [show, setShow] = React.useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
   const { user } = useContext(AuthContext);
+  const [isCommentExpanded, setIsCommentExpanded] = useState<boolean>(false);
+
+  const handleCommentSubmit = (text: string) => {
+    axios.post(`${backServer}/posts/${post._id}/comment`, {
+      content: text,
+      likes: []
+    }, { withCredentials: true }).then((res: any) => {
+      if (post.comments.length === commentsDisplayed) setIsCommentExpanded(true);
+      setPost(prev => {
+        const { comments, ...rest } = prev;
+        return { comments: [...comments, res.data], ...rest };
+      })
+    })
+      .catch(e => {
+        console.log(e);
+      })
+  }
 
   useLayoutEffect(() => {
     if ('_id' in props) {
@@ -75,9 +86,6 @@ const Post = (props: (IPost & PostsProps | Record<string, never>)) => {
   //   setLikes([...likes, like]);
   // };
 
-  const handleClick = (setState: (v: boolean) => void) => { return () => setState(true) };
-  const handleClose = (setState: (v: boolean) => void) => { return () => setState(false) };
-
   return (
     <PostContext.Provider value={{
       // post._id가 undefined일 수도 있다.
@@ -97,22 +105,27 @@ const Post = (props: (IPost & PostsProps | Record<string, never>)) => {
     }} >
       {!isInitialLoad && !post.isDeleted &&
         <div className="post" key={post._id}>
-          <PostMenuModal
-            open={show}
-            onClose={handleClose(setShow)}
-            isAuthor={user._id === post.author._id}
-          />
-          <PostTopBar>
-            {/* FIXME: use context */}
-            <Profile user={post.author} />
-            {/* <PostMenu /> */}
-            <PostTopBarButton src={option} onClick={handleClick(setShow)} />
-          </PostTopBar>
-          <PicturesView pictures={post.pictures} />
-          {/* {likes.length > 0 && <Likes likes={likes} />} */}
+          <div className="postContent">
+            <PostMenuModal
+              open={show}
+              onClose={() => { setShow(false); }}
+              isAuthor={user._id === post.author._id}
+            />
+            <PostTopBar>
+              {/* FIXME: use context */}
+              <Profile user={post.author} />
+              {/* <PostMenu /> */}
+              <PostTopBarButton src={option} onClick={() => { console.log("clicked"); setShow(true) }} />
+            </PostTopBar>
+            <PicturesView pictures={post.pictures} />
+            {/* {likes.length > 0 && <Likes likes={likes} />} */}
 
-          <p>{post.text && <b>{post.author.name}</b>} &nbsp; {post.text}</p>
-          <Comments />
+            <p>{post.text && <b>{post.author.name}</b>} &nbsp; {post.text}</p>
+            <Comments comments={post.comments} isExpanded={isCommentExpanded} />
+          </div>
+
+          <Divider />
+          <CommentForm onSubmit={handleCommentSubmit} />
         </div >
       }
       {post.isDeleted && <>
@@ -121,7 +134,6 @@ const Post = (props: (IPost & PostsProps | Record<string, never>)) => {
         </div>
       </>}
     </PostContext.Provider >
-
   );
 }
 

@@ -1,20 +1,26 @@
 import React from "react";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 import { backServer } from "../../configs/env";
 
 type PicturesViewProps = {
   pictures: string[]
 }
 
+const PostPictureContainer = styled.div`
+  text-align: center;
+`
+
 const PostPicture = styled.img`
-  width: 40em;
+  max-width: 100%;
 `;
 
 // 넘기기 기능 구현할것
 // 지금은 단순 img 태그
 const PicturesView = (props: PicturesViewProps) => {
   return (
-    <PostPicture src={`${backServer}/images/${props.pictures[0]}`} />
+    <PostPictureContainer>
+      <PostPicture src={`${backServer}/images/${props.pictures[0]}`} />
+    </PostPictureContainer>
   )
 }
 

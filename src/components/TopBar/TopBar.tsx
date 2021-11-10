@@ -12,6 +12,7 @@ import { Link } from "react-router-dom"
 import AuthContext from "../../context/authContext"
 import axios from "axios"
 import { backServer } from "../../configs/env"
+import NewPostModal from "../Modal/NewPostModal"
 
 const TopBarButton = styled.img`
   width: 25px;
@@ -23,6 +24,7 @@ const TopBarButton = styled.img`
 
 const TopBar = () => {
   const { user, setIsAuthenticated, setUser } = useContext(AuthContext);
+  const [isNewPost, setIsNewPost] = useState(false);
   const useLogout = () => {
     axios.get(`${backServer}/users/logout`, { withCredentials: true })
     setIsAuthenticated(false);
@@ -32,6 +34,7 @@ const TopBar = () => {
 
   return (
     <div id="TopBar">
+      <NewPostModal open={isNewPost} onClose={() => { setIsNewPost(false) }} />
       <Link to="/">
         <span className="logo">
           Minstagram
@@ -44,9 +47,9 @@ const TopBar = () => {
             <TopBarButton src={direct} />
           </Link>
           <TopBarButton src={heart} onClick={useLogout} />
-          <Link to="/newPost">
-            <TopBarButton src={newpost} />
-          </Link>
+          {/* <Link to="/newPost"> */}
+          <TopBarButton src={newpost} onClick={() => { setIsNewPost(true) }} />
+          {/* </Link> */}
         </span>
         <Link to={"/" + user.name}>
           <Profile user={user} />

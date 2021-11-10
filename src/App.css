@@ -18,22 +18,26 @@ a, a:link, a:visited, a:hover, a:active {
   font-size: 1.7em;
 }
 
-.profile {
-  display: flex;
-  align-items: center;
-}
+
+
+
 
 .post {
-  display: inline-block;
+  width: 55%;
   border: solid;
   border-width: 0.1em;
-  border-radius: 0.5em;
   border-color:gainsboro;
-  padding-bottom: 0.5em;
+  margin-bottom: 1em;
+  /* margin: 0 20% 0 20%; */
+}
+
+.postContent {
+  display: inline-block;
+  padding-bottom: 0.3em;
   text-align: left;
   padding-left: 0.7em;
   padding-right: 0.7em;
-  margin-bottom: 1em;
+  font-size: 0.9em;
 }
 
 .posts {
@@ -44,10 +48,7 @@ a, a:link, a:visited, a:hover, a:active {
   /* justify-content: center; */
 }
 
-.post {
-  width: fit-content;
-  /* margin: 0 20% 0 20%; */
-}
+
 
 .likes {
   display: flex;
