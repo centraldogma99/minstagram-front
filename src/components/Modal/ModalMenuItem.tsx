@@ -3,7 +3,7 @@ import React from "react"
 const style = {
   position: "relative",
   height: "2.5em",
-  fontSize: "0.9em"
+  fontSize: "0.85em"
   // position: "absolute",
   // top: "50%",
   // transform: "translateY(-50%)"

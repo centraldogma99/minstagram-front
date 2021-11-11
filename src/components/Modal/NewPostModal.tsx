@@ -8,6 +8,11 @@ import { useContext } from 'react';
 import AuthContext from '../../context/authContext';
 import { backServer } from '../../configs/env';
 import axios from 'axios';
+import PicturesView from '../Post/PicturesView';
+import TextEditorWithLength from '../TextEditorWithLength/TextEditorWithLength';
+import { useEffect } from 'react';
+
+const TEXT_MAX_LENGTH = 100;
 
 const Input = styled.input`
   display: none;
@@ -20,20 +25,22 @@ const NewPostContentContainer = styled.div`
 
 const NewPostContent = styled.div`
   position: absolute;
-  top: 60%;
+  top: 50%;
   left: 50%;
-  transform: translate(-50%, -60%);
+  transform: translate(-50%, -50%);
   text-align: center;
 `
 
 const NewPostContentPictures = css`
+  /* position: relative; */
   width: 65%;
   height: 100%;
 `
 
 const messageStyle = css`
-  font-size: 1.1em;
+  font-size: 1.2em;
   margin-bottom: 1em;
+  font-weight: 100;
 `
 
 const PicturesPreviewContainer = css`
@@ -46,16 +53,33 @@ const PicturesPreviewTextEditorContainer = css`
   width: 35%;
   border: 1px solid gainsboro;
   border-top: none;
+
 `
 
 const PicturesPreviewTextEditor = css`
-  width: 95%;
-  height: 60%;
   border: 0;
   outline: none;
   resize: none;
   font-family: inherit;
   margin: 0.5em;
+  width: 93%;
+  height: 100%;
+`
+
+const ErrorText = css`
+font-weight: bold;
+  margin-top: 1.2em;
+  padding: 0.5em;
+  font-size: 0.8em;
+  color: red;
+`
+
+const PicturesViewContainer = css`
+  /* width: 100%;
+  height: 100%; */
+  /* position: absolute;
+  top: 50%;
+  transform: translateY(-50%); */
 `
 
 const NewPostModal = (props: { open: boolean, onClose: () => void }) => {
@@ -63,6 +87,7 @@ const NewPostModal = (props: { open: boolean, onClose: () => void }) => {
   const [text, setText] = useState<string>("");
   const { user } = useContext(AuthContext);
   const [isUploaded, setIsUploaded] = useState<boolean>(false);
+  const [errorText, setErrorText] = useState<string>("");
 
   const initialize = () => {
     setText("");
@@ -70,14 +95,26 @@ const NewPostModal = (props: { open: boolean, onClose: () => void }) => {
     setIsUploaded(false);
   }
 
+  useEffect(() => {
+    if (errorText.length > 0 && text.length > 0)
+      setErrorText("");
+  }, [text])
+
   const handleClick = () => {
+    console.log(text);
     const formData = new FormData();
     if (pictures !== null) {
       for (let i = 0; i < pictures.length; i++) {
         formData.append("pictures", pictures[i]);
       }
     }
-    formData.append("text", text);
+    if (!text) {
+      setErrorText("! 문구를 입력해 주세요.")
+      return;
+    } else {
+      formData.append("text", text);
+    }
+
 
     axios.post(`${backServer}/posts/new`, formData, {
       withCredentials: true,
@@ -108,7 +145,7 @@ const NewPostModal = (props: { open: boolean, onClose: () => void }) => {
                 <Input accept="image/*" id="contained-button-file" multiple type="file"
                   onChange={(e) => setPictures(e.target.files)} />
                 <Button variant="contained" component="span">
-                  업로드
+                  컴퓨터에서 선택
                 </Button>
               </label>
             </NewPostContent>
@@ -116,16 +153,30 @@ const NewPostModal = (props: { open: boolean, onClose: () => void }) => {
           {pictures && pictures.length > 0 &&
             <div className={PicturesPreviewContainer}>
               <div className={NewPostContentPictures}>
-                {Array.from(pictures).map((picture, index) => (
-                  <img key={index} src={URL.createObjectURL(picture)} width="100em" height="100em" />
-                ))}
+                <PicturesView
+                  pictures={Array.from(pictures).map((picture) => {
+                    return URL.createObjectURL(picture)
+                  })}
+                  isURL={true} />
               </div>
               <div className={PicturesPreviewTextEditorContainer}>
                 <div style={{ margin: "0.5em" }}>
                   <Profile user={user} />
                 </div>
-                <textarea className={PicturesPreviewTextEditor} placeholder={"문구 입력..."} onChange={(e) => { setText(e.target.value) }} />
+                <TextEditorWithLength
+                  textMaxLength={100}
+                  fontSize="0.8em"
+                  className={PicturesPreviewTextEditor}
+                  // width="93%"
+                  // height="60%"
+                  placeholder={"문구 입력..."}
+                  setText={setText}
+                />
                 <Divider />
+                <div className={ErrorText}>
+                  {errorText}
+                </div>
+
               </div>
             </div>
           }

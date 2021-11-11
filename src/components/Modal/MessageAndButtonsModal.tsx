@@ -21,13 +21,14 @@ const MessageAndButtonsModal = (props: {
   onClose: () => void,
   title?: string,
   message?: string,
+  width?: string,
   // buttons: (typeof ModalMenuItem)[]j,
   children: any
 }) => {
   const { onClose, title, message } = props;
 
   return (
-    <MinstagramModal open={props.open} onClose={onClose} title={title}>
+    <MinstagramModal open={props.open} onClose={onClose} title={title} width={props.width}>
       {message && <>
         <MessageContainer >
           <Message>{message}</Message>

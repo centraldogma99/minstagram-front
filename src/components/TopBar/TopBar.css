@@ -13,17 +13,19 @@
   position:fixed;
   top:0px;
   background-color: #eee;
+  z-index: 9;
 }
 
 #TopBarRightSide {
-  margin-top: 0.3em;
   margin-right: 1em;
   display: flex;
   align-items: center;
 }
 
 #TopBarButtons {
-  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  margin-right: 0.5em;
 }
 
 .menu {

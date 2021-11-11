@@ -1,5 +1,5 @@
 import React from "react"
-import { Box, Modal, Divider } from "@mui/material";
+import { Divider, Snackbar } from "@mui/material";
 import ModalMenuItem from "./ModalMenuItem";
 import * as deletePostAPI from "../../modules/deletePost";
 import { useHistory } from "react-router-dom";
@@ -7,8 +7,8 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useContext } from "react";
 import PostContext from "../../context/postContext";
-import styled from '@emotion/styled'
 import MessageAndButtonsModal from "./MessageAndButtonsModal";
+import ToastContext from "../../context/ToastContext";
 
 const redBoldStyle = {
   fontWeight: 'bold',
@@ -17,7 +17,8 @@ const redBoldStyle = {
 
 const DeletePostModal = (props: { open: boolean, onClose: any }) => {
   const [open, setOpen] = useState(props.open);
-  const { post, deletePost } = useContext(PostContext)
+  const { post, deletePost } = useContext(PostContext);
+  const { setToastMessage, setToastOpen } = useContext(ToastContext);
   const history = useHistory();
 
   useEffect(() => {
@@ -33,6 +34,13 @@ const DeletePostModal = (props: { open: boolean, onClose: any }) => {
 
     setOpen(false);
     props.onClose()
+    setToastMessage("포스트가 삭제되었습니다.");
+    setToastOpen(true);
+  }
+
+  const onClickCancel = () => {
+    setOpen(false);
+    props.onClose();
   }
 
   return (
@@ -40,14 +48,16 @@ const DeletePostModal = (props: { open: boolean, onClose: any }) => {
       open={open}
       onClose={props.onClose}
       message={"이 게시물을 삭제하시겠어요?"}
+      width="24em"
     >
       <ModalMenuItem onClick={onDeleteClick} style={redBoldStyle}>
         삭제
       </ModalMenuItem>
       <Divider />
-      <ModalMenuItem>
+      <ModalMenuItem onClick={onClickCancel}>
         취소
       </ModalMenuItem>
+
     </MessageAndButtonsModal>
   )
 }

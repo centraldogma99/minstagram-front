@@ -58,7 +58,9 @@ function App() {
                 <ChangeProfile />
               </Route>
               <Route exact path="/posts/:postId">
-                <Post />
+                <div className="posts">
+                  <Post />
+                </div>
               </Route>
               <Route exact path="/posts/:postId/edit">
                 <EditPost />

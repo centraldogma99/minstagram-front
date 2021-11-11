@@ -7,16 +7,17 @@ import { useState } from "react";
 import { useEffect } from "react";
 import PostContext from "../../context/postContext";
 import MessageAndButtonsModal from "./MessageAndButtonsModal";
+import ToastContext from "../../context/ToastContext";
 
 const redBoldStyle = {
   fontWeight: 'bold',
   color: 'red'
 }
 
-const PostMenuModal = (props: { open: boolean, onClose: any, isAuthor: boolean }) => {
+const PostMenuModal = (props: { open: boolean, onClose: any, isAuthor: boolean, width?: string }) => {
   const [showDelete, setShowDelete] = React.useState(false);
   const [open, setOpen] = useState<boolean>(false)
-  const { post, } = useContext(PostContext)
+  const { post } = useContext(PostContext)
 
   useEffect(() => {
     setOpen(props.open)
@@ -30,6 +31,7 @@ const PostMenuModal = (props: { open: boolean, onClose: any, isAuthor: boolean }
         setShowDelete(false);
         props.onClose();
       }}
+      width={props.width}
     >
       <DeletePostModal
         open={showDelete}
@@ -54,12 +56,12 @@ const PostMenuModal = (props: { open: boolean, onClose: any, isAuthor: boolean }
         </ModalMenuItem>
         <Divider />
       </>}
-      <Link to={`/posts/${post._id}`}>
+      <Link to={`/posts/${post._id}`} onClick={() => setOpen(false)}>
         <ModalMenuItem>
           게시물로 이동
         </ModalMenuItem>
       </Link>
-    </MessageAndButtonsModal>
+    </MessageAndButtonsModal >
   )
 }
 

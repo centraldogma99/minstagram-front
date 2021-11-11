@@ -1,24 +1,26 @@
-import React, { useEffect, useState, useContext } from "react"
-import instaLogo from "./logo.png"
+import React, { useState, useContext } from "react"
 import direct from "./direct.svg"
 import heart from "./heart.svg"
 import Profile from "../Profile"
 import newpost from "./newpost.svg"
 import "./TopBar.css"
 import styled from "styled-components"
-// import useContextMenu from "../../hooks/useContext"
-import { IUser } from "../../types/postTypes"
 import { Link } from "react-router-dom"
 import AuthContext from "../../context/authContext"
 import axios from "axios"
 import { backServer } from "../../configs/env"
 import NewPostModal from "../Modal/NewPostModal"
+import { css } from "@emotion/css"
 
 const TopBarButton = styled.img`
-  width: 25px;
-  height: 25px;
+  width: 1.5em;
+  height: 1.5em;
   margin-right: 5px;
 `;
+
+const TopBarProfile = css`
+  margin-right: 0.5em;
+`
 
 //https://mui.com/guides/routing/#list
 
@@ -51,9 +53,12 @@ const TopBar = () => {
           <TopBarButton src={newpost} onClick={() => { setIsNewPost(true) }} />
           {/* </Link> */}
         </span>
-        <Link to={"/" + user.name}>
-          <Profile user={user} />
-        </Link>
+        <span className={TopBarProfile}>
+          <Link to={"/" + user.name}>
+            <Profile user={user} />
+          </Link>
+        </span>
+
 
         {/* {show && <ul
           className="menu"

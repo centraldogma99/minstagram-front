@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { IComment } from "../../types/postTypes";
-import CommentForm from "./CommentForm";
-import axios from 'axios'
-import { backServer } from "../../configs/env";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
-import PostContext from "../../context/postContext";
-import { Divider } from "@mui/material";
+import { css } from "@emotion/css"
 
 const CommentAuthorName = styled.span`
   display: inline-block;
@@ -17,8 +12,13 @@ const CommentAuthorName = styled.span`
 `;
 
 const CommentContent = styled.span`
-  font-size: 0.9em;
+  font-size: 1em;
 `;
+
+const moreComment = css`
+  color: darkgray;
+`
+
 
 const commentsDisplayed = 2;
 
@@ -42,12 +42,13 @@ const Comments = (props: { comments: IComment[], isExpanded: boolean }) => {
 
   const renderComment = (comment: IComment, index: number) => {
     return (
-      <div className="comment" key={index}>
+      <div className="commentContainer" key={index}>
+        {/* <p> */}
         <Link to={`/${comment.author.name}`}>
           <CommentAuthorName>{comment.author.name}</CommentAuthorName>
         </Link>
-        &nbsp;
         <CommentContent>{comment.content}</CommentContent>
+        {/* </p> */}
       </div>
     )
   }
@@ -59,7 +60,7 @@ const Comments = (props: { comments: IComment[], isExpanded: boolean }) => {
         {!isExpanded && comments.length > 0 && comments.slice(0, commentsDisplayed).map((comment, index) => renderComment(comment, index))}
         {isExpanded && comments.length > 0 && comments.map((comment, index) => renderComment(comment, index))}
         {!isExpanded && comments.length > commentsDisplayed && <>
-          <a onClick={handleClick}>댓글 {comments.length}개 모두 보기</a>
+          <a onClick={handleClick} className={moreComment}>댓글 {comments.length}개 모두 보기</a>
         </>}
       </div>
 
