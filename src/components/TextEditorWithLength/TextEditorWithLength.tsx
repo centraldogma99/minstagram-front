@@ -1,14 +1,13 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { useState } from "react"
 import styled from "@emotion/styled"
 import { css } from "@emotion/css"
 
 
 
-const TextEditorWithLength = (props: { textMaxLength: number, fontSize?: string, className?: string, width?: string, height?: string, placeholder?: string, setText?: any }) => {
-  const [text, setText] = useState<string>("");
-
-  const { textMaxLength, fontSize, className, width, height, placeholder, ...rest } = props;
+const TextEditorWithLength = (props: { textMaxLength: number, children: any, fontSize?: string, width?: string, height?: string, setText?: any }) => {
+  const text = props.children.props.value;
+  const { textMaxLength, fontSize, width, height } = props;
 
   const TextLength = styled.div`
     position: absolute;
@@ -19,31 +18,21 @@ const TextEditorWithLength = (props: { textMaxLength: number, fontSize?: string,
     transform: translate(-90%, -90%);
   `;
 
+  useEffect(() => {
+    if (text.length > textMaxLength) {
+      props.setText(text.slice(0, textMaxLength));
+    }
+  }, [text])
+
   const TextEditorWithLengthStyle = css`
     width: ${width ?? "100%"};
     height: ${height ?? "12em"};
     position: relative;
   `
 
-  const onChange = (e: any) => {
-    let t = e.target.value;
-    if (e.target.value.length > textMaxLength) {
-      t = t.slice(0, textMaxLength);
-    }
-
-    setText(t);
-    props.setText(t);
-  }
-
   return (
     <div className={TextEditorWithLengthStyle}>
-      <textarea
-        onChange={onChange}
-        className={className}
-        placeholder={placeholder}
-        value={text}
-        {...rest}
-      />
+      {props.children}
       <TextLength>
         {`${text.length}/${textMaxLength}`}
       </TextLength>

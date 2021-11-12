@@ -55,7 +55,7 @@ const TopBar = () => {
         </span>
         <span className={TopBarProfile}>
           <Link to={"/" + user.name}>
-            <Profile user={user} />
+            <Profile user={user} imageWidth="1.7em" />
           </Link>
         </span>
 

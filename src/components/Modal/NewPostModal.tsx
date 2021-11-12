@@ -53,7 +53,6 @@ const PicturesPreviewTextEditorContainer = css`
   width: 35%;
   border: 1px solid gainsboro;
   border-top: none;
-
 `
 
 const PicturesPreviewTextEditor = css`
@@ -166,12 +165,17 @@ const NewPostModal = (props: { open: boolean, onClose: () => void }) => {
                 <TextEditorWithLength
                   textMaxLength={100}
                   fontSize="0.8em"
-                  className={PicturesPreviewTextEditor}
-                  // width="93%"
-                  // height="60%"
-                  placeholder={"문구 입력..."}
                   setText={setText}
-                />
+                // width="93%"
+                // height="60%"
+                >
+                  <textarea
+                    className={PicturesPreviewTextEditor}
+                    placeholder={"문구 입력..."}
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                  />
+                </TextEditorWithLength>
                 <Divider />
                 <div className={ErrorText}>
                   {errorText}

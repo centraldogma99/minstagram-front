@@ -1,29 +1,29 @@
 import React from "react"
-import styled from "styled-components"
 // import useProfile from "../hooks/useProfile";
 import { IUser } from "../types/postTypes";
 import { backServer } from "../configs/env";
 import { Link } from "react-router-dom";
 import { css } from "@emotion/css"
 
-const AvatarImage = styled.img`
-  width: 38%;
-  height: 100%;
-  margin-right: 10%;
-`;
-const AvatarName = styled.span`
-  font-size: 15px;
-  font-weight: 580;
-`
-
-
-
 // name is ambiguous: recommend AvatarWithName
-const Profile = (props: { user: IUser, width?: string, onClick?: any }) => {
+const Profile = (props: { user: IUser, imageWidth?: string, nameFontSize?: string, onClick?: any }) => {
   const profileStyle = css`
     display: flex;
     align-items: center;
-    width: ${props.width ?? "5em"}; 
+  `
+
+  const AvatarImage = css`
+    width: ${props.imageWidth ?? "2.5em"};
+    height: ${props.imageWidth ?? "2.5em"};
+    object-fit: cover;
+    border-radius: 50%;
+    border: 1px solid gray;
+  `;
+
+  const AvatarName = css`
+    margin-left: 0.7em;
+    font-size: ${props.nameFontSize ?? "15px"};
+    font-weight: 580;
   `
   // const { image, name } = useProfile(props.user);
   const { user, onClick } = props;
@@ -31,11 +31,10 @@ const Profile = (props: { user: IUser, width?: string, onClick?: any }) => {
   return (
     <Link to={`/${user.name}`}>
       <span className={profileStyle} onClick={onClick}>
-        <AvatarImage src={backServer + "/images/" + user.avatar} />&nbsp;
-        <AvatarName >{user.name}</AvatarName>
+        <img src={backServer + "/images/" + user.avatar} className={AvatarImage} />
+        <span className={AvatarName}>{user.name}</span>
       </span>
     </Link>
-
   )
 }
 

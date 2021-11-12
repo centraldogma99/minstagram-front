@@ -5,21 +5,42 @@ import { backServer } from "../../configs/env";
 import axios from "axios"
 import Cookies from 'js-cookie';
 import AuthContext from "../../context/authContext";
+import { Divider } from "@mui/material";
+import { css } from "@emotion/css";
 
 
 const LoginInputText = styled.input`
-  height: 3em;
-  width: 30em;
+  height: 2.5em;
+  width: 20em;
   font-size: 1em;
-  margin-bottom: 2em;
+  margin-bottom: 1em;
+  padding-left: 0.4em;
+  border-radius: 3px;
+  border: 0.5px solid gainsboro;
 `;
 
 const LoginButton = styled.button`
+  margin-top: 0.5em;
   text-align: center;
   font-size: 1em;
-  width: 10em;
-  height: 3em;
+  width: 20.6em;
+  height: 2.2em;
+  border: none;
+  background-color: dodgerblue;
+  border-radius: 4px;
+  color: white;
+  font-weight: 580;
+  margin-bottom: 2em;
 `;
+
+const blueBold = css`
+  color: dodgerblue;
+  font-weight: 700;
+`
+
+const willYouRegister = css`
+  margin-top: 1.4em;
+`
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");
@@ -121,7 +142,7 @@ const Login = () => {
   return (
     <div id="login">
       <p id="loginTitle">
-        Instagram
+        Minstagram
       </p>
       <form id="loginForm" onSubmit={handleSubmit}>
         <LoginInputText type="text" value={email} onChange={handleChange(setEmail)} placeholder="이메일" />
@@ -130,12 +151,22 @@ const Login = () => {
           <LoginInputText type="text" value={name} onChange={handleChange(setName)} placeholder="계정 이름" />
           <br />
         </span>}
-        <LoginInputText type="text" value={password} onChange={handleChange(setPassword)} placeholder="비밀번호" />
+        <LoginInputText type="password" value={password} onChange={handleChange(setPassword)} placeholder="비밀번호" />
         <br />
         {statusText}
         <LoginButton>{isRegister ? '가입' : '로그인'}</LoginButton>
-        <br />
-        {!isRegister && <a onClick={handleRegister}>계정이 없으신가요?</a>}
+
+
+        {!isRegister &&
+          <>
+            <Divider />
+            <div className={willYouRegister}>
+              계정이 없으신가요? <a onClick={handleRegister} className={blueBold}>가입하기</a>
+            </div>
+          </>
+        }
+
+
       </form>
     </div>
   )
