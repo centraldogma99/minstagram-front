@@ -2,39 +2,31 @@ import React, { useRef } from "react";
 import styled from "@emotion/styled";
 import { backServer } from "../../configs/env";
 import { useState } from "react";
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import NextPlanIcon from '@mui/icons-material/NextPlan';
+import before from '../../assets/before.svg'
+import next from '../../assets/next.svg'
 import { css } from "@emotion/css"
-import { useEffect } from "react";
 
 type PicturesViewProps = {
 
 }
 
-const PostPicture = styled.img`
-  /* position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); */
-  /* transform: translateY(-50%); */
-  max-width: 100%;
-  max-height: 100%;
-  height: auto;
-`;
-
-const nextButton = css`
+const navButton = css`
   position: absolute;
   top: 50%;
-  left: 97%;
   transform: translateY(-50%);
+  width: 1.6em;
+  height: 1.6em;
+  opacity: 0.5;
+`
+
+const nextButton = css`
+  ${navButton}
+  left: 93%;
 `
 
 const beforeButton = css`
-  position: absolute;
-  top: 50%;
-  right: 97%;
-  transform: translateY(-50%);
+  ${navButton}
+  right: 93%;
 `
 
 // 넘기기 기능 구현할것
@@ -47,16 +39,25 @@ const PicturesView = (props: { pictures: string[], isURL?: boolean, height?: str
     justify-content: center;
     align-items: center;
     position: relative;
-    /* width: 100%; */
-    min-height: 17em;
-    height: ${viewSize?.height && viewSize?.height > 0 && !props.isURL ? viewSize?.height + "px" : "100%"};
-    /* height: 100%; */
-    /* position: relative; */
-    /* overflow: auto;
-    min-height: 10em;
-    height: 100%;
-    text-align: center; */
+    min-height: 23em;
+    min-width: 30em;
+    overflow: hidden;
+    height: ${viewSize?.height && viewSize?.height > 0 ? viewSize?.height + "px" : "100%"};
   `
+
+  const PostPicture = css`
+    /* position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); */
+    /* transform: translateY(-50%); */
+    /* max-width: 100%;
+    max-height: 100%;
+    height: auto; */
+    max-width: 44em;
+    max-height: 47em;
+  `;
+
   const [current, setCurrent] = useState<number>(0);
 
   const view = useRef<any>();
@@ -80,13 +81,14 @@ const PicturesView = (props: { pictures: string[], isURL?: boolean, height?: str
 
   return (
     <div className={PostPictureContainer}>
-      {current - 1 >= 0 && <NavigateBeforeIcon onClick={onClickBefore} className={beforeButton} />}
-      <PostPicture
+      {current - 1 >= 0 && <img src={before} onClick={onClickBefore} className={beforeButton} />}
+      <img
+        className={PostPicture}
         src={props.isURL ? props.pictures[current] : `${backServer}/images/${props.pictures[current]}`}
         ref={view}
         onLoad={onLoad}
       />
-      {current + 1 <= props.pictures.length - 1 && <NavigateNextIcon onClick={onClickNext} className={nextButton} />}
+      {current + 1 <= props.pictures.length - 1 && <img src={next} onClick={onClickNext} className={nextButton} />}
     </div>
   )
 }

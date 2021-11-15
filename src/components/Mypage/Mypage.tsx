@@ -8,6 +8,7 @@ import { useParams, Link, useLocation } from "react-router-dom";
 import AuthContext from "../../context/authContext";
 import { css } from '@emotion/css'
 import ChangeAvatarModal from "../Modal/ChangeAvatarModal";
+import PostViewModal from "../Modal/PostViewModal";
 
 const ContentWrapperCentered = styled.div`
   justify-content: center;
@@ -60,12 +61,20 @@ const Mypage = (props: { userName?: string }) => {
   const [posts, setPosts] = useState<IPost[]>([]);
   const { user, setUser } = useContext(AuthContext);
   const [changeProfileOpen, setChangeProfileOpen] = useState(false);
+  const [postViewOpen, setPostViewOpen] = useState(false);
+  const [currentPost, setCurrentPost] = useState<number>(0)
+
 
   // FIXME: res typed any
   // load user info/posts
   useLayoutEffect(() => {
     async function fetchPosts() {
-      const res: any = await axios.get(`${backServer}/users/name/${userName}`)
+      const res: any = await axios.get(`${backServer}/users/name`, {
+        params: {
+          name: userName
+        }
+      })
+      console.log(res.data);
       setUser(res.data);
       const posts = await getPosts(res.data._id);
       setPosts(posts);
@@ -79,12 +88,15 @@ const Mypage = (props: { userName?: string }) => {
     return posts.data
   }
 
-  const renderPost = (post: IPost) => {
+  const renderPost = (post: IPost, i: number) => {
     return (
       <div key={post._id} className={thumbnailContainer}>
-        <Link to={`/posts/${post._id}`}>
-          <PostThumbnail src={backServer + '/images/' + post.pictures[0]} />
-        </Link>
+        <PostThumbnail
+          src={backServer + '/images/' + post.pictures[0]}
+          onClick={() => {
+            setCurrentPost(i);
+            setPostViewOpen(true);
+          }} />
       </div>
     )
   }
@@ -95,6 +107,11 @@ const Mypage = (props: { userName?: string }) => {
       <ChangeAvatarModal
         open={changeProfileOpen}
         onClose={() => setChangeProfileOpen(false)}
+      />
+      <PostViewModal
+        open={postViewOpen}
+        onClose={() => setPostViewOpen(false)}
+        post={posts[currentPost]}
       />
       <div className={UserProfileContainer}>
         <div onClick={() => setChangeProfileOpen(true)}>

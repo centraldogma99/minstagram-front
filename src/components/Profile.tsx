@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { css } from "@emotion/css"
 
 // name is ambiguous: recommend AvatarWithName
-const Profile = (props: { user: IUser, imageWidth?: string, nameFontSize?: string, onClick?: any }) => {
+const Profile = (props: { user: IUser, imageWidth?: string, nameFontSize?: string, onClick?: any, avatarShown?: boolean, nameShown?: boolean }) => {
   const profileStyle = css`
     display: flex;
     align-items: center;
@@ -31,8 +31,8 @@ const Profile = (props: { user: IUser, imageWidth?: string, nameFontSize?: strin
   return (
     <Link to={`/${user.name}`}>
       <span className={profileStyle} onClick={onClick}>
-        <img src={backServer + "/images/" + user.avatar} className={AvatarImage} />
-        <span className={AvatarName}>{user.name}</span>
+        {(props.avatarShown === undefined || props.avatarShown) && <img src={backServer + "/images/" + user.avatar} className={AvatarImage} />}
+        {(props.nameShown === undefined || props.nameShown) && <span className={AvatarName}>{user.name}</span>}
       </span>
     </Link>
   )

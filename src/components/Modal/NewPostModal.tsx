@@ -18,11 +18,6 @@ const Input = styled.input`
   display: none;
 `
 
-const NewPostContentContainer = styled.div`
-  position: relative;
-  height: 25em;
-`
-
 const NewPostContent = styled.div`
   position: absolute;
   top: 50%;
@@ -32,9 +27,7 @@ const NewPostContent = styled.div`
 `
 
 const NewPostContentPictures = css`
-  /* position: relative; */
-  width: 65%;
-  height: 100%;
+  min-width: 20em;
 `
 
 const messageStyle = css`
@@ -50,9 +43,8 @@ const PicturesPreviewContainer = css`
 `
 
 const PicturesPreviewTextEditorContainer = css`
-  width: 35%;
-  border: 1px solid gainsboro;
-  border-top: none;
+  width: 25em;
+  border-left: 1px solid gainsboro;
 `
 
 const PicturesPreviewTextEditor = css`
@@ -62,23 +54,14 @@ const PicturesPreviewTextEditor = css`
   font-family: inherit;
   margin: 0.5em;
   width: 93%;
-  height: 100%;
 `
 
 const ErrorText = css`
-font-weight: bold;
+  font-weight: bold;
   margin-top: 1.2em;
   padding: 0.5em;
   font-size: 0.8em;
   color: red;
-`
-
-const PicturesViewContainer = css`
-  /* width: 100%;
-  height: 100%; */
-  /* position: absolute;
-  top: 50%;
-  transform: translateY(-50%); */
 `
 
 const NewPostModal = (props: { open: boolean, onClose: () => void }) => {
@@ -93,6 +76,11 @@ const NewPostModal = (props: { open: boolean, onClose: () => void }) => {
     setPictures(null);
     setIsUploaded(false);
   }
+
+  const NewPostContentContainer = css`
+    position: relative;
+    height: ${!pictures || isUploaded ? "25em" : "none"};
+  `
 
   useEffect(() => {
     if (errorText.length > 0 && text.length > 0)
@@ -115,7 +103,7 @@ const NewPostModal = (props: { open: boolean, onClose: () => void }) => {
     }
 
 
-    axios.post(`${backServer}/posts/new`, formData, {
+    axios.post(`${backServer} /posts/new`, formData, {
       withCredentials: true,
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -132,11 +120,11 @@ const NewPostModal = (props: { open: boolean, onClose: () => void }) => {
       open={props.open}
       onClose={() => { initialize(); props.onClose(); }}
       title={isUploaded ? "게시물이 공유되었습니다" : "새 게시물 만들기"}
-      width={pictures && !isUploaded ? "42em" : undefined}
+      width={pictures && !isUploaded ? "none" : undefined}
       next={pictures && !isUploaded ? { text: '공유하기', onClick: handleClick } : undefined}
     >
       {!isUploaded &&
-        <NewPostContentContainer>
+        <div className={NewPostContentContainer}>
           {!pictures &&
             <NewPostContent>
               <p className={messageStyle}>업로드할 사진을 선택하세요.</p>
@@ -163,11 +151,10 @@ const NewPostModal = (props: { open: boolean, onClose: () => void }) => {
                   <Profile user={user} />
                 </div>
                 <TextEditorWithLength
-                  textMaxLength={100}
+                  height="19em"
+                  textMaxLength={500}
                   fontSize="0.8em"
                   setText={setText}
-                // width="93%"
-                // height="60%"
                 >
                   <textarea
                     className={PicturesPreviewTextEditor}
@@ -176,23 +163,25 @@ const NewPostModal = (props: { open: boolean, onClose: () => void }) => {
                     onChange={(e) => setText(e.target.value)}
                   />
                 </TextEditorWithLength>
-                <Divider />
-                <div className={ErrorText}>
-                  {errorText}
-                </div>
 
+                {errorText &&
+                  <>
+                    <Divider />
+                    <div className={ErrorText}>
+                      {errorText}
+                    </div>
+                  </>}
               </div>
             </div>
           }
-        </NewPostContentContainer>}
-      {isUploaded && <NewPostContentContainer>
-        <NewPostContentContainer>
+        </div>}
+      {isUploaded &&
+        <div className={NewPostContentContainer}>
           <NewPostContent>
             <img src="https://www.instagram.com/static/images/creation/30fpsCheckLoopsOnce.gif/10a8cbeb94ba.gif" />
             <p className={messageStyle}>게시물이 공유되었습니다.</p>
           </NewPostContent>
-        </NewPostContentContainer>
-      </NewPostContentContainer>}
+        </div>}
     </MinstagramModal >
   )
 }

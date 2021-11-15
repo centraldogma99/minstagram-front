@@ -40,33 +40,51 @@ const postTextContainer = css`
   padding-left: 0.7em;
   padding-right: 0.7em;
   margin-bottom: 0.2em;
+`;
+
+const postModal = css`
+  display: flex;
+  flex-direction: row;
+`;
+
+const picturesViewContainer = css`
+  border-right: 1px solid gainsboro;
+`;
+
+const postModalSide = css`
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  width: 25em;
+`;
+
+const postModalSideTop = css`
+  border-bottom: 1px solid gainsboro;
 `
 
 interface PostsProps {
-  setPost: (post: IPost) => void,
-  postComeFirst: () => void
+  setPost?: (post: IPost) => void,
+  postComeFirst?: () => void
 }
 
 
-const Post = (props: (IPost & PostsProps | Record<string, never>)) => {
+const Post = (props: (IPost & PostsProps & { style?: string, isModal?: boolean } | Record<string, never>)) => {
   const { postId } = useParams<{ postId: string }>();
   const [post, setPost] = useState<IPost>({} as IPost);
   const [show, setShow] = React.useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
   const { user } = useContext(AuthContext);
   const [isCommentExpanded, setIsCommentExpanded] = useState<boolean>(false);
-  const { setToastOpen, toastMessage, setToastMessage } = useContext(ToastContext);
 
-  const handleToastClose = (
-    event: React.SyntheticEvent | React.MouseEvent,
-    reason?: string,
-  ) => {
-    if (reason === 'clickaway') {
-      return;
-    }
+  const PostStyle = css`
+    width: 55%;
+    /* max-height: 60em; */
+    max-width: 40em;
+    border: solid 0.1em gainsboro;
+    margin-bottom: 1em;
+    ${props.style}
+  `
 
-    setToastOpen(false);
-  };
 
   const handleCommentSubmit = (text: string) => {
     axios.post(`${backServer}/posts/${post._id}/comment`, {
@@ -87,7 +105,7 @@ const Post = (props: (IPost & PostsProps | Record<string, never>)) => {
   useLayoutEffect(() => {
     if ('_id' in props) {
       // Posts로부터 렌더링 되었을 때
-      const { setPost: s, ...p } = props;
+      const { setPost: s, postComeFirst: t, ...p } = props;
       setPost(p as IPost);
       setIsInitialLoad(false);
     } else {
@@ -112,26 +130,30 @@ const Post = (props: (IPost & PostsProps | Record<string, never>)) => {
       // post._id가 undefined일 수도 있다.
       post: post,
       deletePost: () => {
-        const { isDeleted: i, ...rest } = post;
-        setPost({ isDeleted: true, ...rest });
-        props.setPost && props.setPost({ isDeleted: true, ...rest })
-        props.postComeFirst()
+        if (props.setPost && props.postComeFirst) {
+          const { isDeleted: i, ...rest } = post;
+          setPost({ isDeleted: true, ...rest });
+          props.setPost({ isDeleted: true, ...rest })
+          props.postComeFirst()
+        }
       },
       editPost: (text: string) => {
-        const { text: t, ...rest } = post;
-        setPost({ text: text, ...rest })
-        props.setPost && props.setPost({ text: text, ...rest })
-        props.postComeFirst()
+        if (props.setPost && props.postComeFirst) {
+          const { text: t, ...rest } = post;
+          setPost({ text: text, ...rest })
+          props.setPost({ text: text, ...rest })
+          props.postComeFirst()
+        }
       }
     }} >
-      {!isInitialLoad && !post.isDeleted &&
-        <div className="post" key={post._id}>
+      {
+        !isInitialLoad && !post.isDeleted && !props.isModal &&
+        <div className={PostStyle} key={post._id}>
           <div className="postContent">
             <PostMenuModal
               open={show}
               onClose={() => {
                 setShow(false);
-                console.log('postmenumodal closed')
               }}
               isAuthor={user._id === post.author._id}
               width="18em"
@@ -140,7 +162,7 @@ const Post = (props: (IPost & PostsProps | Record<string, never>)) => {
               {/* FIXME: use context */}
               <Profile user={post.author} />
               {/* <PostMenu /> */}
-              <PostTopBarButton src={option} onClick={() => { console.log("clicked"); setShow(true) }} />
+              <PostTopBarButton src={option} onClick={() => setShow(true)} />
             </PostTopBar>
             <Divider />
             <PicturesView pictures={post.pictures} />
@@ -155,6 +177,42 @@ const Post = (props: (IPost & PostsProps | Record<string, never>)) => {
           <Divider />
           <CommentForm onSubmit={handleCommentSubmit} />
         </div >
+      }
+      {
+        !isInitialLoad && !post.isDeleted && props.isModal &&
+        <div className={postModal}>
+          <PostMenuModal
+            open={show}
+            onClose={() => {
+              setShow(false);
+            }}
+            isAuthor={user._id === post.author._id}
+            width="18em"
+          />
+          <div className={picturesViewContainer}>
+            <PicturesView pictures={post.pictures} />
+          </div>
+          <div className={postModalSide}>
+            <div className={postModalSideTop}>
+              <PostTopBar>
+                {/* FIXME: use context */}
+                <Profile user={post.author} />
+                {/* <PostMenu /> */}
+                <PostTopBarButton src={option} onClick={() => setShow(true)} />
+              </PostTopBar>
+              <Divider />
+              {post.text && <div className={postTextContainer}>
+                <b>{post.author.name}</b> &nbsp; {post.text}
+              </div>}
+
+              <Comments comments={post.comments} isExpanded={isCommentExpanded} />
+            </div>
+            <div>
+              <Divider />
+              <CommentForm onSubmit={handleCommentSubmit} />
+            </div>
+          </div>
+        </div>
       }
       {/* {post.isDeleted && <>
         <div className="deleted-post">

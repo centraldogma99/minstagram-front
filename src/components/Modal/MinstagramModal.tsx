@@ -75,7 +75,8 @@ const MinstagramModal = (props: {
     p: 4,
     padding: 0,
     borderRadius: "0.5em",
-    outline: 'none'
+    outline: 'none',
+    maxHeight: '80%'
   }
 
   useEffect(() => {

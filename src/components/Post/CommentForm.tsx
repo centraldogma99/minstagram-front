@@ -18,6 +18,7 @@ const commentInput = css`
 `
 
 const commentInputButton = css`
+  width: 2em;
   margin-right: 0.4em;
   color: dodgerblue;
   font-weight: bold;

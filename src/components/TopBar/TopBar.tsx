@@ -45,9 +45,9 @@ const TopBar = () => {
 
       <span id="TopBarRightSide">
         <span id="TopBarButtons">
-          <Link to="/directs">
+          {/* <Link to="/directs">
             <TopBarButton src={direct} />
-          </Link>
+          </Link> */}
           <TopBarButton src={heart} onClick={useLogout} />
           {/* <Link to="/newPost"> */}
           <TopBarButton src={newpost} onClick={() => { setIsNewPost(true) }} />

@@ -21,6 +21,7 @@ const Direct = (props: { users: IUser[] }) => {
   const { user } = useContext(AuthContext);
 
   const newMessage = (msg: IDirectMessage) => {
+    console.log(msg);
     setDirect(prev => {
       if (!prev) return null;
       const { messages, ...rest } = prev;
@@ -32,19 +33,20 @@ const Direct = (props: { users: IUser[] }) => {
   // direct 객체 서버에서 받아오기
   //
   useEffect(() => {
-
     const a = async () => {
       try {
-        const res = await axios.get(`${backServer}/directs/withUsers`,
+        const res: any = await axios.get(`${backServer}/directs/withUsers`,
           {
             params: {
-              userId1: users[0],
-              userId2: users[1]
+              userId1: users[0]._id,
+              userId2: users[1]._id
             }
           })
-        setDirect(res.data as IDirectRoom)
+        console.log(res);
+        setDirect(res.data[0] as IDirectRoom)
       } catch (e) {
         console.log(e)
+        console.log("이건 실행되어서는 안돼...")
         try {
           const res = await axios.post(`${backServer}/directs/newRoom`,
             users.map(user => user._id)
@@ -52,7 +54,8 @@ const Direct = (props: { users: IUser[] }) => {
           setDirect({
             _id: res.data as string,
             members: users,
-            messages: []
+            messages: [],
+            bookmarks: [0, 0]
           })
         } catch (e) {
           console.log(e)
@@ -66,7 +69,7 @@ const Direct = (props: { users: IUser[] }) => {
   // socket 만들기
   //
   useEffect(() => {
-    if (!direct) return;
+    if (direct === null) return;
     const socket = io(backServer);
 
     socket.on("connect", () => {
@@ -76,7 +79,12 @@ const Direct = (props: { users: IUser[] }) => {
     socket.on("messageEvent", newMessage);
 
     setSocket(socket);
-  }, [direct])
+
+    return () => {
+      socket.off("messageEvent", newMessage);
+      socket.disconnect();
+    }
+  }, [direct?.members])
 
   // 텍스트 창 비우고, direct state 갱신 및 서버 통신
   const onSubmitMessage = () => {
@@ -85,18 +93,20 @@ const Direct = (props: { users: IUser[] }) => {
       content: text,
       timestamp: new Date()
     }
-    newMessage(msg);
+    // newMessage(msg);
     if (socket) socket.emit("messageEvent", msg);
     setText("")
   }
 
   return (
-    <>
+    <div>
       {direct && <DirectMessages direct={direct} />}
-      <input type="text" onChange={(e) => setText(e.target.value)} />
-      <input type="button" value="보내기" onClick={onSubmitMessage} />
+      <div>
+        <input type="text" value={text} onChange={(e) => setText(e.target.value)} />
+        <input type="button" value="보내기" onClick={onSubmitMessage} />
+      </div>
       {/* <CommentForm onSubmit={onSubmitMessage} /> */}
-    </>
+    </div>
   )
 }
 

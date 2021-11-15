@@ -9,7 +9,6 @@ import {
   Redirect
 } from "react-router-dom";
 import TopBar from "./components/TopBar/TopBar";
-import NewPost from "./components/Post/NewPost";
 import Posts from "./components/Post/Posts"
 import ChangeProfile from "./components/Mypage/ChangeProfile";
 import AuthContext from "./context/authContext";
@@ -50,9 +49,6 @@ function App() {
               </Route>
               <Route exact path="/login">
                 <Login />
-              </Route>
-              <Route exact path="/newPost">
-                <NewPost />
               </Route>
               <Route exact path="/changeProfile">
                 <ChangeProfile />

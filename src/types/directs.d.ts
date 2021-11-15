@@ -4,6 +4,7 @@ export interface IDirectRoom {
   _id: string,
   members: IUser[],
   messages: IDirectMessage[],
+  bookmarks: number[]
 }
 
 export interface IDirectMessage {

@@ -56,14 +56,13 @@ a, a:link, a:visited, a:hover, a:active {
 .comments {
   max-height: 5em;
   text-align: left;
-  overflow-y:scroll;
+  overflow-y: scroll;
   margin-bottom: 0.5em;
   padding-left: 0.7em;
   padding-right: 0.7em;
 }
 
 .App {
-  font-family: 'Neue Helvetica';
   text-align: center;
 }
 
