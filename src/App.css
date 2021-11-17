@@ -32,12 +32,6 @@ a, a:link, a:visited, a:hover, a:active {
   /* margin: 0 20% 0 20%; */
 }
 
-.postContent {
-  padding-bottom: 0.3em;
-  text-align: left;
-  font-size: 0.9em;
-}
-
 .posts {
   align-items: center;
   flex-direction: column;
@@ -54,12 +48,18 @@ a, a:link, a:visited, a:hover, a:active {
 }
 
 .comments {
-  max-height: 5em;
+  max-height: 8em;
   text-align: left;
   overflow-y: scroll;
   margin-bottom: 0.5em;
   padding-left: 0.7em;
   padding-right: 0.7em;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.comments::-webkit-scrollbar {
+  display: none;
 }
 
 .App {

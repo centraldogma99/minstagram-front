@@ -14,7 +14,7 @@ export interface IPost {
   _id: string,
   author: IUser,
   pictures: string[],
-  text?: string,
+  text: string,
   likes: ILike[],
   comments: IComment[],
   isDeleted?: boolean

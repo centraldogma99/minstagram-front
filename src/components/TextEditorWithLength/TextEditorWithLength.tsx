@@ -5,17 +5,18 @@ import { css } from "@emotion/css"
 
 
 
-const TextEditorWithLength = (props: { textMaxLength: number, children: any, fontSize?: string, width?: string, height?: string, setText?: any }) => {
+const TextEditorWithLength = (props: { textMaxLength: number, children: any, style?: string, fontSize?: string, width?: string, height?: string, setText?: any }) => {
   const text = props.children.props.value;
   const { textMaxLength, fontSize, width, height } = props;
 
   const TextLength = styled.div`
     position: absolute;
-    font-size: ${fontSize ?? "0.8em"};
+    font-size: 0.8em;
     color: ${text.length <= textMaxLength ? "gray" : "red"};
     top: 105%;
     left: 94%;
     transform: translate(-90%, -90%);
+    
   `;
 
   useEffect(() => {
@@ -25,9 +26,10 @@ const TextEditorWithLength = (props: { textMaxLength: number, children: any, fon
   }, [text])
 
   const TextEditorWithLengthStyle = css`
-    width: ${width ?? "100%"};
-    height: ${height ?? "12em"};
+    width: 100%;
+    height: 12em;
     position: relative;
+    ${props.style}
   `
 
   return (

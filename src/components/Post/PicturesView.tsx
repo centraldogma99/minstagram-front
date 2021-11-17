@@ -1,14 +1,9 @@
 import React, { useRef } from "react";
-import styled from "@emotion/styled";
 import { backServer } from "../../configs/env";
 import { useState } from "react";
 import before from '../../assets/before.svg'
 import next from '../../assets/next.svg'
 import { css } from "@emotion/css"
-
-type PicturesViewProps = {
-
-}
 
 const navButton = css`
   position: absolute;
@@ -30,7 +25,7 @@ const beforeButton = css`
 `
 
 // 넘기기 기능 구현할것
-const PicturesView = (props: { pictures: string[], isURL?: boolean, height?: string }) => {
+const PicturesView = (props: { pictures: string[], isURL?: boolean, sizeCalc?: boolean, style?: string, containerStyle?: string }) => {
   const [viewSize, setViewSize] = useState<{ height: number, width: number }>()
 
   // newPost에서는 isURL = true
@@ -38,24 +33,17 @@ const PicturesView = (props: { pictures: string[], isURL?: boolean, height?: str
     display: flex;
     justify-content: center;
     align-items: center;
+    object-fit: cover;
     position: relative;
-    min-height: 23em;
-    min-width: 30em;
-    overflow: hidden;
-    height: ${viewSize?.height && viewSize?.height > 0 ? viewSize?.height + "px" : "100%"};
+    height: ${viewSize?.height && viewSize?.height > 0 && props.sizeCalc ? viewSize?.height + "px" : "100%"};
+    ${props.containerStyle}
   `
 
   const PostPicture = css`
-    /* position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); */
-    /* transform: translateY(-50%); */
-    /* max-width: 100%;
+    /* display: block;
     max-height: 100%;
-    height: auto; */
-    max-width: 44em;
-    max-height: 47em;
+    max-width: 100%; */
+    ${props.style}
   `;
 
   const [current, setCurrent] = useState<number>(0);

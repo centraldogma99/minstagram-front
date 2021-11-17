@@ -5,6 +5,8 @@ import { backServer } from "../configs/env";
 import { Link } from "react-router-dom";
 import { css } from "@emotion/css"
 
+import defaultProfileImage from "../assets/defaultProfile.png"
+
 // name is ambiguous: recommend AvatarWithName
 const Profile = (props: { user: IUser, imageWidth?: string, nameFontSize?: string, onClick?: any, avatarShown?: boolean, nameShown?: boolean }) => {
   const profileStyle = css`
@@ -27,12 +29,19 @@ const Profile = (props: { user: IUser, imageWidth?: string, nameFontSize?: strin
   `
   // const { image, name } = useProfile(props.user);
   const { user, onClick } = props;
+  console.log(user.avatar)
   if (!user) return <span>hmm, something gone wrong.</span>;
   return (
     <Link to={`/${user.name}`}>
       <span className={profileStyle} onClick={onClick}>
-        {(props.avatarShown === undefined || props.avatarShown) && <img src={backServer + "/images/" + user.avatar} className={AvatarImage} />}
-        {(props.nameShown === undefined || props.nameShown) && <span className={AvatarName}>{user.name}</span>}
+        {(props.avatarShown === undefined || props.avatarShown) &&
+          user.avatar.length > 0 ?
+          <img src={backServer + "/images/" + user.avatar} className={AvatarImage} /> :
+          <img src={defaultProfileImage} className={AvatarImage} />
+        }
+        {(props.nameShown === undefined || props.nameShown) &&
+          <span className={AvatarName}>{user.name}</span>
+        }
       </span>
     </Link>
   )

@@ -6,14 +6,11 @@ import { css } from "@emotion/css"
 
 const CommentAuthorName = styled.span`
   display: inline-block;
-  font-size: 1em;
   font-weight: bold;
   margin-right: 1em;
 `;
 
-const CommentContent = styled.span`
-  font-size: 1em;
-`;
+
 
 const moreComment = css`
   color: darkgray;
@@ -22,9 +19,20 @@ const moreComment = css`
 
 const commentsDisplayed = 2;
 
-const Comments = (props: { comments: IComment[], isExpanded: boolean }) => {
+const Comments = (props: { comments: IComment[], isExpanded: boolean, style?: string }) => {
   const { comments } = props;
   const [isExpanded, setIsExpanded] = useState<boolean>(props.isExpanded);
+
+  const CommentContent = css`
+    ${props.style}
+  `;
+
+  const CommentAuthorName = css`
+    display: inline-block;
+    font-weight: bold;
+    margin-right: 1em;
+    ${props.style}
+  `;
 
   // 처음 로드됐을 때, 댓글이 3개 이상이면 더 보기로 표시
   // 댓글이 추가되어 2개에서 3개로 된다면 더 보기로 표시하지 않고 바로 표시
@@ -45,9 +53,9 @@ const Comments = (props: { comments: IComment[], isExpanded: boolean }) => {
       <div className="commentContainer" key={index}>
         {/* <p> */}
         <Link to={`/${comment.author.name}`}>
-          <CommentAuthorName>{comment.author.name}</CommentAuthorName>
+          <span className={CommentAuthorName}>{comment.author.name}</span>
         </Link>
-        <CommentContent>{comment.content}</CommentContent>
+        <span className={CommentContent}>{comment.content}</span>
         {/* </p> */}
       </div>
     )

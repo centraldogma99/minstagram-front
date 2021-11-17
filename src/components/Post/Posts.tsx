@@ -25,8 +25,9 @@ const Posts = (props: { posts?: IPost[], postIds?: string[] }) => {
 
   useLayoutEffect(() => {
     if (posts.length === 0) {
-      axios.get(`${backServer}/posts/`)
+      axios.get(`${backServer}/posts/`, { params: { pageSize: 50 } })
         .then(res => {
+          console.log(res.data)
           setPosts(res.data as IPost[]);
         })
     }

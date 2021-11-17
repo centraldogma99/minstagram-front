@@ -14,13 +14,19 @@ import PostContext from "../../context/postContext"
 import axios from "axios"
 import { backServer } from "../../configs/env";
 import CommentForm from "./CommentForm";
-import { Divider, Snackbar } from "@mui/material";
+import { Divider } from "@mui/material";
 import { css } from "@emotion/css"
-import ToastContext from "../../context/ToastContext";
 
 const commentsDisplayed = 2;
 
-const PostTopBar = styled.div`
+// --- 일반 post style ---
+const postContent = css`
+  padding-bottom: 0.3em;
+  text-align: left;
+  font-size: 0.9em;
+`
+
+const SPostTopBar = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -35,31 +41,52 @@ const PostTopBarButton = styled.img`
   height: 1em;
 `;
 
-const postTextContainer = css`
-  margin-top: 0.7em;
-  padding-left: 0.7em;
-  padding-right: 0.7em;
-  margin-bottom: 0.2em;
-`;
+// --- 일반 post style 끝 ---
 
+// --- 모달 post style 시작 ---
 const postModal = css`
   display: flex;
   flex-direction: row;
+  height: 100%;
 `;
 
 const picturesViewContainer = css`
   border-right: 1px solid gainsboro;
+  width: 65%;
+  height: 100%;
 `;
 
 const postModalSide = css`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  width: 25em;
+  width: 35%;
+  /* flex-shrink: 2; */
 `;
 
 const postModalSideTop = css`
   border-bottom: 1px solid gainsboro;
+`
+
+// --- 모달 post style 끝 ---
+
+const SPostTextContainer = css`
+  text-align: left;
+  margin-top: 0.7em;
+  padding-left: 0.7em;
+  padding-right: 0.7em;
+  margin-bottom: 0.2em;
+  font-size: 0.9em;
+`;
+
+const SCommentsStyle = css`
+  font-size: 0.9em;
+  /* margin-top: 1em; */
+`
+
+const SPostPictures = css`
+  max-width: 100%;
+  max-height: 40em;
 `
 
 interface PostsProps {
@@ -76,15 +103,23 @@ const Post = (props: (IPost & PostsProps & { style?: string, isModal?: boolean }
   const { user } = useContext(AuthContext);
   const [isCommentExpanded, setIsCommentExpanded] = useState<boolean>(false);
 
+  const postMenuModal = () =>
+    <PostMenuModal
+      open={show}
+      onClose={() => {
+        setShow(false);
+      }}
+      isAuthor={user._id === post.author._id}
+      width="18em"
+    />
+
   const PostStyle = css`
     width: 55%;
-    /* max-height: 60em; */
     max-width: 40em;
     border: solid 0.1em gainsboro;
     margin-bottom: 1em;
     ${props.style}
   `
-
 
   const handleCommentSubmit = (text: string) => {
     axios.post(`${backServer}/posts/${post._id}/comment`, {
@@ -149,30 +184,33 @@ const Post = (props: (IPost & PostsProps & { style?: string, isModal?: boolean }
       {
         !isInitialLoad && !post.isDeleted && !props.isModal &&
         <div className={PostStyle} key={post._id}>
-          <div className="postContent">
-            <PostMenuModal
-              open={show}
-              onClose={() => {
-                setShow(false);
-              }}
-              isAuthor={user._id === post.author._id}
-              width="18em"
-            />
-            <PostTopBar>
-              {/* FIXME: use context */}
-              <Profile user={post.author} />
-              {/* <PostMenu /> */}
-              <PostTopBarButton src={option} onClick={() => setShow(true)} />
-            </PostTopBar>
-            <Divider />
-            <PicturesView pictures={post.pictures} />
-            {/* {likes.length > 0 && <Likes likes={likes} />} */}
-            {post.text && <div className={postTextContainer}>
-              <b>{post.author.name}</b> &nbsp; {post.text}
-            </div>}
-
-            <Comments comments={post.comments} isExpanded={isCommentExpanded} />
+          {postMenuModal()}
+          <div className={SPostTopBar}>
+            {/* FIXME: use context */}
+            <Profile user={post.author} />
+            {/* <PostMenu /> */}
+            <PostTopBarButton src={option} onClick={() => setShow(true)} />
           </div>
+          <Divider />
+          <PicturesView
+            pictures={post.pictures}
+            style={SPostPictures}
+            containerStyle={css`min-height: 15em;`}
+            sizeCalc={true}
+          />
+
+          {/* {likes.length > 0 && <Likes likes={likes} />} */}
+          {post.text &&
+            <div className={SPostTextContainer}>
+              <b>{post.author.name}</b> &nbsp; {post.text}
+            </div>
+          }
+
+          <Comments
+            comments={post.comments}
+            isExpanded={isCommentExpanded}
+            style={SCommentsStyle}
+          />
 
           <Divider />
           <CommentForm onSubmit={handleCommentSubmit} />
@@ -181,31 +219,31 @@ const Post = (props: (IPost & PostsProps & { style?: string, isModal?: boolean }
       {
         !isInitialLoad && !post.isDeleted && props.isModal &&
         <div className={postModal}>
-          <PostMenuModal
-            open={show}
-            onClose={() => {
-              setShow(false);
-            }}
-            isAuthor={user._id === post.author._id}
-            width="18em"
+          {postMenuModal()}
+          <PicturesView
+            pictures={post.pictures}
+            containerStyle={picturesViewContainer}
+            style={css`max-width: 100%; max-height: 100%;`}
           />
-          <div className={picturesViewContainer}>
-            <PicturesView pictures={post.pictures} />
-          </div>
+
           <div className={postModalSide}>
             <div className={postModalSideTop}>
-              <PostTopBar>
+              <div className={SPostTopBar}>
                 {/* FIXME: use context */}
                 <Profile user={post.author} />
                 {/* <PostMenu /> */}
                 <PostTopBarButton src={option} onClick={() => setShow(true)} />
-              </PostTopBar>
+              </div>
               <Divider />
-              {post.text && <div className={postTextContainer}>
+              {post.text && <div className={SPostTextContainer}>
                 <b>{post.author.name}</b> &nbsp; {post.text}
               </div>}
 
-              <Comments comments={post.comments} isExpanded={isCommentExpanded} />
+              <Comments
+                comments={post.comments}
+                isExpanded={isCommentExpanded}
+                style={SCommentsStyle}
+              />
             </div>
             <div>
               <Divider />

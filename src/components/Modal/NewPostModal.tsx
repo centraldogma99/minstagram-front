@@ -11,6 +11,7 @@ import axios from 'axios';
 import PicturesView from '../Post/PicturesView';
 import TextEditorWithLength from '../TextEditorWithLength/TextEditorWithLength';
 import { useEffect } from 'react';
+import { IPost } from '../../types/postTypes';
 
 const TEXT_MAX_LENGTH = 100;
 
@@ -25,11 +26,6 @@ const NewPostContent = styled.div`
   transform: translate(-50%, -50%);
   text-align: center;
 `
-
-const NewPostContentPictures = css`
-  min-width: 20em;
-`
-
 const messageStyle = css`
   font-size: 1.2em;
   margin-bottom: 1em;
@@ -43,17 +39,19 @@ const PicturesPreviewContainer = css`
 `
 
 const PicturesPreviewTextEditorContainer = css`
-  width: 25em;
+  width: 35%;
   border-left: 1px solid gainsboro;
 `
 
 const PicturesPreviewTextEditor = css`
+  margin: 0;
+  padding: 7px;
   border: 0;
   outline: none;
   resize: none;
   font-family: inherit;
-  margin: 0.5em;
-  width: 93%;
+  width: 95%;
+  height: 100%;
 `
 
 const ErrorText = css`
@@ -64,9 +62,12 @@ const ErrorText = css`
   color: red;
 `
 
-const NewPostModal = (props: { open: boolean, onClose: () => void }) => {
-  const [pictures, setPictures] = useState<FileList | null>(null);
-  const [text, setText] = useState<string>("");
+const NewPostModal = (props: { open: boolean, onClose: () => void, originalPost?: IPost }) => {
+  const { originalPost } = props;
+  const [pictures, setPictures] = useState<FileList | string[] | null>(
+    originalPost ? originalPost.pictures : null
+  );
+  const [text, setText] = useState<string>(originalPost ? originalPost.text : "");
   const { user } = useContext(AuthContext);
   const [isUploaded, setIsUploaded] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>("");
@@ -78,8 +79,8 @@ const NewPostModal = (props: { open: boolean, onClose: () => void }) => {
   }
 
   const NewPostContentContainer = css`
-    position: relative;
-    height: ${!pictures || isUploaded ? "25em" : "none"};
+    /* position: relative; */
+    height: ${(!pictures || isUploaded) ? "25em" : "100%"};
   `
 
   useEffect(() => {
@@ -88,40 +89,49 @@ const NewPostModal = (props: { open: boolean, onClose: () => void }) => {
   }, [text])
 
   const handleClick = () => {
-    console.log(text);
-    const formData = new FormData();
-    if (pictures !== null) {
-      for (let i = 0; i < pictures.length; i++) {
-        formData.append("pictures", pictures[i]);
-      }
-    }
     if (!text) {
       setErrorText("! 문구를 입력해 주세요.")
       return;
-    } else {
-      formData.append("text", text);
     }
 
-
-    axios.post(`${backServer} /posts/new`, formData, {
-      withCredentials: true,
-      headers: {
-        'Content-Type': 'multipart/form-data'
+    if (!originalPost) {
+      const formData = new FormData();
+      if (pictures !== null) {
+        for (let i = 0; i < pictures.length; i++) {
+          formData.append("pictures", pictures[i]);
+        }
       }
-    })
-      .then(res => {
-        console.log(res);
-        setIsUploaded(true);
-      });
+      formData.append("text", text);
+
+      axios.post(`${backServer}/posts/new`, formData, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+        .then(res => {
+          console.log(res);
+          setIsUploaded(true);
+        });
+    } else {
+      axios.post(`${backServer}/posts/${originalPost._id}/edit`, { text }, { withCredentials: true })
+        .then(() => setIsUploaded(true))
+    }
   };
 
   return (
     <MinstagramModal
       open={props.open}
       onClose={() => { initialize(); props.onClose(); }}
-      title={isUploaded ? "게시물이 공유되었습니다" : "새 게시물 만들기"}
-      width={pictures && !isUploaded ? "none" : undefined}
-      next={pictures && !isUploaded ? { text: '공유하기', onClick: handleClick } : undefined}
+      title={isUploaded ?
+        (originalPost ? "게시물이 수정되었습니다" : "게시물이 공유되었습니다") :
+        (originalPost ? "게시물 수정하기" : "새 게시물 만들기")
+      }
+      width={pictures && !isUploaded ? "75%" : "30em"}
+      height={pictures && !isUploaded ? "80%" : "30em"}
+      next={pictures && !isUploaded ?
+        { text: (originalPost ? '수정하기' : '공유하기'), onClick: handleClick } :
+        undefined}
     >
       {!isUploaded &&
         <div className={NewPostContentContainer}>
@@ -139,21 +149,27 @@ const NewPostModal = (props: { open: boolean, onClose: () => void }) => {
           }
           {pictures && pictures.length > 0 &&
             <div className={PicturesPreviewContainer}>
-              <div className={NewPostContentPictures}>
-                <PicturesView
-                  pictures={Array.from(pictures).map((picture) => {
+              <PicturesView
+                pictures={!originalPost ?
+                  Array.from(pictures as FileList).map((picture) => {
                     return URL.createObjectURL(picture)
-                  })}
-                  isURL={true} />
-              </div>
+                  }) :
+                  originalPost.pictures
+                }
+                isURL={!originalPost}
+                containerStyle={css`width: 65%;`}
+                style={css`max-width: 100%; max-height: 100%;`}
+              />
               <div className={PicturesPreviewTextEditorContainer}>
                 <div style={{ margin: "0.5em" }}>
                   <Profile user={user} />
                 </div>
                 <TextEditorWithLength
-                  height="19em"
+                  style={css`
+                    height: 19em;
+                    font-size: 0.8em;
+                  `}
                   textMaxLength={500}
-                  fontSize="0.8em"
                   setText={setText}
                 >
                   <textarea

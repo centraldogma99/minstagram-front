@@ -15,7 +15,8 @@ const PostViewModal = (props: { open: boolean, onClose: () => void, post: IPost 
     <MinstagramModal
       open={props.open}
       onClose={props.onClose}
-      width={"none"}
+      width="75%"
+      height="80%"
     >
       <Post {...props.post} style={PostStyle} isModal={true} />
     </MinstagramModal >

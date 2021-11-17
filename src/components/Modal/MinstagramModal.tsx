@@ -48,14 +48,12 @@ const FormModalNextButton = styled.a`
   color: dodgerblue;
 `
 
-const FormModalChlidContainer = styled.div`
-`;
-
 const MinstagramModal = (props: {
   open: boolean,
   onClose: () => void,
   title?: string,
   width?: string,
+  height?: string,
   next?: {
     text: string,
     onClick: () => void
@@ -63,21 +61,38 @@ const MinstagramModal = (props: {
   children: any
 }) => {
   const [open, setOpen] = React.useState<boolean>(false);
-
+  // const style = css`
+  //   position: absolute;
+  //   top: 50%;
+  //   left: 50%;
+  //   transform: translate(-50%, -50%);
+  //   width: ${props.width ?? '28em'};
+  //   background-color: 'background.color';
+  //   box-shadow: 24;
+  //   padding: 0;
+  //   border-radius: 0.5em;
+  //   outline: none;
+  //   height: 80%;
+  // `
   const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: props.width ?? '28em',
+    height: props.height,
     bgcolor: 'background.paper',
     boxShadow: 24,
     p: 4,
     padding: 0,
     borderRadius: "0.5em",
     outline: 'none',
-    maxHeight: '80%'
+    maxHeight: '75%'
   }
+
+  const FormModalChlidContainer = css`
+    height: ${props.title ? "calc(100% - 2.5em)" : "100%"};
+  `;
 
   useEffect(() => {
     setOpen(props.open)
@@ -103,7 +118,7 @@ const MinstagramModal = (props: {
           <Divider />
         </>}
 
-        <div>
+        <div className={FormModalChlidContainer}>
           {props.children}
         </div>
       </Box>

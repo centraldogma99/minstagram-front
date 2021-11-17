@@ -16,28 +16,28 @@ import { IUser } from "./types/postTypes";
 import EditPost from "./components/Post/EditPost";
 import DirectList from "./components/direct/DirectList";
 import Post from "./components/Post/Post"
+import { useEffect } from "react";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
   const [user, setUser] = useState<IUser>({ _id: "", name: "", avatar: "", email: "" });
-  const PrivateRoute = ({ children, ...rest }: any) => {
-    return (
-      <Route
-        {...rest}
-        render={
-          () => {
-            isAuthenticated ?
-              children :
-              <Redirect to="/login" />
-          }
-        }
-      />
-    )
-  }
+  // const PrivateRoute = ({ children, ...rest }: any) => {
+  //   return (
+  //     <Route
+  //       {...rest}
+  //       render={
+  //         () => {
+  //           isAuthenticated ?
+  //             children :
+  //             <Redirect to="/login" />
+  //         }
+  //       }
+  //     />
+  //   )
+  // }
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, user, setUser }}>
-
       <div className="App">
         {!isAuthenticated && <Login />}
         {isAuthenticated && <>

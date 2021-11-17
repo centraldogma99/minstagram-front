@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import PostContext from "../../context/postContext";
 import MessageAndButtonsModal from "./MessageAndButtonsModal";
 import ToastContext from "../../context/ToastContext";
+import NewPostModal from "./NewPostModal";
 
 const redBoldStyle = {
   fontWeight: 'bold',
@@ -16,7 +17,8 @@ const redBoldStyle = {
 
 const PostMenuModal = (props: { open: boolean, onClose: any, isAuthor: boolean, width?: string }) => {
   const [showDelete, setShowDelete] = React.useState(false);
-  const [open, setOpen] = useState<boolean>(false)
+  const [open, setOpen] = useState<boolean>(false);
+  const [showEdit, setShowEdit] = useState<boolean>(false);
   const { post } = useContext(PostContext)
 
   useEffect(() => {
@@ -41,15 +43,19 @@ const PostMenuModal = (props: { open: boolean, onClose: any, isAuthor: boolean, 
           props.onClose();
         }}
       />
+      <NewPostModal
+        open={showEdit}
+        onClose={() => {
+          setShowEdit(false);
+          setOpen(false);
+          props.onClose();
+        }}
+        originalPost={post}
+      />
       {props.isAuthor && <>
-        <Link to={{
-          pathname: `/posts/${post._id}/edit`,
-          state: { text: post.text }
-        }}>
-          <ModalMenuItem>
-            수정
-          </ModalMenuItem>
-        </Link>
+        <ModalMenuItem onClick={() => setShowEdit(true)}>
+          수정
+        </ModalMenuItem>
         <Divider />
         <ModalMenuItem onClick={() => setShowDelete(true)} style={redBoldStyle}>
           삭제
