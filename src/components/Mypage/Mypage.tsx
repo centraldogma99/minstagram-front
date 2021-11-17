@@ -1,11 +1,10 @@
-import React, { useLayoutEffect, useState, useContext } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { IPost, IUser } from "../../types/postTypes"
 import { backServer } from "../../configs/env";
 import axios from "axios"
 import styled from "styled-components";
 import Profile from "../Profile";
-import { useParams, Link, useLocation } from "react-router-dom";
-import AuthContext from "../../context/authContext";
+import { useParams } from "react-router-dom";
 import { css } from '@emotion/css'
 import ChangeAvatarModal from "../Modal/ChangeAvatarModal";
 import PostViewModal from "../Modal/PostViewModal";
@@ -59,24 +58,29 @@ const Mypage = (props: { userName?: string }) => {
   const userName = props.userName || userNameParam;
   // const [user, setUser] = useState<IUser>({ _id: "", name: "", avatar: "", email: "" });
   const [posts, setPosts] = useState<IPost[]>([]);
-  const { user, setUser } = useContext(AuthContext);
+  const [user, setUser] = useState<IUser>({} as IUser)
+  // const { user, setUser } = useContext(AuthContext);
   const [changeProfileOpen, setChangeProfileOpen] = useState(false);
   const [postViewOpen, setPostViewOpen] = useState(false);
-  const [currentPost, setCurrentPost] = useState<number>(0)
+  const [currentPost, setCurrentPost] = useState<number>(0);
+  const [isFetching, setIsFetching] = useState<boolean>(true);
 
 
   // FIXME: res typed any
   // load user info/posts
   useLayoutEffect(() => {
+    console.log('hi')
     async function fetchPosts() {
       const res: any = await axios.get(`${backServer}/users/name`, {
         params: {
           name: userName
         }
       })
-      console.log(res.data);
+      console.log(res)
       setUser(res.data);
+
       const posts = await getPosts(res.data._id);
+      setIsFetching(false);
       setPosts(posts);
     }
     fetchPosts();
@@ -103,31 +107,31 @@ const Mypage = (props: { userName?: string }) => {
 
   // useLayoutEffect에서 user를 만들기 때문에 type assertion 했다.
   return (
-    <ContentWrapperCentered>
-      <ChangeAvatarModal
-        open={changeProfileOpen}
-        onClose={() => setChangeProfileOpen(false)}
-      />
-      <PostViewModal
-        open={postViewOpen}
-        onClose={() => setPostViewOpen(false)}
-        post={posts[currentPost]}
-      />
-      <div className={UserProfileContainer}>
-        <div onClick={() => setChangeProfileOpen(true)}>
-          <Profile user={user} imageWidth="7em" nameFontSize="2.5em" />
-          {/* <UserProfile>
-          <Avatar src={backServer + "/images/" + user.avatar} />
-          <Name>{user.name}</Name>
-        </UserProfile> */}
-        </div>
-      </div>
+    <>
+      {!isFetching &&
+        <ContentWrapperCentered>
+          <ChangeAvatarModal
+            open={changeProfileOpen}
+            onClose={() => setChangeProfileOpen(false)}
+          />
+          <PostViewModal
+            open={postViewOpen}
+            onClose={() => setPostViewOpen(false)}
+            post={posts[currentPost]}
+          />
+          <div className={UserProfileContainer}>
+            <div onClick={() => setChangeProfileOpen(true)}>
+              <Profile user={user} imageWidth="7em" nameFontSize="2.5em" />
+            </div>
+          </div>
 
-      <Posts>
-        {posts?.length === 0 && <div>포스트가 없습니다!</div>}
-        {posts?.length > 0 && posts.map(renderPost)}
-      </Posts>
-    </ContentWrapperCentered>
+          <Posts>
+            {posts?.length === 0 && <span className={css`font-size: 1.3em;`}>아직 아무 것도 올리지 않았어요.</span>}
+            {posts?.length > 0 && posts.map(renderPost)}
+          </Posts>
+        </ContentWrapperCentered>
+      }
+    </>
   )
 }
 

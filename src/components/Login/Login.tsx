@@ -106,8 +106,16 @@ const Login = () => {
         setUser(res.data);
         return;
       } else {
+        let msg = "";
+        if (res.status === 404) {
+          msg = "존재하지 않는 계정입니다."
+        } else if (res.status === 400) {
+          msg = "잘못된 요청입니다."
+        } else if (res.status === 401) {
+          msg = "잘못된 비밀번호입니다."
+        }
         //FIXME 임시로 alert로 구현했음
-        setStatusText("로그인 실패 : " + res?.data);
+        setStatusText("로그인 실패 : " + msg);
         setEmail("");
         setPassword("");
       }
@@ -124,6 +132,10 @@ const Login = () => {
         }
       } else {
         setStatusText(validCheck.msg);
+        setPassword("");
+        setName("");
+        setEmail("");
+        return;
       }
 
       // 다시 로그인하도록 한다
@@ -153,7 +165,9 @@ const Login = () => {
         </span>}
         <LoginInputText type="password" value={password} onChange={handleChange(setPassword)} placeholder="비밀번호" />
         <br />
-        {statusText}
+        <div className={css`font-weight: bold; color: red;`}>
+          {statusText}
+        </div>
         <LoginButton>{isRegister ? '가입' : '로그인'}</LoginButton>
 
 

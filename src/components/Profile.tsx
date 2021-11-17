@@ -9,6 +9,7 @@ import defaultProfileImage from "../assets/defaultProfile.png"
 
 // name is ambiguous: recommend AvatarWithName
 const Profile = (props: { user: IUser, imageWidth?: string, nameFontSize?: string, onClick?: any, avatarShown?: boolean, nameShown?: boolean }) => {
+  console.log(props.user)
   const profileStyle = css`
     display: flex;
     align-items: center;
@@ -29,7 +30,6 @@ const Profile = (props: { user: IUser, imageWidth?: string, nameFontSize?: strin
   `
   // const { image, name } = useProfile(props.user);
   const { user, onClick } = props;
-  console.log(user.avatar)
   if (!user) return <span>hmm, something gone wrong.</span>;
   return (
     <Link to={`/${user.name}`}>
