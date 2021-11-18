@@ -69,7 +69,6 @@ const Mypage = (props: { userName?: string }) => {
   // FIXME: res typed any
   // load user info/posts
   useLayoutEffect(() => {
-    console.log('hi')
     async function fetchPosts() {
       const res: any = await axios.get(`${backServer}/users/name`, {
         params: {
@@ -88,7 +87,7 @@ const Mypage = (props: { userName?: string }) => {
 
   const getPosts = async (id: string): Promise<IPost[]> => {
     if (!id) throw Error("no id given");
-    const posts: any = await axios.get(`${backServer}/users/${id}/posts`);
+    const posts: any = await axios.get(`${backServer}/users/${id}/posts`, { withCredentials: true });
     return posts.data
   }
 

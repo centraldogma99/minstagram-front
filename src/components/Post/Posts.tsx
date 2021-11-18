@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useLayoutEffect } from "react";
+import React, { useLayoutEffect, useEffect } from "react";
 import { backServer } from "../../configs/env";
 import { IPost } from "../../types/postTypes"
 import { Snackbar } from "@mui/material";
@@ -19,6 +19,13 @@ const Posts = (props: { posts?: IPost[], postIds?: string[] }) => {
     }
   }
 
+  // useEffect(() => {
+  //   const orderPosts = () => {
+  //     setPosts(posts.reverse())
+  //   }
+  //   orderPosts();
+  // }, [])
+
   const postComeFirst = (i: number) => {
     setPosts([posts[i], ...posts.slice(0, i), ...posts.slice(i + 1)])
   }
@@ -27,7 +34,6 @@ const Posts = (props: { posts?: IPost[], postIds?: string[] }) => {
     if (posts.length === 0) {
       axios.get(`${backServer}/posts/`, { params: { pageSize: 50 } })
         .then(res => {
-          console.log(res.data)
           setPosts(res.data as IPost[]);
         })
     }

@@ -2,7 +2,7 @@ import React, { useContext } from "react"
 import { Modal, Box, Divider, Dialog } from "@mui/material";
 import ModalMenuItem from "./ModalMenuItem";
 import { Link } from "react-router-dom"
-import DeletePostModal from "./DeletePostModal";
+import DeleteConfirmModal from "./DeleteConfirmModal";
 import { useState } from "react";
 import { useEffect } from "react";
 import PostContext from "../../context/postContext";
@@ -35,7 +35,7 @@ const PostMenuModal = (props: { open: boolean, onClose: any, isAuthor: boolean, 
       }}
       width={props.width}
     >
-      <DeletePostModal
+      <DeleteConfirmModal
         open={showDelete}
         onClose={() => {
           setOpen(false);

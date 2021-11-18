@@ -1,27 +1,35 @@
 import React from "react"
+import { css } from "@emotion/css"
 
-const style = {
-  position: "relative",
-  height: "2.5em",
-  fontSize: "0.85em"
-  // position: "absolute",
-  // top: "50%",
-  // transform: "translateY(-50%)"
-}
+const containerStyle = css`
+  position: relative;
+  height: 2.5em;
+  font-size: 0.85em;
+`
 
-const style2 = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)"
-}
+const childStyleBase = css`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`
 
-const ModalMenuItem = (props: { onClick?: () => void, style?: any, children: any }) => {
-  const childStyle = { ...style2, ...props.style }
+const redBold = css`
+  color: red;
+  font-weight: bold;
+`
+
+const ModalMenuItem = (props: { onClick?: () => void, isRedBold?: boolean, style?: any, children: any }) => {
+
+  const childStyle = css`
+    ${childStyleBase}
+    ${props.style}
+    ${props.isRedBold ? redBold : undefined}
+  `
 
   return (
-    <div onClick={props.onClick} className="modal-menu-item-container" style={style as any}>
-      <span className="modal-menu-item" style={childStyle}>
+    <div onClick={props.onClick} className={containerStyle}>
+      <span className={childStyle}>
         {props.children}
       </span>
     </div >

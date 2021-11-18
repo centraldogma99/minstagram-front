@@ -29,7 +29,6 @@ const DirectList = () => {
           userId1: user._id
         }
       }).then(res => {
-        console.log(res.data);
         setDirects((res as any).data);
       });
   }, [user])

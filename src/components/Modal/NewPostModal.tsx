@@ -109,8 +109,7 @@ const NewPostModal = (props: { open: boolean, onClose: () => void, originalPost?
           'Content-Type': 'multipart/form-data'
         }
       })
-        .then(res => {
-          console.log(res);
+        .then(() => {
           setIsUploaded(true);
         });
     } else {

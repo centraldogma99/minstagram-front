@@ -21,7 +21,6 @@ const Direct = (props: { users: IUser[] }) => {
   const { user } = useContext(AuthContext);
 
   const newMessage = (msg: IDirectMessage) => {
-    console.log(msg);
     setDirect(prev => {
       if (!prev) return null;
       const { messages, ...rest } = prev;
@@ -42,11 +41,9 @@ const Direct = (props: { users: IUser[] }) => {
               userId2: users[1]._id
             }
           })
-        console.log(res);
         setDirect(res.data[0] as IDirectRoom)
       } catch (e) {
         console.log(e)
-        console.log("이건 실행되어서는 안돼...")
         try {
           const res = await axios.post(`${backServer}/directs/newRoom`,
             users.map(user => user._id)

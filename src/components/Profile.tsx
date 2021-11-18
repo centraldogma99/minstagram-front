@@ -9,7 +9,6 @@ import defaultProfileImage from "../assets/defaultProfile.png"
 
 // name is ambiguous: recommend AvatarWithName
 const Profile = (props: { user: IUser, imageWidth?: string, nameFontSize?: string, onClick?: any, avatarShown?: boolean, nameShown?: boolean }) => {
-  console.log(props.user)
   const profileStyle = css`
     display: flex;
     align-items: center;

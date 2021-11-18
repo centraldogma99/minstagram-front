@@ -14,7 +14,6 @@ const getUserInfo = async (id?: string) => {
   } else {
     res = await axios.get(`${backServer}/users/${id}`)
   }
-  console.log(res.data)
   return {
     avatar: res.data.avatar,
     name: res.data.name,

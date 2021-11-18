@@ -100,7 +100,6 @@ const Login = () => {
         .catch((e: any) => e.response);
 
       if (res?.status === 200) {
-        console.log('hi');
         localStorage.setItem('user', JSON.stringify((res as any).data));
         setIsAuthenticated(true);
         setUser(res.data);
@@ -128,7 +127,13 @@ const Login = () => {
         if (res?.status === 200) {
           setStatusText("");
         } else {
-          setStatusText("가입 실패 : " + res?.data)
+          let msg;
+          if (res.status === 400) {
+            msg = "잘못된 요청입니다."
+          } else if (res.status === 409) {
+            msg = "이미 등록된 계정 또는 이름입니다."
+          }
+          setStatusText("가입 실패 : " + msg)
         }
       } else {
         setStatusText(validCheck.msg);
@@ -179,8 +184,6 @@ const Login = () => {
             </div>
           </>
         }
-
-
       </form>
     </div>
   )
