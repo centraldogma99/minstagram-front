@@ -7,7 +7,7 @@ import Profile from '../Profile';
 import { useContext } from 'react';
 import AuthContext from '../../context/authContext';
 import { backServer } from '../../configs/env';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import PicturesView from '../Post/PicturesView';
 import TextEditorWithLength from '../TextEditorWithLength/TextEditorWithLength';
 import { useEffect } from 'react';
@@ -69,12 +69,14 @@ const NewPostModal = (props: { open: boolean, onClose: () => void, originalPost?
   );
   const [text, setText] = useState<string>(originalPost ? originalPost.text : "");
   const { user } = useContext(AuthContext);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
   const [isUploaded, setIsUploaded] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>("");
 
   const initialize = () => {
     setText("");
     setPictures(null);
+    setIsUploading(false);
     setIsUploaded(false);
   }
 
@@ -93,7 +95,12 @@ const NewPostModal = (props: { open: boolean, onClose: () => void, originalPost?
       setErrorText("! 문구를 입력해 주세요.")
       return;
     }
+    setIsUploading(true);
 
+    upload();
+  };
+
+  const upload = async () => {
     if (!originalPost) {
       const formData = new FormData();
       if (pictures !== null) {
@@ -103,20 +110,18 @@ const NewPostModal = (props: { open: boolean, onClose: () => void, originalPost?
       }
       formData.append("text", text);
 
-      axios.post(`${backServer}/posts/new`, formData, {
+      await axios.post(`${backServer}/posts/new`, formData, {
         withCredentials: true,
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       })
-        .then(() => {
-          setIsUploaded(true);
-        });
     } else {
-      axios.post(`${backServer}/posts/${originalPost._id}/edit`, { text }, { withCredentials: true })
-        .then(() => setIsUploaded(true))
+      await axios.post(`${backServer}/posts/${originalPost._id}/edit`, { text }, { withCredentials: true });
     }
-  };
+    setIsUploading(false)
+    setIsUploaded(true)
+  }
 
   return (
     <MinstagramModal
@@ -126,13 +131,22 @@ const NewPostModal = (props: { open: boolean, onClose: () => void, originalPost?
         (originalPost ? "게시물이 수정되었습니다" : "게시물이 공유되었습니다") :
         (originalPost ? "게시물 수정하기" : "새 게시물 만들기")
       }
-      width={pictures && !isUploaded ? "75%" : "30em"}
-      height={pictures && !isUploaded ? "80%" : "30em"}
+      width={pictures && !isUploaded ? "75%" : "40em"}
+      height={pictures && !isUploaded ? "80%" : "40em"}
       next={pictures && !isUploaded ?
         { text: (originalPost ? '수정하기' : '공유하기'), onClick: handleClick } :
         undefined}
     >
-      {!isUploaded &&
+      {
+        !isUploaded && isUploading &&
+        <div className={NewPostContentContainer}>
+          <NewPostContent>
+            <p className={messageStyle}>업로드 중...</p>
+          </NewPostContent>
+
+        </div>
+      }
+      {!isUploaded && !isUploading &&
         <div className={NewPostContentContainer}>
           {!pictures &&
             <NewPostContent>
@@ -190,7 +204,8 @@ const NewPostModal = (props: { open: boolean, onClose: () => void, originalPost?
             </div>
           }
         </div>}
-      {isUploaded &&
+
+      {isUploaded && !isUploading &&
         <div className={NewPostContentContainer}>
           <NewPostContent>
             <img src="https://www.instagram.com/static/images/creation/30fpsCheckLoopsOnce.gif/10a8cbeb94ba.gif" />
