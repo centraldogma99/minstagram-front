@@ -5,6 +5,14 @@ import { IPost } from "../../types/postTypes"
 import { Snackbar } from "@mui/material";
 import Post from "./Post";
 import ToastContext from "../../context/ToastContext";
+import { css } from "@emotion/css"
+import FlipCameraAndroidIcon from '@mui/icons-material/FlipCameraAndroid';
+
+const ReverseButton = css`
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
+`
 
 // post를 서버에서 가져오고 저장
 const Posts = (props: { posts?: IPost[], postIds?: string[] }) => {
@@ -12,6 +20,7 @@ const Posts = (props: { posts?: IPost[], postIds?: string[] }) => {
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [isFetching, setIsFetching] = useState(true);
+  const [isReverse, setIsReverse] = useState(true);
 
   const setPost = (i: number) => {
     return (newPost: IPost) => {
@@ -64,11 +73,24 @@ const Posts = (props: { posts?: IPost[], postIds?: string[] }) => {
             표시할 포스트가 없습니다.
           </div>
         }
-        {posts && posts.map((post, i) => {
+        {posts &&
+          (() => {
+            let ps = posts;
+            if (isReverse) {
+              ps = ps.slice().reverse();
+            }
+            return ps.map((post, i) => {
+              const { _id } = post;
+              return <Post key={_id} {...post} setPost={setPost(i)} postComeFirst={() => postComeFirst(i)} />
+            })
+          })()
+        }
+        {/* {posts && posts.reverse().map((post, i) => {
           const { _id } = post;
           return <Post key={_id} {...post} setPost={setPost(i)} postComeFirst={() => postComeFirst(i)} />
-        })}
+        })} */}
       </ToastContext.Provider>
+      <FlipCameraAndroidIcon className={ReverseButton} onClick={() => { setIsReverse(prev => !prev) }} />
       <Snackbar
         open={toastOpen}
         autoHideDuration={6000}

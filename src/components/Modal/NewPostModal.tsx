@@ -12,6 +12,7 @@ import PicturesView from '../Post/PicturesView';
 import TextEditorWithLength from '../TextEditorWithLength/TextEditorWithLength';
 import { useEffect } from 'react';
 import { IPost } from '../../types/postTypes';
+import PostContext from '../../context/postContext';
 
 const TEXT_MAX_LENGTH = 100;
 
@@ -72,6 +73,7 @@ const NewPostModal = (props: { open: boolean, onClose: () => void, originalPost?
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [isUploaded, setIsUploaded] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>("");
+  const { editPost } = useContext(PostContext);
 
   const initialize = () => {
     setText("");
@@ -118,6 +120,8 @@ const NewPostModal = (props: { open: boolean, onClose: () => void, originalPost?
       })
     } else {
       await axios.post(`${backServer}/posts/${originalPost._id}/edit`, { text }, { withCredentials: true });
+
+      editPost(text);
     }
     setIsUploading(false)
     setIsUploaded(true)
