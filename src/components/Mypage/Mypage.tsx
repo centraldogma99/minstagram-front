@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { css } from '@emotion/css'
 import ChangeAvatarModal from "../Modal/ChangeAvatarModal";
 import PostViewModal from "../Modal/PostViewModal";
+import { Divider } from "@mui/material";
 
 const ContentWrapperCentered = styled.div`
   justify-content: center;
@@ -24,6 +25,7 @@ const Posts = styled.div`
   /* width: 100%;
   height: 100%; */
   max-width: 100%;
+  margin-top: 2em;
 `
 
 const PostThumbnail = styled.img`
@@ -56,10 +58,8 @@ const Mypage = (props: { userName?: string }) => {
   // react router로 param을 받거나 props로 userName을 받는다.
   const { userNameParam } = useParams<{ userNameParam: string }>();
   const userName = props.userName || userNameParam;
-  // const [user, setUser] = useState<IUser>({ _id: "", name: "", avatar: "", email: "" });
   const [posts, setPosts] = useState<IPost[]>([]);
   const [user, setUser] = useState<IUser>({} as IUser)
-  // const { user, setUser } = useContext(AuthContext);
   const [changeProfileOpen, setChangeProfileOpen] = useState(false);
   const [postViewOpen, setPostViewOpen] = useState(false);
   const [currentPost, setCurrentPost] = useState<number>(0);
@@ -75,7 +75,6 @@ const Mypage = (props: { userName?: string }) => {
           name: userName
         }
       })
-      console.log(res)
       setUser(res.data);
 
       const posts = await getPosts(res.data._id);
@@ -123,7 +122,7 @@ const Mypage = (props: { userName?: string }) => {
               <Profile user={user} imageWidth="7em" nameFontSize="2.5em" />
             </div>
           </div>
-
+          <Divider />
           <Posts>
             {posts?.length === 0 && <span className={css`font-size: 1.3em;`}>아직 아무 것도 올리지 않았어요.</span>}
             {posts?.length > 0 && posts.map(renderPost)}

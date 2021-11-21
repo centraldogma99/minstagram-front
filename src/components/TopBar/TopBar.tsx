@@ -22,8 +22,6 @@ const TopBarProfile = css`
   margin-right: 0.5em;
 `
 
-//https://mui.com/guides/routing/#list
-
 const TopBar = () => {
   const { user, setIsAuthenticated, setUser } = useContext(AuthContext);
   const [isNewPost, setIsNewPost] = useState(false);
@@ -49,9 +47,7 @@ const TopBar = () => {
             <TopBarButton src={direct} />
           </Link> */}
           <TopBarButton src={heart} onClick={useLogout} />
-          {/* <Link to="/newPost"> */}
           <TopBarButton src={newpost} onClick={() => { setIsNewPost(true) }} />
-          {/* </Link> */}
         </span>
         <span className={TopBarProfile}>
           <Profile nameShown={false} user={user} imageWidth="1.5em" />

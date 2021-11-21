@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useLayoutEffect } from "react";
 import "./Login.css"
 import { backServer } from "../../configs/env";
 import axios from "axios"
@@ -62,7 +62,7 @@ const Login = () => {
 
   // 이미 로그인되어 있을 경우
   // useEffect를 쓸 필요도 없을지도?
-  useEffect(() => {
+  useLayoutEffect(() => {
     const storageUser = localStorage.getItem('user')
     if (storageUser && Cookies.get('credential')) {
       setIsAuthenticated(true);

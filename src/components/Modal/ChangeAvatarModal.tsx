@@ -8,6 +8,7 @@ import AuthContext from '../../context/authContext';
 import { backServer } from '../../configs/env';
 import axios from 'axios';
 import { IUser } from '../../types/postTypes';
+import userEvent from '@testing-library/user-event';
 
 const Input = styled.input`
   display: none;
@@ -15,7 +16,7 @@ const Input = styled.input`
 
 const NewPostContentContainer = styled.div`
   position: relative;
-  height: 25em;
+  height: 100%;
 `
 
 const NewPostContent = styled.div`
@@ -52,7 +53,7 @@ font-weight: bold;
 
 const ChangeAvatarModal = (props: { open: boolean, onClose: () => void }) => {
   const [picture, setPicture] = useState<FileList | null>(null);
-  const { setUser, setIsAuthenticated } = useContext(AuthContext);
+  const { user, setUser, setIsAuthenticated } = useContext(AuthContext);
   const [isUploaded, setIsUploaded] = useState<boolean>(false);
   // const [errorText, setErrorText] = useState<string>("");
 
@@ -73,8 +74,9 @@ const ChangeAvatarModal = (props: { open: boolean, onClose: () => void }) => {
         'Content-Type': 'multipart/form-data'
       }
     })
-      .then(res => {
-        setUser(res.data as IUser);
+      .then((res: any) => {
+        console.log(res.data)
+        setUser({ ...user, avatar: res.data.avatar });
         setIsUploaded(true);
       })
       .catch(() => {
@@ -88,6 +90,8 @@ const ChangeAvatarModal = (props: { open: boolean, onClose: () => void }) => {
       onClose={() => { initialize(); props.onClose(); }}
       title={isUploaded ? "프로필이 변경되었습니다" : "프로필 변경하기"}
       next={picture && !isUploaded ? { text: '변경하기', onClick: handleClick } : undefined}
+      width="40em"
+      height="40em"
     >
       {!isUploaded &&
         <NewPostContentContainer>

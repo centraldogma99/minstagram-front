@@ -10,13 +10,14 @@ import {
 } from "react-router-dom";
 import TopBar from "./components/TopBar/TopBar";
 import Posts from "./components/Post/Posts"
-import ChangeProfile from "./components/Mypage/ChangeProfile";
 import AuthContext from "./context/authContext";
 import { IUser } from "./types/postTypes";
 import EditPost from "./components/Post/EditPost";
 import DirectList from "./components/direct/DirectList";
 import Post from "./components/Post/Post"
 import { useEffect } from "react";
+import axios from "axios";
+import { backServer } from "./configs/env";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
@@ -36,6 +37,19 @@ function App() {
   //   )
   // }
 
+  useEffect(() => {
+    (async () => {
+      if (isAuthenticated) {
+        try {
+          const res = await axios.get(`${backServer}/users/${user._id}`, { withCredentials: true });
+          setUser(res.data as IUser);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    })();
+  }, [isAuthenticated])
+
   return (
     <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, user, setUser }}>
       <div className="App">
@@ -49,9 +63,6 @@ function App() {
               </Route>
               <Route exact path="/login">
                 <Login />
-              </Route>
-              <Route exact path="/changeProfile">
-                <ChangeProfile />
               </Route>
               <Route exact path="/posts/:postId">
                 <div className="posts">
