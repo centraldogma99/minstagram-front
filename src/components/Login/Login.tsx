@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from "react";
-import styled from "styled-components";
 import "./Login.css"
 import { backServer } from "../../configs/env";
 import axios from "axios"
@@ -7,7 +6,8 @@ import Cookies from 'js-cookie';
 import AuthContext from "../../context/authContext";
 import { Divider } from "@mui/material";
 import { css } from "@emotion/css";
-
+import styled from "@emotion/styled"
+import { string } from "yargs";
 
 const LoginInputText = styled.input`
   height: 2.5em;
@@ -16,7 +16,7 @@ const LoginInputText = styled.input`
   margin-bottom: 1em;
   padding-left: 0.4em;
   border-radius: 3px;
-  border: 0.5px solid gainsboro;
+  border: ${(props: { wrong?: boolean }) => props.wrong ? "2px solid red" : "0.5px solid gainsboro"};
 `;
 
 const LoginButton = styled.button`
@@ -43,12 +43,22 @@ const willYouRegister = css`
 `
 
 const Login = () => {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [name, setName] = useState<string>("");
+  // const [email, setEmail] = useState<string>("");
+  // const [password, setPassword] = useState<string>("");
+  // const [name, setName] = useState<string>("");
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+    name: ""
+  })
   const [isRegister, setIsRegister] = useState<boolean>(false);
   const [statusText, setStatusText] = useState<string>("");
   const { setIsAuthenticated, setUser } = useContext(AuthContext);
+  const [invalidTerms, setInvalidTerms] = useState({
+    email: false,
+    name: false,
+    password: false
+  })
 
   // 이미 로그인되어 있을 경우
   // useEffect를 쓸 필요도 없을지도?
@@ -65,10 +75,13 @@ const Login = () => {
     const { email, name, password } = userInfo;
     if (!email.includes("@") || !email.includes(".")) {
       msg = "유효하지 않은 이메일 입니다."
+      setInvalidTerms({ ...invalidTerms, email: true })
     } else if (name.includes("dog")) {
       msg = "계정 이름에 'dog'을 포함할 수 없습니다."
+      setInvalidTerms({ ...invalidTerms, name: true })
     } else if (password.length < 8) {
       msg = "비밀번호는 8자 이상이어야 합니다."
+      setInvalidTerms({ ...invalidTerms, password: true })
     }
 
     if (msg) {
@@ -84,9 +97,11 @@ const Login = () => {
     }
   }
 
-  const handleChange = (setState: any) => {
+  const handleChange = (stateName: string) => {
     return (e: any) => {
-      setState(e.target.value);
+      setStatusText("")
+      setInvalidTerms({ ...invalidTerms, [stateName]: false })
+      setForm({ ...form, [stateName]: e.target.value })
     }
   }
 
@@ -94,8 +109,8 @@ const Login = () => {
     e.preventDefault();
     if (!isRegister) {
       const res = await axios.post(backServer + "/users/login", {
-        email: email,
-        password: password
+        email: form.email,
+        password: form.password
       }, { withCredentials: true })
         .catch((e: any) => e.response);
 
@@ -108,21 +123,20 @@ const Login = () => {
         let msg = "";
         if (res.status === 404) {
           msg = "존재하지 않는 계정입니다."
+          setInvalidTerms({ ...invalidTerms, email: true })
         } else if (res.status === 400) {
           msg = "잘못된 요청입니다."
         } else if (res.status === 401) {
           msg = "잘못된 비밀번호입니다."
+          setInvalidTerms({ ...invalidTerms, password: true })
         }
-        //FIXME 임시로 alert로 구현했음
         setStatusText("로그인 실패 : " + msg);
-        setEmail("");
-        setPassword("");
       }
     } else {
-      const userInfo = { email: email, name: name, password: password }
-      const validCheck = validate(userInfo);
+      // const userInfo = { email: email, name: name, password: password }
+      const validCheck = validate(form);
       if (validCheck.isValid) {
-        const res = await axios.post(backServer + "/users/register", userInfo)
+        const res = await axios.post(backServer + "/users/register", form)
           .catch((e) => { console.log(e); return e.response });
         if (res?.status === 200) {
           setStatusText("");
@@ -132,22 +146,18 @@ const Login = () => {
             msg = "잘못된 요청입니다."
           } else if (res.status === 409) {
             msg = "이미 등록된 계정 또는 이름입니다."
+            setInvalidTerms({ ...invalidTerms, email: true, name: true })
           }
           setStatusText("가입 실패 : " + msg)
         }
       } else {
+        // 만약 form이 Invalid할 경우.
         setStatusText(validCheck.msg);
-        setPassword("");
-        setName("");
-        setEmail("");
         return;
       }
 
       // 다시 로그인하도록 한다
-      setPassword("");
-      setName("");
-      setEmail("");
-
+      setForm({ ...form, password: "", name: "" });
       setIsRegister(false);
     }
   }
@@ -162,13 +172,25 @@ const Login = () => {
         Minstagram
       </p>
       <form id="loginForm" onSubmit={handleSubmit}>
-        <LoginInputText type="text" value={email} onChange={handleChange(setEmail)} placeholder="이메일" />
+        <LoginInputText type="text"
+          value={form.email}
+          onChange={handleChange("email")}
+          placeholder="이메일"
+          wrong={invalidTerms.email} />
         <br />
         {isRegister && <span>
-          <LoginInputText type="text" value={name} onChange={handleChange(setName)} placeholder="계정 이름" />
+          <LoginInputText type="text"
+            value={form.name}
+            onChange={handleChange("name")}
+            placeholder="계정 이름"
+            wrong={invalidTerms.name} />
           <br />
         </span>}
-        <LoginInputText type="password" value={password} onChange={handleChange(setPassword)} placeholder="비밀번호" />
+        <LoginInputText type="password"
+          value={form.password}
+          onChange={handleChange("password")}
+          placeholder="비밀번호"
+          wrong={invalidTerms.password} />
         <br />
         <div className={css`font-weight: bold; color: red;`}>
           {statusText}
@@ -180,7 +202,8 @@ const Login = () => {
           <>
             <Divider />
             <div className={willYouRegister}>
-              계정이 없으신가요? <a onClick={handleRegister} className={blueBold}>가입하기</a>
+              계정이 없으신가요?
+              <a onClick={handleRegister} className={blueBold}>가입하기</a>
             </div>
           </>
         }

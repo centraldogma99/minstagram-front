@@ -127,10 +127,7 @@ const Post = (props: (IPost & PostsProps & { style?: string, isModal?: boolean }
       likes: []
     }, { withCredentials: true }).then((res: any) => {
       if (post.comments.length === commentsDisplayed) setIsCommentExpanded(true);
-      setPost(prev => {
-        const { comments, ...rest } = prev;
-        return { comments: [...comments, res.data], ...rest };
-      })
+      setPost({ ...post, comments: [...post.comments, res.data] })
     })
       .catch(e => {
         console.log(e);
@@ -166,17 +163,15 @@ const Post = (props: (IPost & PostsProps & { style?: string, isModal?: boolean }
       post: post,
       deletePost: () => {
         if (props.setPost && props.postComeFirst) {
-          const { isDeleted: i, ...rest } = post;
-          setPost({ isDeleted: true, ...rest });
-          props.setPost({ isDeleted: true, ...rest })
+          setPost({ ...post, isDeleted: true });
+          props.setPost({ ...post, isDeleted: true })
           props.postComeFirst()
         }
       },
       editPost: (text: string) => {
         if (props.setPost && props.postComeFirst) {
-          const { text: t, ...rest } = post;
-          setPost({ text: text, ...rest })
-          props.setPost({ text: text, ...rest })
+          setPost({ ...post, text: text })
+          props.setPost({ ...post, text: text })
           props.postComeFirst()
         }
       }
@@ -186,9 +181,7 @@ const Post = (props: (IPost & PostsProps & { style?: string, isModal?: boolean }
         <div className={PostStyle} key={post._id}>
           {postMenuModal()}
           <div className={SPostTopBar}>
-            {/* FIXME: use context */}
             <Profile user={post.author} />
-            {/* <PostMenu /> */}
             <PostTopBarButton src={option} onClick={() => setShow(true)} />
           </div>
           <Divider />
@@ -216,6 +209,8 @@ const Post = (props: (IPost & PostsProps & { style?: string, isModal?: boolean }
           <CommentForm onSubmit={handleCommentSubmit} />
         </div >
       }
+
+      {/*-----모달 버전 포스트 뷰 -----*/}
       {
         !isInitialLoad && !post.isDeleted && props.isModal &&
         <div className={postModal}>

@@ -15,7 +15,7 @@ import { css } from "@emotion/css"
 const TopBarButton = styled.img`
   width: 1.5em;
   height: 1.5em;
-  margin-right: 5px;
+  margin-right: 1em;
 `;
 
 const TopBarProfile = css`
@@ -54,7 +54,7 @@ const TopBar = () => {
           {/* </Link> */}
         </span>
         <span className={TopBarProfile}>
-          <Profile user={user} imageWidth="1.7em" />
+          <Profile nameShown={false} user={user} imageWidth="1.5em" />
         </span>
 
 
