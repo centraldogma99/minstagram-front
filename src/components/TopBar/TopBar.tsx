@@ -30,7 +30,7 @@ const TopBar = () => {
     axios.get(`${backServer}/users/logout`, { withCredentials: true })
     setIsAuthenticated(false);
     setUser({ _id: "", name: "", avatar: "", email: "" });
-    history.push('/login')
+    // history.push('/login')
   }
   // const { show, anchorPoint, handleContext } = useContextMenu();
 

@@ -112,8 +112,8 @@ const Login = () => {
         password: form.password
       }, { withCredentials: true })
         .catch((e: any) => e.response);
-
       if (res?.status === 200) {
+
         localStorage.setItem('user', JSON.stringify((res as any).data));
         setIsAuthenticated(true);
         setUser(res.data);
@@ -139,6 +139,7 @@ const Login = () => {
           .catch((e) => { console.log(e); return e.response });
         if (res?.status === 200) {
           setStatusText("");
+          setIsRegister(false);
         } else {
           let msg;
           if (res.status === 400) {
@@ -157,7 +158,6 @@ const Login = () => {
 
       // 다시 로그인하도록 한다
       setForm({ ...form, password: "", name: "" });
-      setIsRegister(false);
     }
   }
 
