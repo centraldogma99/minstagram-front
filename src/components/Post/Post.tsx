@@ -16,6 +16,7 @@ import { backServer } from "../../configs/env";
 import CommentForm from "./CommentForm";
 import { Divider } from "@mui/material";
 import { css } from "@emotion/css"
+import { useEffect } from "react";
 
 const commentsDisplayed = 2;
 
@@ -95,7 +96,7 @@ interface PostsProps {
 }
 
 
-const Post = (props: (IPost & PostsProps & { style?: string, isModal?: boolean } | Record<string, never>)) => {
+const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: boolean } | Record<string, never>)) => {
   const { postId } = useParams<{ postId: string }>();
   const [post, setPost] = useState<IPost>({} as IPost);
   const [show, setShow] = React.useState(false);
@@ -135,10 +136,10 @@ const Post = (props: (IPost & PostsProps & { style?: string, isModal?: boolean }
   }
 
   useLayoutEffect(() => {
-    if ('_id' in props) {
+    if (props.post) {
       // Posts로부터 렌더링 되었을 때
-      const { setPost: s, postComeFirst: t, ...p } = props;
-      setPost(p as IPost);
+      const { post } = props;
+      setPost(post);
       setIsInitialLoad(false);
     } else {
       // <Post /> 로써 렌더링 되었을 때
@@ -152,6 +153,12 @@ const Post = (props: (IPost & PostsProps & { style?: string, isModal?: boolean }
     }
   }, [])
 
+  useLayoutEffect(() => {
+    if (props.post) {
+      setPost(props.post)
+    }
+  }, [props.post])
+
   // TODO: like button 구현
   // const handleLike = (like: ILike) => {
   //   setLikes([...likes, like]);
@@ -160,25 +167,11 @@ const Post = (props: (IPost & PostsProps & { style?: string, isModal?: boolean }
   return (
     <PostContext.Provider value={{
       // post._id가 undefined일 수도 있다.
-      post: post,
-      deletePost: () => {
-        if (props.setPost && props.postComeFirst) {
-          setPost({ ...post, isDeleted: true });
-          props.setPost({ ...post, isDeleted: true })
-          props.postComeFirst()
-        }
-      },
-      editPost: (text: string) => {
-        if (props.setPost && props.postComeFirst) {
-          setPost({ ...post, text: text })
-          props.setPost({ ...post, text: text })
-          props.postComeFirst()
-        }
-      }
+      post: { ...post, order: props.order }
     }} >
       {
         !isInitialLoad && !post.isDeleted && !props.isModal &&
-        <div className={PostStyle} key={post._id}>
+        <div className={PostStyle}>
           {postMenuModal()}
           <div className={SPostTopBar}>
             <Profile user={post.author} />

@@ -5,6 +5,7 @@ import * as deletePostAPI from "../../modules/deletePost";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useContext } from "react";
+import PostsContext from "../../context/PostsContext";
 import PostContext from "../../context/postContext";
 import MessageAndButtonsModal from "./MessageAndButtonsModal";
 import ToastContext from "../../context/ToastContext";
@@ -19,7 +20,8 @@ const redBoldStyle = {
 
 const DeleteConfirmModal = (props: { open: boolean, onClose: any, isComment?: boolean, commentIndex?: number }) => {
   const [open, setOpen] = useState(props.open);
-  const { post, deletePost } = useContext(PostContext);
+  const { post } = useContext(PostContext);
+  const { deletePost } = useContext(PostsContext);
   const { setToastMessage, setToastOpen } = useContext(ToastContext);
 
   const deleteComment = (index: number | string) => {
@@ -37,7 +39,7 @@ const DeleteConfirmModal = (props: { open: boolean, onClose: any, isComment?: bo
       // 백과 통신
       deletePostAPI.default(post._id);
       // 프론트에서 지우기
-      deletePost();
+      if (post.order != undefined) deletePost(post.order);
     } else {
       deleteComment(props.commentIndex as number);
     }

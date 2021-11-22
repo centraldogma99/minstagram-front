@@ -7,6 +7,7 @@ import Post from "./Post";
 import ToastContext from "../../context/ToastContext";
 import { css } from "@emotion/css"
 import FlipCameraAndroidIcon from '@mui/icons-material/FlipCameraAndroid';
+import PostsContext from "../../context/PostsContext";
 
 const ReverseButton = css`
   position: fixed;
@@ -20,23 +21,21 @@ const Posts = (props: { posts?: IPost[], postIds?: string[] }) => {
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [isFetching, setIsFetching] = useState(true);
-  const [isReverse, setIsReverse] = useState(true);
+  const [isReverse, setIsReverse] = useState(false);
+  const [topPost, setTopPost] = useState<number>();
 
-  const setPost = (i: number) => {
-    return (newPost: IPost) => {
-      setPosts([...posts.slice(0, i), newPost, ...posts.slice(i + 1)])
+  const renderPosts = () => {
+    let ps = posts;
+    if (topPost != undefined) {
+      ps = [...posts.slice(0, topPost), ...posts.slice(topPost + 1)]
     }
-  }
-
-  // useEffect(() => {
-  //   const orderPosts = () => {
-  //     setPosts(posts.reverse())
-  //   }
-  //   orderPosts();
-  // }, [])
-
-  const postComeFirst = (i: number) => {
-    setPosts([posts[i], ...posts.slice(0, i), ...posts.slice(i + 1)])
+    if (isReverse) {
+      ps = [...ps].reverse();
+    }
+    if (topPost != undefined) {
+      ps = [posts[topPost], ...ps]
+    }
+    return ps.map((post, i) => <Post key={post._id} post={post} order={isReverse ? ps.length - i - 1 : i} />)
   }
 
   // 이 컴포넌트가 posts prop 없이 호출될 경우
@@ -68,29 +67,39 @@ const Posts = (props: { posts?: IPost[], postIds?: string[] }) => {
   return (
     <div className="posts">
       <ToastContext.Provider value={{ setToastOpen, toastMessage, setToastMessage }}>
-        {!isFetching && !posts &&
-          <div>
-            표시할 포스트가 없습니다.
-          </div>
-        }
-        {posts &&
-          (() => {
-            let ps = posts;
-            if (isReverse) {
-              ps = ps.slice().reverse();
-            }
-            return ps.map((post, i) => {
-              const { _id } = post;
-              return <Post key={_id} {...post} setPost={setPost(i)} postComeFirst={() => postComeFirst(i)} />
-            })
-          })()
-        }
-        {/* {posts && posts.reverse().map((post, i) => {
+        <PostsContext.Provider value={{
+          deletePost: (i: number) => {
+            setPosts(prev => [...prev.slice(0, i), ...prev.slice(i + 1)])
+          },
+          // 불변성을 훼손하지 않도록.
+          editPost: (i: number, text: string) => {
+            setPosts(prev =>
+              [...prev.slice(0, i),
+              { ...prev[i], text: text },
+              ...prev.slice(i + 1)])
+            setTopPost(i)
+          }
+        }} >
+          {!isFetching && !posts &&
+            <div>
+              표시할 포스트가 없습니다.
+            </div>
+          }
+          {/* {posts && posts.map((post, i) => {
+            const { _id } = post;
+            return <Post key={_id} post={post} order={i} />
+          })} */}
+          {posts && renderPosts()}
+          {/* {posts && posts.reverse().map((post, i) => {
           const { _id } = post;
           return <Post key={_id} {...post} setPost={setPost(i)} postComeFirst={() => postComeFirst(i)} />
         })} */}
+        </PostsContext.Provider>
       </ToastContext.Provider>
-      <FlipCameraAndroidIcon className={ReverseButton} onClick={() => { setIsReverse(prev => !prev) }} />
+      <FlipCameraAndroidIcon
+        className={ReverseButton}
+        onClick={() => { setIsReverse(prev => !prev); setTopPost(undefined); }}
+      />
       <Snackbar
         open={toastOpen}
         autoHideDuration={6000}

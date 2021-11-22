@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import MinstagramModal from './MinstagramModal';
 import { Button, Divider } from '@mui/material';
 import styled from "@emotion/styled"
@@ -7,11 +7,11 @@ import Profile from '../Profile';
 import { useContext } from 'react';
 import AuthContext from '../../context/authContext';
 import { backServer } from '../../configs/env';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import PicturesView from '../Post/PicturesView';
 import TextEditorWithLength from '../TextEditorWithLength/TextEditorWithLength';
-import { useEffect } from 'react';
 import { IPost } from '../../types/postTypes';
+import PostsContext from '../../context/PostsContext';
 import PostContext from '../../context/postContext';
 
 const TEXT_MAX_LENGTH = 100;
@@ -73,7 +73,8 @@ const NewPostModal = (props: { open: boolean, onClose: () => void, originalPost?
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [isUploaded, setIsUploaded] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>("");
-  const { editPost } = useContext(PostContext);
+  const { editPost } = useContext(PostsContext);
+  const { post } = useContext(PostContext)
 
   const initialize = () => {
     setText("");
@@ -121,7 +122,10 @@ const NewPostModal = (props: { open: boolean, onClose: () => void, originalPost?
     } else {
       await axios.post(`${backServer}/posts/${originalPost._id}/edit`, { text }, { withCredentials: true });
 
-      editPost(text);
+      // refresh frontend contents
+      if (post.order != undefined) {
+        editPost(post.order, text);
+      }
     }
     setIsUploading(false)
     setIsUploaded(true)

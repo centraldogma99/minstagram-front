@@ -75,7 +75,6 @@ const ChangeAvatarModal = (props: { open: boolean, onClose: () => void }) => {
       }
     })
       .then((res: any) => {
-        console.log(res.data)
         setUser({ ...user, avatar: res.data.avatar });
         setIsUploaded(true);
       })
