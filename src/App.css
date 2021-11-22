@@ -18,10 +18,6 @@ a, a:link, a:visited, a:hover, a:active {
   font-size: 1.7em;
 }
 
-
-
-
-
 .post {
   width: 55%;
   max-width: 40em;
@@ -34,10 +30,12 @@ a, a:link, a:visited, a:hover, a:active {
 
 .posts {
   align-items: center;
-  flex-direction: column;
+  flex-direction: row;
   display: flex;
   flex-wrap: wrap;
-  /* justify-content: center; */
+  overflow-y: scroll;
+  height: 100vh;
+  justify-content: center;
 }
 
 
