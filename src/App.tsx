@@ -39,7 +39,7 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      if (isAuthenticated) {
+      if (isAuthenticated && user._id.length > 0) {
         try {
           const res = await axios.get(`${backServer}/users/${user._id}`, { withCredentials: true });
           setUser(res.data as IUser);

@@ -5,7 +5,7 @@ import Profile from "../Profile"
 import newpost from "./newpost.svg"
 import "./TopBar.css"
 import styled from "styled-components"
-import { Link } from "react-router-dom"
+import { Link, useHistory } from "react-router-dom"
 import AuthContext from "../../context/authContext"
 import axios from "axios"
 import { backServer } from "../../configs/env"
@@ -25,10 +25,12 @@ const TopBarProfile = css`
 const TopBar = () => {
   const { user, setIsAuthenticated, setUser } = useContext(AuthContext);
   const [isNewPost, setIsNewPost] = useState(false);
+  const history = useHistory();
   const useLogout = () => {
     axios.get(`${backServer}/users/logout`, { withCredentials: true })
     setIsAuthenticated(false);
     setUser({ _id: "", name: "", avatar: "", email: "" });
+    history.push('/login')
   }
   // const { show, anchorPoint, handleContext } = useContextMenu();
 

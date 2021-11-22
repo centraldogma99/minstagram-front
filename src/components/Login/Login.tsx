@@ -7,7 +7,6 @@ import AuthContext from "../../context/authContext";
 import { Divider } from "@mui/material";
 import { css } from "@emotion/css";
 import styled from "@emotion/styled"
-import { string } from "yargs";
 
 const LoginInputText = styled.input`
   height: 2.5em;
