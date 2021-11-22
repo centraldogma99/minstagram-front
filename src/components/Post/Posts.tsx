@@ -33,12 +33,10 @@ const Posts = (props: { posts?: IPost[], postIds?: string[] }) => {
 
   useEffect(() => {
     if (!props.posts && hasNext) {
-      console.log('go!')
       // if(currentPage )
       const f = async () => {
         try {
           const res: any = await axios.get(`${backServer}/posts/`, { params: { pageSize: PAGE_SIZE, page: currentPage } })
-          console.log(res)
           setPosts(prev => [...prev, ...(res.data.data as IPost[])])
         } catch (e: any) {
           if (e.response.status === 400) setHasNext(false);
