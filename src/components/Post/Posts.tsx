@@ -16,6 +16,15 @@ const ReverseButton = css`
   right: 50px;
 `
 
+const PostsStyle = css`
+  align-items: center;
+  flex-direction: column;
+  overflow-y: scroll;
+  height: calc(100% - 4em);
+  justify-content: center;
+  padding-top: 4em;
+`
+
 const PAGE_SIZE = 5;
 
 // post를 서버에서 가져오고 저장
@@ -93,7 +102,7 @@ const Posts = (props: { posts?: IPost[], postIds?: string[] }) => {
   };
 
   return (
-    <div className="posts" ref={ref}>
+    <div className={PostsStyle} ref={ref}>
       <ToastContext.Provider value={{ setToastOpen, toastMessage, setToastMessage }}>
         <PostsContext.Provider value={{
           deletePost: (i: number) => {

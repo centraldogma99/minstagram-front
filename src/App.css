@@ -4,7 +4,7 @@ a, a:link, a:visited, a:hover, a:active {
 }
 
 #contentWrapper {
-  margin-top: 4em;
+  height: 100vh;
 }
 
 /* @font-face {
@@ -18,24 +18,17 @@ a, a:link, a:visited, a:hover, a:active {
   font-size: 1.7em;
 }
 
-.post {
-  width: 55%;
-  max-width: 40em;
-  border: solid;
-  border-width: 0.1em;
-  border-color:gainsboro;
-  margin-bottom: 1em;
-  /* margin: 0 20% 0 20%; */
-}
-
 .posts {
   align-items: center;
-  flex-direction: row;
-  display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  /* display: flex; */
   overflow-y: scroll;
-  height: 100vh;
+  height: calc(100% - 4em);
+  /* width: 100vh; */
   justify-content: center;
+  padding-top: 4em;
+  /* margin-left: auto;
+  margin-right: auto; */
 }
 
 

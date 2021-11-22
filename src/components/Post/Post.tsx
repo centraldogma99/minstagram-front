@@ -119,6 +119,8 @@ const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: 
     max-width: 40em;
     border: solid 0.1em gainsboro;
     margin-bottom: 1em;
+    margin-left: auto;
+    margin-right: auto;
     ${props.style}
   `
 
