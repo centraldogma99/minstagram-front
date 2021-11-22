@@ -48,7 +48,7 @@ function App() {
         }
       }
     })();
-  }, [isAuthenticated])
+  }, [isAuthenticated, user])
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, user, setUser }}>

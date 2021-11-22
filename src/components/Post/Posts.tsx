@@ -39,7 +39,7 @@ const Posts = (props: { posts?: IPost[], postIds?: string[] }) => {
           const res: any = await axios.get(`${backServer}/posts/`, { params: { pageSize: PAGE_SIZE, page: currentPage } })
           setPosts(prev => [...prev, ...(res.data.data as IPost[])])
         } catch (e: any) {
-          if (e.response.status === 400) setHasNext(false);
+          if (e.response && e.response.status === 400) setHasNext(false);
           else console.log(e);
         }
       }
