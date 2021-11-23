@@ -17,19 +17,10 @@ a, a:link, a:visited, a:hover, a:active {
   font-family: 'instagramFont';
   font-size: 1.7em;
 }
-
-.posts {
-  align-items: center;
-  flex-direction: column;
-  /* display: flex; */
-  overflow-y: scroll;
-  height: calc(100% - 4em);
-  /* width: 100vh; */
-  justify-content: center;
-  padding-top: 4em;
-  /* margin-left: auto;
-  margin-right: auto; */
-}
+/* 
+.posts::-webkit-scrollbar{
+  display: none;
+} */
 
 
 

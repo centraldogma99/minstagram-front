@@ -11,6 +11,7 @@ import PostViewModal from "../Modal/PostViewModal";
 import { Divider } from "@mui/material";
 
 const ContentWrapperCentered = styled.div`
+  padding-top: 4em;
   justify-content: center;
   max-width: 70%;
   margin-left: auto;
