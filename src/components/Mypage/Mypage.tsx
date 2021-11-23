@@ -9,6 +9,7 @@ import { css } from '@emotion/css'
 import ChangeAvatarModal from "../Modal/ChangeAvatarModal";
 import PostViewModal from "../Modal/PostViewModal";
 import { Divider } from "@mui/material";
+import WrongLink from "../Error/WrongLink";
 
 const ContentWrapperCentered = styled.div`
   padding-top: 4em;
@@ -60,7 +61,7 @@ const Mypage = (props: { userName?: string }) => {
   const { userNameParam } = useParams<{ userNameParam: string }>();
   const userName = props.userName || userNameParam;
   const [posts, setPosts] = useState<IPost[]>([]);
-  const [user, setUser] = useState<IUser>({} as IUser)
+  const [user, setUser] = useState<IUser>()
   const [changeProfileOpen, setChangeProfileOpen] = useState(false);
   const [postViewOpen, setPostViewOpen] = useState(false);
   const [currentPost, setCurrentPost] = useState<number>(0);
@@ -75,7 +76,11 @@ const Mypage = (props: { userName?: string }) => {
         params: {
           name: userName
         }
-      })
+      }).catch(e => e.response)
+      console.log(res)
+      if (res.status === 404) {
+        return;
+      }
       setUser(res.data);
 
       const posts = await getPosts(res.data._id);
@@ -107,7 +112,8 @@ const Mypage = (props: { userName?: string }) => {
   // useLayoutEffect에서 user를 만들기 때문에 type assertion 했다.
   return (
     <>
-      {!isFetching &&
+      {!user && <WrongLink />}
+      {!isFetching && user &&
         <ContentWrapperCentered>
           <ChangeAvatarModal
             open={changeProfileOpen}

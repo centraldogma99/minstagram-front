@@ -16,7 +16,7 @@ const ReverseButton = css`
   right: 50px;
 `
 
-const PostsStyle = css`
+export const PostsStyle = css`
   align-items: center;
   flex-direction: column;
   overflow-y: scroll;

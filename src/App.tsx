@@ -18,6 +18,7 @@ import Post from "./components/Post/Post"
 import { useEffect } from "react";
 import axios from "axios";
 import { backServer } from "./configs/env";
+import { PostsStyle } from "./components/Post/Posts"
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
@@ -66,12 +67,9 @@ function App() {
                 <Login />
               </Route>
               <Route exact path="/posts/:postId">
-                <div className="posts">
+                <div className={PostsStyle}>
                   <Post />
                 </div>
-              </Route>
-              <Route exact path="/posts/:postId/edit">
-                <EditPost />
               </Route>
               <Route path="/:userNameParam">
                 <Mypage />

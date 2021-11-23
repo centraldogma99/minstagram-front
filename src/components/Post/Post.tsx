@@ -16,7 +16,8 @@ import { backServer } from "../../configs/env";
 import CommentForm from "./CommentForm";
 import { Divider } from "@mui/material";
 import { css } from "@emotion/css"
-import { useEffect } from "react";
+import WrongLink from "../Error/WrongLink";
+import PostViewModal from "../Modal/PostViewModal";
 
 const commentsDisplayed = 2;
 
@@ -62,11 +63,15 @@ const postModalSide = css`
   justify-content: space-between;
   flex-direction: column;
   width: 35%;
+  height: 100%;
   /* flex-shrink: 2; */
 `;
 
 const postModalSideTop = css`
+  display: flex;
+  flex-direction: column;
   border-bottom: 1px solid gainsboro;
+  flex: 1;
 `
 
 // --- 모달 post style 끝 ---
@@ -79,6 +84,14 @@ const SPostTextContainer = css`
   margin-bottom: 0.2em;
   font-size: 0.9em;
 `;
+
+const SCommentsContainerStyle = css`
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: auto;
+  flex: 1;
+`
 
 const SCommentsStyle = css`
   font-size: 0.9em;
@@ -98,11 +111,12 @@ interface PostsProps {
 
 const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: boolean } | Record<string, never>)) => {
   const { postId } = useParams<{ postId: string }>();
-  const [post, setPost] = useState<IPost>({} as IPost);
+  const [post, setPost] = useState<IPost>();
   const [show, setShow] = React.useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
   const { user } = useContext(AuthContext);
-  const [isCommentExpanded, setIsCommentExpanded] = useState<boolean>(false);
+  const [isCommentExpanded, setIsCommentExpanded] = useState<boolean>(!!props.isModal);
+  const [open, setOpen] = useState(false);
 
   const postMenuModal = () =>
     <PostMenuModal
@@ -110,7 +124,7 @@ const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: 
       onClose={() => {
         setShow(false);
       }}
-      isAuthor={user._id === post.author._id}
+      isAuthor={user._id === post?.author._id}
       width="18em"
     />
 
@@ -125,12 +139,14 @@ const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: 
   `
 
   const handleCommentSubmit = (text: string) => {
-    axios.post(`${backServer}/posts/${post._id}/comment`, {
+    const p = post as IPost
+    axios.post(`${backServer}/posts/${p._id}/comment`, {
       content: text,
       likes: []
     }, { withCredentials: true }).then((res: any) => {
-      if (post.comments.length === commentsDisplayed) setIsCommentExpanded(true);
-      setPost({ ...post, comments: [...post.comments, res.data] })
+      // 이 댓글로 인해서 최대 갯수가 넘어갔다면 확장시키기
+      // if (post?.comments.length === commentsDisplayed) setIsCommentExpanded(true);
+      setPost({ ...p, comments: [...p.comments, res.data] })
     })
       .catch(e => {
         console.log(e);
@@ -140,8 +156,7 @@ const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: 
   useLayoutEffect(() => {
     if (props.post) {
       // Posts로부터 렌더링 되었을 때
-      const { post } = props;
-      setPost(post);
+      setPost(props.post);
       setIsInitialLoad(false);
     } else {
       // <Post /> 로써 렌더링 되었을 때
@@ -151,6 +166,14 @@ const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: 
         .then((res: any) => {
           setPost(res.data);
           setIsInitialLoad(false);
+        })
+        .catch(e => {
+          console.log(e.response.status)
+          if (e.response.status === 400) {
+            setPost(undefined);
+          } else {
+            console.log(e)
+          }
         })
     }
   }, [])
@@ -167,87 +190,99 @@ const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: 
   // };
 
   return (
-    <PostContext.Provider value={{
-      // post._id가 undefined일 수도 있다.
-      post: { ...post, order: props.order }
-    }} >
-      {
-        !isInitialLoad && !post.isDeleted && !props.isModal &&
-        <div className={PostStyle}>
-          {postMenuModal()}
-          <div className={SPostTopBar}>
-            <Profile user={post.author} />
-            <PostTopBarButton src={option} onClick={() => setShow(true)} />
-          </div>
-          <Divider />
-          <PicturesView
-            pictures={post.pictures}
-            style={SPostPictures}
-            containerStyle={css`min-height: 15em;`}
-            sizeCalc={true}
+    <>
+      {post &&
+        <PostContext.Provider value={{
+          // post._id가 undefined일 수도 있다.
+          post: { ...post, order: props.order },
+          setOpen: setOpen
+        }} >
+          <PostViewModal
+            post={post}
+            open={open}
+            onClose={() => setOpen(false)}
           />
-
-          {/* {likes.length > 0 && <Likes likes={likes} />} */}
-          {post.text &&
-            <div className={SPostTextContainer}>
-              <b>{post.author.name}</b> &nbsp; {post.text}
-            </div>
-          }
-
-          <Comments
-            comments={post.comments}
-            isExpanded={isCommentExpanded}
-            style={SCommentsStyle}
-          />
-
-          <Divider />
-          <CommentForm onSubmit={handleCommentSubmit} />
-        </div >
-      }
-
-      {/*-----모달 버전 포스트 뷰 -----*/}
-      {
-        !isInitialLoad && !post.isDeleted && props.isModal &&
-        <div className={postModal}>
-          {postMenuModal()}
-          <PicturesView
-            pictures={post.pictures}
-            containerStyle={picturesViewContainer}
-            style={css`max-width: 100%; max-height: 100%;`}
-          />
-
-          <div className={postModalSide}>
-            <div className={postModalSideTop}>
+          {
+            !isInitialLoad && !post.isDeleted && !props.isModal &&
+            <div className={PostStyle}>
+              {postMenuModal()}
               <div className={SPostTopBar}>
-                {/* FIXME: use context */}
                 <Profile user={post.author} />
-                {/* <PostMenu /> */}
                 <PostTopBarButton src={option} onClick={() => setShow(true)} />
               </div>
               <Divider />
-              {post.text && <div className={SPostTextContainer}>
-                <b>{post.author.name}</b> &nbsp; {post.text}
-              </div>}
+              <PicturesView
+                pictures={post.pictures}
+                style={SPostPictures}
+                containerStyle={css`min-height: 15em;`}
+                sizeCalc={true}
+              />
+
+              {/* {likes.length > 0 && <Likes likes={likes} />} */}
+              {post.text &&
+                <div className={SPostTextContainer}>
+                  <b>{post.author.name}</b> &nbsp; {post.text}
+                </div>
+              }
 
               <Comments
                 comments={post.comments}
                 isExpanded={isCommentExpanded}
                 style={SCommentsStyle}
               />
-            </div>
-            <div>
+
               <Divider />
               <CommentForm onSubmit={handleCommentSubmit} />
+            </div >
+          }
+
+          {/*-----모달 버전 포스트 뷰 -----*/}
+          {
+            !isInitialLoad && !post.isDeleted && props.isModal &&
+            <div className={postModal}>
+              {postMenuModal()}
+              <PicturesView
+                pictures={post.pictures}
+                containerStyle={picturesViewContainer}
+                style={css`max-width: 100%; max-height: 100%;`}
+              />
+
+              <div className={postModalSide}>
+                <div className={postModalSideTop}>
+                  <div className={SPostTopBar}>
+                    {/* FIXME: use context */}
+                    <Profile user={post.author} />
+                    {/* <PostMenu /> */}
+                    <PostTopBarButton src={option} onClick={() => setShow(true)} />
+                  </div>
+                  <Divider />
+                  {post.text && <div className={SPostTextContainer}>
+                    <b>{post.author.name}</b> &nbsp; {post.text}
+                  </div>}
+
+                  <Comments
+                    comments={post.comments}
+                    isExpanded={isCommentExpanded}
+                    style={SCommentsStyle}
+                    containerStyle={SCommentsContainerStyle}
+                  />
+                </div>
+                <div>
+                  <Divider />
+                  <CommentForm onSubmit={handleCommentSubmit} />
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      }
-      {/* {post.isDeleted && <>
+          }
+          {/* {post.isDeleted && <>
         <div className="deleted-post">
           Whoooo! Deleted Post!
         </div>
       </>} */}
-    </PostContext.Provider >
+        </PostContext.Provider >
+      }
+      {!post && <WrongLink />}
+    </>
   );
 }
 
