@@ -23,7 +23,6 @@ import { PostsStyle } from "./components/Post/Posts"
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
   const [user, setUser] = useState<IUser>({ _id: "", name: "", avatar: "", email: "" });
-  // console.log("rerendered")
   // const PrivateRoute = ({ children, ...rest }: any) => {
   //   return (
   //     <Route

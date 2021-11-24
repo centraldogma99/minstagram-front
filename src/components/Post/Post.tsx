@@ -18,6 +18,11 @@ import { Divider } from "@mui/material";
 import { css } from "@emotion/css"
 import WrongLink from "../Error/WrongLink";
 import PostViewModal from "../Modal/PostViewModal";
+import dayjs from 'dayjs';
+import 'dayjs/locale/ko'
+import relativeTime from 'dayjs/plugin/relativeTime'
+dayjs.extend(relativeTime)
+dayjs.locale('ko')
 
 // --- 일반 post style ---
 
@@ -35,6 +40,23 @@ const PostTopBarButton = styled.img`
   width: 1em;
   height: 1em;
 `;
+
+const postsTextContainer = css`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9em;
+  padding-left: 0.7em;
+  padding-right: 0.7em;
+  overflow: auto;
+`
+
+const postTimestamp = css`
+  margin-top: 1em;
+  margin-bottom: 1.4em;
+  font-size: 0.8em;
+  text-align: left;
+`
 
 // --- 일반 post style 끝 ---
 
@@ -64,16 +86,13 @@ const postModalSide = css`
 const SPostTextContainer = css`
   text-align: left;
   margin-top: 0.7em;
-  padding-left: 0.7em;
-  padding-right: 0.7em;
   margin-bottom: 0.2em;
-  font-size: 0.9em;
 `;
 
 const SCommentsContainerStyle = css`
   flex: 1;
+  height: 100%;
   margin-top: 0.5em;
-  overflow: auto;
 `
 
 const SCommentsStyle = css`
@@ -120,8 +139,6 @@ const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: 
       content: text,
       likes: []
     }, { withCredentials: true }).then((res: any) => {
-      // 이 댓글로 인해서 최대 갯수가 넘어갔다면 확장시키기
-      // if (post?.comments.length === commentsDisplayed) setIsCommentExpanded(true);
       setPost({ ...p, comments: [...p.comments, res.data] })
     })
       .catch(e => {
@@ -195,17 +212,20 @@ const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: 
               />
 
               {/* {likes.length > 0 && <Likes likes={likes} />} */}
-              {post.text &&
+              <div className={postsTextContainer}>
                 <div className={SPostTextContainer}>
                   <b>{post.author.name}</b> &nbsp; {post.text}
                 </div>
-              }
+                <div className={postTimestamp}>
+                  {dayjs(new Date(post.timestamp)).fromNow()}
+                </div>
 
-              <Comments
-                comments={post.comments}
-                isExpanded={false}
-                style={SCommentsStyle}
-              />
+                <Comments
+                  comments={post.comments}
+                  isExpanded={false}
+                  style={SCommentsStyle}
+                />
+              </div>
 
               <Divider />
               <CommentForm onSubmit={handleCommentSubmit} />
@@ -229,16 +249,22 @@ const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: 
                   <PostTopBarButton src={option} onClick={() => setShow(true)} />
                 </div>
                 <Divider />
-                <div className={SPostTextContainer}>
-                  <b>{post.author.name}</b> &nbsp; {post.text}
-                </div>
+                <div className={postsTextContainer}>
+                  <div className={SPostTextContainer}>
+                    <b>{post.author.name}</b> &nbsp; {post.text}
+                  </div>
+                  <div className={postTimestamp}>
+                    {dayjs(new Date(post.timestamp)).fromNow()}
+                  </div>
 
-                <Comments
-                  comments={post.comments}
-                  isExpanded={true}
-                  style={SCommentsStyle}
-                  containerStyle={SCommentsContainerStyle}
-                />
+                  <Comments
+                    comments={post.comments}
+                    isExpanded={true}
+                    style={SCommentsStyle}
+                    containerStyle={SCommentsContainerStyle}
+                    timestamp={true}
+                  />
+                </div>
                 <div>
                   <Divider />
                   <CommentForm onSubmit={handleCommentSubmit} />

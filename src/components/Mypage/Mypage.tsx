@@ -77,7 +77,6 @@ const Mypage = (props: { userName?: string }) => {
           name: userName
         }
       }).catch(e => e.response)
-      console.log(res)
       if (res.status === 404) {
         return;
       }

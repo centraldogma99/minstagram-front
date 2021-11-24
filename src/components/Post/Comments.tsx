@@ -11,7 +11,7 @@ const moreComment = css`
 
 const commentsDisplayed = 2;
 
-const Comments = (props: { comments: IComment[], isExpanded: boolean, style?: string, containerStyle?: string }) => {
+const Comments = (props: { comments: IComment[], isExpanded: boolean, style?: string, containerStyle?: string, timestamp?: boolean }) => {
   const { comments } = props;
   const [isExpanded, setIsExpanded] = useState<boolean>(props.isExpanded);
   const { setOpen } = useContext(PostContext)
@@ -20,11 +20,11 @@ const Comments = (props: { comments: IComment[], isExpanded: boolean, style?: st
     text-align: left;
     overflow-y: scroll;
     margin-bottom: 0.5em;
-    padding-left: 0.7em;
-    padding-right: 0.7em;
-    font-size: 0.9em;
     ${props.containerStyle}
   `
+
+  const renderComment = (comment: IComment, index: number) =>
+    <Comment comment={comment} key={index} index={index} style={props.style} timestamp={props.timestamp} />
 
   // 처음 로드됐을 때, 댓글이 3개 이상이면 더 보기로 표시
   // 댓글이 추가되어 2개에서 3개로 된다면 더 보기로 표시하지 않고 바로 표시
@@ -43,10 +43,10 @@ const Comments = (props: { comments: IComment[], isExpanded: boolean, style?: st
   return (
     <div className={containerStyle}>
       {!isExpanded && comments.length > 0 &&
-        comments.slice(comments.length - commentsDisplayed, comments.length).map((comment, index) => <Comment comment={comment} key={index} index={index} style={props.style} />)
+        comments.slice(comments.length - commentsDisplayed, comments.length).map(renderComment)
       }
       {isExpanded && comments.length > 0 &&
-        comments.map((comment, index) => <Comment comment={comment} key={index} index={index} style={props.style} />)
+        comments.map(renderComment)
       }
       {!isExpanded && comments.length > commentsDisplayed &&
         <div className={moreComment}>

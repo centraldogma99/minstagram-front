@@ -3,7 +3,8 @@ export interface IComment {
   _id: number,
   author: IUser,
   content: string,
-  likes: ILike[]
+  likes: ILike[],
+  timestamp: number,
 }
 
 export interface ILike {
@@ -18,7 +19,8 @@ export interface IPost {
   text: string,
   likes: ILike[],
   comments: IComment[],
-  isDeleted?: boolean
+  isDeleted?: boolean,
+  timestamp: number,
 }
 
 export interface IUser {
