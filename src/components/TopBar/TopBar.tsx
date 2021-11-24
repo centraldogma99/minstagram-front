@@ -11,6 +11,7 @@ import axios from "axios"
 import { backServer } from "../../configs/env"
 import NewPostModal from "../Modal/NewPostModal"
 import { css } from "@emotion/css"
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 
 const TopBarButton = styled.img`
   width: 1.5em;
@@ -25,7 +26,6 @@ const TopBarProfile = css`
 const TopBar = () => {
   const { user, setIsAuthenticated, setUser } = useContext(AuthContext);
   const [isNewPost, setIsNewPost] = useState(false);
-  const history = useHistory();
   const useLogout = () => {
     axios.get(`${backServer}/users/logout`, { withCredentials: true })
     setIsAuthenticated(false);
@@ -48,8 +48,12 @@ const TopBar = () => {
           {/* <Link to="/directs">
             <TopBarButton src={direct} />
           </Link> */}
+          <a href="https://psychedelic-feeling-5d5.notion.site/Junyeong-Choi-e84719c1ecfc464a9fc06908fd68a8b5">
+            <QuestionMarkIcon className={css`margin-right: 0.5em;`} />
+          </a>
           <TopBarButton src={heart} onClick={useLogout} />
           <TopBarButton src={newpost} onClick={() => { setIsNewPost(true) }} />
+
         </span>
         <span className={TopBarProfile}>
           <Profile nameShown={false} user={user} imageWidth="1.5em" />
