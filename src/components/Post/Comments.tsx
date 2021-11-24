@@ -5,6 +5,7 @@ import Comment from "./Comment";
 import PostContext from "../../context/postContext";
 
 const moreComment = css`
+  margin-top: 0.6em;
   color: darkgray;
 `
 
@@ -42,14 +43,16 @@ const Comments = (props: { comments: IComment[], isExpanded: boolean, style?: st
   return (
     <div className={containerStyle}>
       {!isExpanded && comments.length > 0 &&
-        comments.slice(comments.length - commentsDisplayed, comments.length).map((comment, index) => <Comment comment={comment} key={index} index={index} />)
+        comments.slice(comments.length - commentsDisplayed, comments.length).map((comment, index) => <Comment comment={comment} key={index} index={index} style={props.style} />)
       }
       {isExpanded && comments.length > 0 &&
-        comments.map((comment, index) => <Comment comment={comment} key={index} index={index} />)
+        comments.map((comment, index) => <Comment comment={comment} key={index} index={index} style={props.style} />)
       }
-      {!isExpanded && comments.length > commentsDisplayed && <>
-        <a onClick={handleClick} className={moreComment}>댓글 {comments.length}개 모두 보기</a>
-      </>}
+      {!isExpanded && comments.length > commentsDisplayed &&
+        <div className={moreComment}>
+          <a onClick={handleClick}>댓글 {comments.length}개 모두 보기</a>
+        </div>
+      }
     </div>
   )
 }

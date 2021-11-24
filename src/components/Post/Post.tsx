@@ -19,14 +19,7 @@ import { css } from "@emotion/css"
 import WrongLink from "../Error/WrongLink";
 import PostViewModal from "../Modal/PostViewModal";
 
-const commentsDisplayed = 2;
-
 // --- 일반 post style ---
-const postContent = css`
-  padding-bottom: 0.3em;
-  text-align: left;
-  font-size: 0.9em;
-`
 
 const SPostTopBar = css`
   display: flex;
@@ -52,27 +45,19 @@ const postModal = css`
   height: 100%;
 `;
 
+// 왼쪽 이미지 표시 부분
 const picturesViewContainer = css`
   border-right: 1px solid gainsboro;
-  width: 65%;
+  flex: 2;
   height: 100%;
 `;
 
 const postModalSide = css`
   display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  width: 35%;
-  height: 100%;
-  /* flex-shrink: 2; */
-`;
-
-const postModalSideTop = css`
-  display: flex;
-  flex-direction: column;
-  border-bottom: 1px solid gainsboro;
   flex: 1;
-`
+  flex-direction: column;
+  height: 100%;
+`;
 
 // --- 모달 post style 끝 ---
 
@@ -86,15 +71,13 @@ const SPostTextContainer = css`
 `;
 
 const SCommentsContainerStyle = css`
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  overflow: auto;
   flex: 1;
+  margin-top: 0.5em;
+  overflow: auto;
 `
 
 const SCommentsStyle = css`
-  font-size: 0.9em;
+  padding-bottom: 0.2em;
   /* margin-top: 1em; */
 `
 
@@ -103,19 +86,12 @@ const SPostPictures = css`
   max-height: 40em;
 `
 
-interface PostsProps {
-  setPost?: (post: IPost) => void,
-  postComeFirst?: () => void
-}
-
-
 const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: boolean } | Record<string, never>)) => {
   const { postId } = useParams<{ postId: string }>();
   const [post, setPost] = useState<IPost>();
   const [show, setShow] = React.useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
   const { user } = useContext(AuthContext);
-  const [isCommentExpanded, setIsCommentExpanded] = useState<boolean>(!!props.isModal);
   const [open, setOpen] = useState(false);
 
   const postMenuModal = () =>
@@ -227,7 +203,7 @@ const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: 
 
               <Comments
                 comments={post.comments}
-                isExpanded={isCommentExpanded}
+                isExpanded={false}
                 style={SCommentsStyle}
               />
 
@@ -248,25 +224,21 @@ const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: 
               />
 
               <div className={postModalSide}>
-                <div className={postModalSideTop}>
-                  <div className={SPostTopBar}>
-                    {/* FIXME: use context */}
-                    <Profile user={post.author} />
-                    {/* <PostMenu /> */}
-                    <PostTopBarButton src={option} onClick={() => setShow(true)} />
-                  </div>
-                  <Divider />
-                  {post.text && <div className={SPostTextContainer}>
-                    <b>{post.author.name}</b> &nbsp; {post.text}
-                  </div>}
-
-                  <Comments
-                    comments={post.comments}
-                    isExpanded={isCommentExpanded}
-                    style={SCommentsStyle}
-                    containerStyle={SCommentsContainerStyle}
-                  />
+                <div className={SPostTopBar}>
+                  <Profile user={post.author} />
+                  <PostTopBarButton src={option} onClick={() => setShow(true)} />
                 </div>
+                <Divider />
+                <div className={SPostTextContainer}>
+                  <b>{post.author.name}</b> &nbsp; {post.text}
+                </div>
+
+                <Comments
+                  comments={post.comments}
+                  isExpanded={true}
+                  style={SCommentsStyle}
+                  containerStyle={SCommentsContainerStyle}
+                />
                 <div>
                   <Divider />
                   <CommentForm onSubmit={handleCommentSubmit} />
