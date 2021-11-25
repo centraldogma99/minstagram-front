@@ -125,6 +125,7 @@ const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: 
 
   const PostStyle = css`
     width: 55%;
+    /* max-height: 45em; */
     max-width: 40em;
     border: solid 0.1em gainsboro;
     margin-bottom: 1em;
@@ -207,7 +208,7 @@ const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: 
               <PicturesView
                 pictures={post.pictures}
                 style={SPostPictures}
-                containerStyle={css`min-height: 15em;`}
+                containerStyle={css`min-height: 15em; max-height: 40em;`}
                 sizeCalc={true}
               />
 
