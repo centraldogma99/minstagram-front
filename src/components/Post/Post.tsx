@@ -102,7 +102,7 @@ const SCommentsStyle = css`
 
 const SPostPictures = css`
   max-width: 100%;
-  max-height: 40em;
+  max-height: 100%;
 `
 
 const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: boolean } | Record<string, never>)) => {
