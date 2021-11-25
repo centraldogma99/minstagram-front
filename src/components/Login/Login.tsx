@@ -106,6 +106,7 @@ const Login = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    setInvalidTerms({ email: false, name: false, password: false })
     if (!isRegister) {
       const res = await axios.post(backServer + "/users/login", {
         email: form.email,
@@ -162,6 +163,7 @@ const Login = () => {
 
   const handleRegister = () => {
     setIsRegister(true);
+    setInvalidTerms({ email: false, name: false, password: false })
   }
 
   return (
