@@ -19,7 +19,6 @@ const redBoldStyle = {
 
 
 const DeleteConfirmModal = (props: { open: boolean, onClose: any, isComment?: boolean, commentIndex?: number }) => {
-  const [open, setOpen] = useState(props.open);
   const { post } = useContext(PostContext);
   const { deletePost } = useContext(PostsContext);
   const { setToastMessage, setToastOpen } = useContext(ToastContext);
@@ -30,10 +29,6 @@ const DeleteConfirmModal = (props: { open: boolean, onClose: any, isComment?: bo
 
   const whatIsMe = props.isComment ? '댓글' : '게시물';
 
-  useEffect(() => {
-    setOpen(props.open);
-  }, [props.open])
-
   const onDeleteClick = () => {
     if (!props.isComment) {
       // 백과 통신
@@ -43,22 +38,19 @@ const DeleteConfirmModal = (props: { open: boolean, onClose: any, isComment?: bo
     } else {
       deleteComment(props.commentIndex as number);
     }
-
-    setOpen(false);
     props.onClose()
     setToastMessage(`${whatIsMe}이 삭제되었습니다.`);
     setToastOpen(true);
   }
 
   const onClickCancel = () => {
-    setOpen(false);
     props.onClose();
   }
 
   return (
     <MessageAndButtonsModal
-      open={open}
-      onClose={() => { props.onClose(); setOpen(false); }}
+      open={props.open}
+      onClose={() => { props.onClose(); }}
       message={`${whatIsMe}을 삭제하시겠어요?`}
       width="24em"
     >

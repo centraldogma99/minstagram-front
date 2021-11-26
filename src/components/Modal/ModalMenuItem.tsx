@@ -20,7 +20,6 @@ const redBold = css`
 `
 
 const ModalMenuItem = (props: { onClick?: () => void, isRedBold?: boolean, style?: any, children: any }) => {
-
   const childStyle = css`
     ${childStyleBase}
     ${props.style}

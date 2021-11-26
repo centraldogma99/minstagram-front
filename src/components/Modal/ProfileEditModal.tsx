@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MinstagramModal from './MinstagramModal';
 import { css } from "@emotion/css"
 import TextEditorWithLength from '../TextEditorWithLength/TextEditorWithLength';
@@ -9,6 +9,7 @@ import AuthContext from '../../context/authContext';
 import axios from 'axios';
 import { backServer } from '../../configs/env';
 import { Divider } from '@mui/material';
+import { useHistory } from 'react-router-dom';
 
 const containerStyle = css`
   text-align: center;
@@ -57,31 +58,45 @@ const ProfileEditModal = (props: { open: boolean, onClose: () => void, bio: stri
   const [bio, setBio] = useState<string>(props.bio);
   const [done, setDone] = useState<boolean>(false);
 
+  const history = useHistory();
+
+  useEffect(() => {
+    if (done) history.push(`/${name}`)
+  }, [done])
+
   const onClick = async () => {
     await axios.post(`${backServer}/users/profile`, { name, bio }, { withCredentials: true })
     setDone(true)
     setUser(prev => { return { ...prev, name: name } })
   }
 
+  const onClose = () => {
+    setDone(false)
+    props.onClose();
+  }
+
   return (
     <MinstagramModal
       open={props.open}
-      onClose={props.onClose}
+      onClose={onClose}
       title="프로필 수정하기"
       width="40em"
       height="40em"
-      next={!done ? {
-        text: '수정하기',
-        onClick
-      } : undefined}
+      next={!done ?
+        {
+          text: '수정하기',
+          onClick
+        } :
+        undefined
+      }
     >
       <div className={containerStyle}>
         {!done && <>
-          <p className={css`font-size: 2em; font-weight: 350; margin-top: 2em;`}>계정 이름과 내 소개를 수정합니다.</p>
+          <p className={css`font-size: 2em; font-weight: 350; margin-top: 2em;`}>나의 Minstagram 프로필</p>
           <div className={css`margin-left: 5em; margin-right: 5em; margin-top: 5em;`}>
             <FormItem>
               <FormItemName>이름</FormItemName>
-              <div className={css`flex: 1;`}>
+              <div className={css`flex: 1; display: flex; flex-direction: column; align-items: center;`}>
                 <Text type="text" placeholder={user.name} value={name} onChange={(e) => setName(e.target.value)} />
                 <p className={css`font-size: 0.8em; color: gray;`}>
                   사람들이 회원님의 알려진 이름을 사용하여 회원님의 계정을 찾을 수 있도록 도와주세요.

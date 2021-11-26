@@ -23,6 +23,7 @@ import { PostsStyle } from "./components/Post/Posts"
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
   const [user, setUser] = useState<IUser>({ _id: "", name: "", avatar: "", email: "" });
+
   // const PrivateRoute = ({ children, ...rest }: any) => {
   //   return (
   //     <Route
@@ -49,7 +50,7 @@ function App() {
         }
       }
     })();
-  }, [isAuthenticated, user])
+  }, [isAuthenticated, user._id])
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, user, setUser }}>
@@ -76,7 +77,6 @@ function App() {
               <Route exact path="/">
                 <Posts />
               </Route>
-
             </Switch>
           </div>
 

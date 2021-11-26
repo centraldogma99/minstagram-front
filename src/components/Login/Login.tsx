@@ -8,7 +8,6 @@ import { Divider } from "@mui/material";
 import { css } from "@emotion/css";
 import styled from "@emotion/styled"
 import { InputText, Button } from "../styled/InputText";
-console.log(InputText)
 
 const LoginInputText = styled(InputText)`
   width: 20em;

@@ -12,6 +12,8 @@ import { Divider } from "@mui/material";
 import WrongLink from "../Error/WrongLink";
 import SettingsIcon from '@mui/icons-material/Settings';
 import ProfileEditModal from "../Modal/ProfileEditModal";
+import { useContext } from "react";
+import AuthContext from "../../context/authContext";
 
 const ContentWrapperCentered = styled.div`
   padding-top: 4em;
@@ -68,19 +70,20 @@ const thumbnailContainer = css`
 `
 
 const Mypage = (props: { userName?: string }) => {
+  const { user: me } = useContext(AuthContext);
   // react router로 param을 받거나 props로 userName을 받는다.
   const { userNameParam } = useParams<{ userNameParam: string }>();
   const userName = props.userName || userNameParam;
   const [posts, setPosts] = useState<IPost[]>([]);
   const [user, setUser] = useState<IUser>()
   const [profile, setProfile] = useState<{ bio: string, name: string }>();
+
   const [changeAvatarOpen, setChangeAvatarOpen] = useState(false);
   const [postViewOpen, setPostViewOpen] = useState(false);
   const [changeProfileOpen, setChangeProfileOpen] = useState(false);
 
   const [currentPost, setCurrentPost] = useState<number>(0);
   const [isFetching, setIsFetching] = useState<boolean>(true);
-
 
   // FIXME: res typed any
   // load user info/posts
@@ -91,6 +94,7 @@ const Mypage = (props: { userName?: string }) => {
           name: userName
         }
       }).catch(e => e.response)
+      setIsFetching(false);
       if (res.status === 404) {
         return;
       }
@@ -99,7 +103,7 @@ const Mypage = (props: { userName?: string }) => {
       const posts = await getPosts(res.data._id);
       const profile = await getProfile(res.data._id);
 
-      setIsFetching(false);
+
       setPosts(posts);
       setProfile(profile);
     }
@@ -119,7 +123,6 @@ const Mypage = (props: { userName?: string }) => {
   }
 
   const renderPost = (post: IPost, i: number) => {
-    // console.log(post)
     return (
       <div key={post._id} className={thumbnailContainer}>
         <PostThumbnail
@@ -136,8 +139,8 @@ const Mypage = (props: { userName?: string }) => {
   // useLayoutEffect에서 user를 만들기 때문에 type assertion 했다.
   return (
     <>
-      {/* {!isFetching && !user && <WrongLink />} */}
-      {!isFetching && user &&
+      {(!isFetching && !user) && <WrongLink />}
+      {!isFetching && user && profile &&
         <ContentWrapperCentered>
           <ChangeAvatarModal
             open={changeAvatarOpen}
@@ -160,7 +163,7 @@ const Mypage = (props: { userName?: string }) => {
             <div className={UserDetailsContainer}>
               <div className={css`display: flex; flex-direction: row; align-items: center;`}>
                 <Profile user={user} nameStyle={css`font-size: 2.5em; font-weight: 250;`} avatarHide style={css`margin-right: 1em;`} />
-                <SettingsIcon onClick={() => setChangeProfileOpen(true)} />
+                {userName === me.name && <SettingsIcon onClick={() => setChangeProfileOpen(true)} />}
               </div>
               <div className={css`padding-top: 1.3em; padding-bottom: 1.3em;`}>
                 게시물 <b>{posts.length}</b>

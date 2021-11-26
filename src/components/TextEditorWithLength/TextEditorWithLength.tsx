@@ -1,11 +1,16 @@
 import React, { useEffect } from "react"
-import { useState } from "react"
 import styled from "@emotion/styled"
 import { css } from "@emotion/css"
 
 
 // children은 value prop을 가지는 텍스트 컴포넌트여야 한다.
-const TextEditorWithLength = (props: { textMaxLength: number, children: any, style?: string, setText: any, textLengthStyle?: string }) => {
+const TextEditorWithLength = (props: {
+  textMaxLength: number,
+  children: any,
+  setText: any, // 글자수 제한 길이를 넘어갈 경우 setText 이용하여 잘라냄
+  style?: string,
+  textLengthStyle?: string
+}) => {
   const text = props.children.props.value;
   const { textMaxLength } = props;
 
@@ -19,18 +24,18 @@ const TextEditorWithLength = (props: { textMaxLength: number, children: any, sty
     ${props.textLengthStyle}
   `;
 
-  useEffect(() => {
-    if (text.length > textMaxLength) {
-      props.setText(text.slice(0, textMaxLength));
-    }
-  }, [text])
-
   const TextEditorWithLengthStyle = css`
     width: 100%;
     height: 12em;
     position: relative;
     ${props.style}
   `
+
+  useEffect(() => {
+    if (text.length > textMaxLength) {
+      props.setText(text.slice(0, textMaxLength));
+    }
+  }, [text])
 
   return (
     <div className={TextEditorWithLengthStyle}>
