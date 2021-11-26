@@ -56,7 +56,7 @@ const TopBar = () => {
 
         </span>
         <span className={TopBarProfile}>
-          <Profile nameShown={false} user={user} imageWidth="1.5em" />
+          <Profile nameHide user={user} imageStyle={css`width: 1.5em; height: 1.5em`} />
         </span>
 
 

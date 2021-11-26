@@ -10,6 +10,8 @@ import ChangeAvatarModal from "../Modal/ChangeAvatarModal";
 import PostViewModal from "../Modal/PostViewModal";
 import { Divider } from "@mui/material";
 import WrongLink from "../Error/WrongLink";
+import SettingsIcon from '@mui/icons-material/Settings';
+import ProfileEditModal from "../Modal/ProfileEditModal";
 
 const ContentWrapperCentered = styled.div`
   padding-top: 4em;
@@ -47,7 +49,16 @@ const PostThumbnail = styled.img`
 const UserProfileContainer = css`
   padding-top: 3em;
   margin-bottom: 3em;
+  display: flex;
+  flex-direction: row;
   `
+
+const UserDetailsContainer = css`
+  display: flex;
+  flex-direction: column;
+  margin-left: 3em;
+  text-align: left;
+`
 
 const thumbnailContainer = css`
   width: 24%;
@@ -62,8 +73,11 @@ const Mypage = (props: { userName?: string }) => {
   const userName = props.userName || userNameParam;
   const [posts, setPosts] = useState<IPost[]>([]);
   const [user, setUser] = useState<IUser>()
-  const [changeProfileOpen, setChangeProfileOpen] = useState(false);
+  const [profile, setProfile] = useState<{ bio: string, name: string }>();
+  const [changeAvatarOpen, setChangeAvatarOpen] = useState(false);
   const [postViewOpen, setPostViewOpen] = useState(false);
+  const [changeProfileOpen, setChangeProfileOpen] = useState(false);
+
   const [currentPost, setCurrentPost] = useState<number>(0);
   const [isFetching, setIsFetching] = useState<boolean>(true);
 
@@ -83,8 +97,11 @@ const Mypage = (props: { userName?: string }) => {
       setUser(res.data);
 
       const posts = await getPosts(res.data._id);
+      const profile = await getProfile(res.data._id);
+
       setIsFetching(false);
       setPosts(posts);
+      setProfile(profile);
     }
     fetchPosts();
   }, [props.userName, userNameParam]);
@@ -95,11 +112,19 @@ const Mypage = (props: { userName?: string }) => {
     return posts.data
   }
 
+  const getProfile = async (id: string): Promise<{ bio: string, name: string }> => {
+    if (!id) throw Error("no id given");
+    const res: any = await axios.get(`${backServer}/users/${id}/profile`);
+    return res.data;
+  }
+
   const renderPost = (post: IPost, i: number) => {
+    // console.log(post)
     return (
       <div key={post._id} className={thumbnailContainer}>
         <PostThumbnail
           src={backServer + '/images/' + post.pictures[0]}
+          alt="a"
           onClick={() => {
             setCurrentPost(i);
             setPostViewOpen(true);
@@ -111,21 +136,38 @@ const Mypage = (props: { userName?: string }) => {
   // useLayoutEffect에서 user를 만들기 때문에 type assertion 했다.
   return (
     <>
-      {!user && <WrongLink />}
+      {/* {!isFetching && !user && <WrongLink />} */}
       {!isFetching && user &&
         <ContentWrapperCentered>
           <ChangeAvatarModal
-            open={changeProfileOpen}
-            onClose={() => setChangeProfileOpen(false)}
+            open={changeAvatarOpen}
+            onClose={() => setChangeAvatarOpen(false)}
           />
           <PostViewModal
             open={postViewOpen}
             onClose={() => setPostViewOpen(false)}
             post={posts[currentPost]}
           />
+          <ProfileEditModal
+            open={changeProfileOpen}
+            onClose={() => setChangeProfileOpen(false)}
+            bio={profile?.bio ?? ""}
+          />
           <div className={UserProfileContainer}>
-            <div onClick={() => setChangeProfileOpen(true)}>
-              <Profile user={user} imageWidth="7em" nameFontSize="2.5em" />
+            <div onClick={() => setChangeAvatarOpen(true)}>
+              <Profile user={user} imageStyle={css`width: 10em; height: 10em;`} nameHide />
+            </div>
+            <div className={UserDetailsContainer}>
+              <div className={css`display: flex; flex-direction: row; align-items: center;`}>
+                <Profile user={user} nameStyle={css`font-size: 2.5em; font-weight: 250;`} avatarHide style={css`margin-right: 1em;`} />
+                <SettingsIcon onClick={() => setChangeProfileOpen(true)} />
+              </div>
+              <div className={css`padding-top: 1.3em; padding-bottom: 1.3em;`}>
+                게시물 <b>{posts.length}</b>
+              </div>
+              <div className={css`flex: 1;`}>
+                {profile?.bio}
+              </div>
             </div>
           </div>
           <Divider />

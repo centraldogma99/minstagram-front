@@ -4,5 +4,5 @@ export interface IAuthContext {
   isAuthenticated: boolean,
   setIsAuthenticated: (auth: boolean) => void,
   user: IUser,
-  setUser: (user: IUser) => void,
+  setUser: React.Dispatch<React.SetStateAction<IUser>>,
 }

@@ -8,24 +8,27 @@ import { css } from "@emotion/css"
 import defaultProfileImage from "../assets/defaultProfile.png"
 
 // name is ambiguous: recommend AvatarWithName
-const Profile = (props: { user: IUser, imageWidth?: string, nameFontSize?: string, onClick?: any, avatarShown?: boolean, nameShown?: boolean }) => {
+const Profile = (props: { user: IUser, style?: string, imageStyle?: string, nameStyle?: string, onClick?: any, avatarHide?: boolean, nameHide?: boolean }) => {
   const profileStyle = css`
     display: flex;
     align-items: center;
+    ${props.style}
   `
 
   const AvatarImage = css`
-    width: ${props.imageWidth ?? "2.5em"};
-    height: ${props.imageWidth ?? "2.5em"};
+    width: 2.5em;
+    height: 2.5em;
     object-fit: cover;
     border-radius: 50%;
     border: 1px solid gray;
+    ${props.imageStyle}
   `;
 
   const AvatarName = css`
-    margin-left: 0.7em;
-    font-size: ${props.nameFontSize ?? "15px"};
-    font-weight: 580;
+    margin-left: ${props.avatarHide ? undefined : "0.7em"};
+    font-size: 15px;
+    font-weight: 550;
+    ${props.nameStyle}
   `
   // const { image, name } = useProfile(props.user);
   const { user, onClick } = props;
@@ -33,12 +36,12 @@ const Profile = (props: { user: IUser, imageWidth?: string, nameFontSize?: strin
   return (
     <Link to={`/${user.name}`}>
       <span className={profileStyle} onClick={onClick}>
-        {(props.avatarShown === undefined || props.avatarShown) &&
-          user.avatar.length > 0 ?
-          <img src={backServer + "/images/" + user.avatar} className={AvatarImage} /> :
-          <img src={defaultProfileImage} className={AvatarImage} />
+        {!props.avatarHide &&
+          (user.avatar.length > 0 ?
+            <img src={backServer + "/images/" + user.avatar} className={AvatarImage} /> :
+            <img src={defaultProfileImage} className={AvatarImage} />)
         }
-        {(props.nameShown === undefined || props.nameShown) &&
+        {!props.nameHide &&
           <span className={AvatarName}>{user.name}</span>
         }
       </span>

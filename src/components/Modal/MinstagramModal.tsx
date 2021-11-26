@@ -61,34 +61,35 @@ const MinstagramModal = (props: {
   children: any
 }) => {
   const [open, setOpen] = React.useState<boolean>(false);
-  // const style = css`
-  //   position: absolute;
-  //   top: 50%;
-  //   left: 50%;
-  //   transform: translate(-50%, -50%);
-  //   width: ${props.width ?? '28em'};
-  //   background-color: 'background.color';
-  //   box-shadow: 24;
-  //   padding: 0;
-  //   border-radius: 0.5em;
-  //   outline: none;
-  //   height: 80%;
-  // `
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: props.width ?? '28em',
-    height: props.height,
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4,
-    padding: 0,
-    borderRadius: "0.5em",
-    outline: 'none',
-    maxHeight: '75%'
-  }
+  const ContainerStyle = css`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: ${props.width ?? '28em'};
+    height: ${props.height};
+    background-color: white;
+    box-shadow: 24;
+    padding: 0;
+    border-radius: 0.4em;
+    outline: none;
+    max-height: 75%;
+  `
+  // const style = {
+  //   position: 'absolute',
+  //   top: '50%',
+  //   left: '50%',
+  //   transform: 'translate(-50%, -50%)',
+  //   width: props.width ?? '28em',
+  //   height: props.height,
+  //   bgcolor: 'white',
+  //   boxShadow: 24,
+  //   // p: 4,
+  //   // padding: 0,
+  //   borderRadius: "0.4em",
+  //   outline: 'none',
+  //   maxHeight: '75%'
+  // }
 
   const FormModalChlidContainer = css`
     height: ${props.title ? "calc(100% - 2.5em)" : "100%"};
@@ -103,7 +104,7 @@ const MinstagramModal = (props: {
       setOpen(false);
       props.onClose()
     }}>
-      <Box sx={style as any}>
+      <Box className={ContainerStyle}>
         {props.title && <>
           <FormModalTitleContainer>
             <FormModalTitle>

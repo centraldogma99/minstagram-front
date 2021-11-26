@@ -75,7 +75,7 @@ const DirectMessages = (props: { direct?: IDirectRoom }) => {
         <div className={isMe ? directMessageMe : directMessageFriend}>
           {!isMe &&
             <div className={directMessageAuthorAvatar}>
-              <Profile user={message.author} nameShown={false} imageWidth="2em" />
+              <Profile user={message.author} nameHide imageStyle={css`width: 2em; height: 2em;`} />
             </div>
           }
           <div className={isMe ? directMessageContentMe : directMessageContentFriend}>

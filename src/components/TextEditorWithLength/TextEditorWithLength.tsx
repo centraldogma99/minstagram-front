@@ -4,10 +4,10 @@ import styled from "@emotion/styled"
 import { css } from "@emotion/css"
 
 
-
-const TextEditorWithLength = (props: { textMaxLength: number, children: any, style?: string, fontSize?: string, width?: string, height?: string, setText?: any }) => {
+// children은 value prop을 가지는 텍스트 컴포넌트여야 한다.
+const TextEditorWithLength = (props: { textMaxLength: number, children: any, style?: string, setText: any, textLengthStyle?: string }) => {
   const text = props.children.props.value;
-  const { textMaxLength, fontSize, width, height } = props;
+  const { textMaxLength } = props;
 
   const TextLength = styled.div`
     position: absolute;
@@ -16,7 +16,7 @@ const TextEditorWithLength = (props: { textMaxLength: number, children: any, sty
     top: 105%;
     left: 94%;
     transform: translate(-90%, -90%);
-    
+    ${props.textLengthStyle}
   `;
 
   useEffect(() => {

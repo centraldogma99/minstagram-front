@@ -7,28 +7,19 @@ import AuthContext from "../../context/authContext";
 import { Divider } from "@mui/material";
 import { css } from "@emotion/css";
 import styled from "@emotion/styled"
+import { InputText, Button } from "../styled/InputText";
+console.log(InputText)
 
-const LoginInputText = styled.input`
-  height: 2.5em;
+const LoginInputText = styled(InputText)`
   width: 20em;
-  font-size: 1em;
   margin-bottom: 1em;
-  padding-left: 0.4em;
-  border-radius: 3px;
   border: ${(props: { wrong?: boolean }) => props.wrong ? "2px solid red" : "0.5px solid gainsboro"};
 `;
 
-const LoginButton = styled.button`
+const LoginButton = styled(Button)`
   margin-top: 0.5em;
-  text-align: center;
-  font-size: 1em;
   width: 20.6em;
   height: 2.2em;
-  border: none;
-  background-color: dodgerblue;
-  border-radius: 4px;
-  color: white;
-  font-weight: 580;
   margin-bottom: 2em;
 `;
 
