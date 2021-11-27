@@ -24,13 +24,14 @@ const FormModalNextButtonContainer = styled.div`
   transform: translate(-2.6em, -50%);
 `
 
-const FormModalNextButton = styled.a`
+const FormModalNextButton = styled.a<{ inactive?: boolean }>`
   position: absolute;
   font-size: 0.9em;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: dodgerblue;
+  color: ${props => props.inactive ? 'lightblue' : 'dodgerblue'};
+  pointer-events: ${props => props.inactive ? 'none' : undefined};
 `
 
 const MinstagramModal = (props: {
@@ -43,6 +44,7 @@ const MinstagramModal = (props: {
     text: string,
     onClick: () => void
   }
+  nextInactive?: boolean,
   children: any
 }) => {
   const ContainerStyle = css`
@@ -89,7 +91,7 @@ const MinstagramModal = (props: {
             </FormModalTitle>
             <FormModalNextButtonContainer>
               {props.next &&
-                <FormModalNextButton onClick={props.next.onClick} >
+                <FormModalNextButton onClick={props.nextInactive ? undefined : props.next.onClick} inactive={props.nextInactive}>
                   {props.next.text}
                 </FormModalNextButton>
               }
@@ -97,7 +99,6 @@ const MinstagramModal = (props: {
           </FormModalTitleContainer>
           <Divider />
         </>}
-
         <div className={FormModalChlidContainer}>
           {props.children}
         </div>

@@ -10,14 +10,10 @@ import axios from 'axios';
 import { backServer } from '../../configs/env';
 import { Divider } from '@mui/material';
 import { useHistory } from 'react-router-dom';
+import _ from 'lodash'
 
 const containerStyle = css`
   text-align: center;
-`
-
-const Text = styled(InputText)`
-  width: 95%;
-  border: 0.5px gainsboro solid;
 `
 
 const Textarea = styled(InputTextArea)`
@@ -52,11 +48,20 @@ const ResultDiv = styled.div`
   text-align: center;
 `
 
+const Text = styled(InputText) <{ error?: boolean }>`
+  width: 95%;
+  border: 0.5px gainsboro solid;
+  border-color: ${props => props.error ? 'red' : undefined};
+  border-width: ${props => props.error ? '2.2px' : undefined};
+`
+
 const ProfileEditModal = (props: { open: boolean, onClose: () => void, bio: string }) => {
   const { user, setUser } = useContext(AuthContext)
   const [name, setName] = useState<string>(user.name);
   const [bio, setBio] = useState<string>(props.bio);
   const [done, setDone] = useState<boolean>(false);
+
+  const [nameError, setNameError] = useState<{ error: boolean, reason: string }>({ error: false, reason: "" });
 
   const history = useHistory();
 
@@ -65,6 +70,11 @@ const ProfileEditModal = (props: { open: boolean, onClose: () => void, bio: stri
   }, [done])
 
   const onClick = async () => {
+    if (name.length < 2) {
+      setNameError({ error: true, reason: "이름은 2자 이상이어야 합니다." });
+      return;
+    }
+    if (nameError.error) return;
     await axios.post(`${backServer}/users/profile`, { name, bio }, { withCredentials: true })
     setDone(true)
     setUser(prev => { return { ...prev, name: name } })
@@ -73,6 +83,22 @@ const ProfileEditModal = (props: { open: boolean, onClose: () => void, bio: stri
   const onClose = () => {
     setDone(false)
     props.onClose();
+  }
+
+  const onChange = (e: any) => {
+    const s = e.target.value;
+    setName(s);
+    checkName(s);
+  }
+
+  const checkName = async (name: string) => {
+    if (name.length > 20) {
+      setNameError({ error: true, reason: "이름은 20자 이내여야 합니다." })
+      return;
+    }
+    const res: any = await axios.get(`${backServer}/users/namecheck`, { params: { name } })
+    const msg = !res.data.result ? "이미 존재하는 이름입니다." : ""
+    setNameError({ error: !res.data.result, reason: msg });
   }
 
   return (
@@ -89,15 +115,21 @@ const ProfileEditModal = (props: { open: boolean, onClose: () => void, bio: stri
         } :
         undefined
       }
+      nextInactive={nameError.error}
     >
       <div className={containerStyle}>
         {!done && <>
-          <p className={css`font-size: 2em; font-weight: 350; margin-top: 2em;`}>나의 Minstagram 프로필</p>
+          <p className={css`font-size: 2em; font-weight: 350; margin-top: 2em; `}>나의 Minstagram 프로필</p>
           <div className={css`margin-left: 5em; margin-right: 5em; margin-top: 5em;`}>
             <FormItem>
               <FormItemName>이름</FormItemName>
               <div className={css`flex: 1; display: flex; flex-direction: column; align-items: center;`}>
-                <Text type="text" placeholder={user.name} value={name} onChange={(e) => setName(e.target.value)} />
+                <Text type="text" placeholder={user.name} value={name} onChange={_.throttle(onChange, 600)} error={nameError.error} />
+                {nameError && <div className={css`width: 100%; padding-left: 1em;`}>
+                  <p className={css`margin: 0; margin-top: 0.2em; font-size: 0.8em; color: red; text-align: left;`}>
+                    {nameError.reason}
+                  </p>
+                </div>}
                 <p className={css`font-size: 0.8em; color: gray;`}>
                   사람들이 회원님의 알려진 이름을 사용하여 회원님의 계정을 찾을 수 있도록 도와주세요.
                 </p>
@@ -125,7 +157,7 @@ const ProfileEditModal = (props: { open: boolean, onClose: () => void, bio: stri
         {done && <>
           <ResultDiv>
             <img src="https://www.instagram.com/static/images/creation/30fpsCheckLoopsOnce.gif/10a8cbeb94ba.gif" />
-            <p className={css`font-weight: 250; font-size: 1.5em;`}>프로필을 수정했습니다.</p>
+            <p className={css`font-weight: 250; font-size: 1.5em; `}>프로필을 수정했습니다.</p>
           </ResultDiv>
         </>}
       </div>
