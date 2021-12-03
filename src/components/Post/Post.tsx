@@ -47,8 +47,9 @@ const postsTextContainer = css`
   display: flex;
   flex-direction: column;
   font-size: 0.9em;
-  padding-left: 0.7em;
-  padding-right: 0.7em;
+  padding-left: 0.9em;
+  padding-right: 0.9em;
+  padding-top: 0.2em;
   overflow: auto;
 `
 
@@ -85,6 +86,7 @@ const postModalSide = css`
 // --- 모달 post style 끝 ---
 
 const SPostTextContainer = css`
+  font-size: 0.9em;
   text-align: left;
   margin-top: 0.7em;
   margin-bottom: 0.2em;
