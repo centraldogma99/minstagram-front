@@ -67,6 +67,7 @@ const thumbnailContainer = css`
   padding-top: 25%; /* 1:1 Aspect Ratio */
   position: relative;
   margin: 0.5%;
+  cursor: pointer;
 `
 
 const Mypage = (props: { userName?: string }) => {
@@ -163,7 +164,7 @@ const Mypage = (props: { userName?: string }) => {
             <div className={UserDetailsContainer}>
               <div className={css`display: flex; flex-direction: row; align-items: center;`}>
                 <Profile user={user} nameStyle={css`font-size: 2.5em; font-weight: 250;`} avatarHide style={css`margin-right: 1em;`} />
-                {userName === me.name && <SettingsIcon onClick={() => setChangeProfileOpen(true)} />}
+                {userName === me.name && <SettingsIcon className={css`cursor: pointer;`} onClick={() => setChangeProfileOpen(true)} />}
               </div>
               <div className={css`padding-top: 1.3em; padding-bottom: 1.3em;`}>
                 게시물 <b>{posts.length}</b>
