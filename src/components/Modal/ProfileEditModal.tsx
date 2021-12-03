@@ -82,6 +82,8 @@ const ProfileEditModal = (props: { open: boolean, onClose: () => void, bio: stri
 
   const onClose = () => {
     setDone(false)
+    setName(user.name)
+    setBio(props.bio)
     props.onClose();
   }
 

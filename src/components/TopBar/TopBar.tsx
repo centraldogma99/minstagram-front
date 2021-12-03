@@ -1,10 +1,7 @@
 import React, { useState, useContext } from "react"
-import direct from "./direct.svg"
-import heart from "./heart.svg"
 import Profile from "../Profile"
 import newpost from "./newpost.svg"
 import "./TopBar.css"
-import styled from "styled-components"
 import { Link, useHistory } from "react-router-dom"
 import AuthContext from "../../context/authContext"
 import axios from "axios"
@@ -12,11 +9,14 @@ import { backServer } from "../../configs/env"
 import NewPostModal from "../Modal/NewPostModal"
 import { css } from "@emotion/css"
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import LogoutIcon from '@mui/icons-material/Logout';
 
-const TopBarButton = styled.img`
+const TopBarButtonStyle = css`
+
   width: 1.5em;
   height: 1.5em;
   margin-right: 1em;
+  cursor: pointer;
 `;
 
 const TopBarProfile = css`
@@ -48,33 +48,19 @@ const TopBar = () => {
           {/* <Link to="/directs">
             <TopBarButton src={direct} />
           </Link> */}
-          <a href="https://psychedelic-feeling-5d5.notion.site/Junyeong-Choi-e84719c1ecfc464a9fc06908fd68a8b5">
-            <QuestionMarkIcon className={css`margin-right: 0.5em;`} />
+          <a className={css`cursor: pointer;`}>
+            <LogoutIcon className={css`margin-right: 0.5em; vertical-align: middle;`} onClick={useLogout} />
           </a>
-          <TopBarButton src={heart} onClick={useLogout} />
-          <TopBarButton src={newpost} onClick={() => { setIsNewPost(true) }} />
 
+          <a href="https://psychedelic-feeling-5d5.notion.site/Junyeong-Choi-e84719c1ecfc464a9fc06908fd68a8b5">
+            <QuestionMarkIcon className={css`margin-right: 0.5em; vertical-align: middle;`} />
+          </a>
+
+          {/* <img src={newpost} className={TopBarButtonStyle} onClick={() => { setIsNewPost(true) }} /> */}
         </span>
         <span className={TopBarProfile}>
           <Profile nameHide user={user} imageStyle={css`width: 1.5em; height: 1.5em`} />
         </span>
-
-
-        {/* {show && <ul
-          className="menu"
-          style={{
-            top: anchorPoint.y,
-            left: anchorPoint.x
-          }}
-        >
-          <li>Share to..</li>
-          <li>Cut</li>
-          <li>Copy</li>
-          <li>Paste</li>
-          <hr className="divider" />
-          <li>Refresh</li>
-          <li>Exit</li>
-        </ul>} */}
       </span>
     </div >
   )

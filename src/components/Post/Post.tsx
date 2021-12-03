@@ -39,6 +39,7 @@ const SPostTopBar = css`
 const PostTopBarButton = styled.img`
   width: 1em;
   height: 1em;
+  cursor: pointer;
 `;
 
 const postsTextContainer = css`

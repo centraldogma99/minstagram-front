@@ -12,6 +12,7 @@ const navButton = css`
   width: 1.6em;
   height: 1.6em;
   opacity: 0.5;
+  cursor: pointer;
 `
 
 const nextButton = css`

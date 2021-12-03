@@ -57,7 +57,7 @@ const Comment = (props: { comment: IComment, index: number, style?: string, time
           </Link>
           <span className={CommentContent}>{comment.content}</span>
         </div>
-        <img src={optionImg} className={css`width: 1em; height: 1em;`} onClick={() => { setOpen(true) }} />
+        <img src={optionImg} className={css`width: 1em; height: 1em; cursor: pointer;`} onClick={() => { setOpen(true) }} />
       </div>
       {props.timestamp && <div className={commentTimestamp}>
         {dayjs(new Date(comment.timestamp)).fromNow()}

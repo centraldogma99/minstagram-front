@@ -14,6 +14,7 @@ const ReverseButton = css`
   position: fixed;
   bottom: 50px;
   right: 50px;
+  cursor: pointer;
 `
 
 export const PostsStyle = css`

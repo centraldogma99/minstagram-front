@@ -22,6 +22,7 @@ const commentInputButton = css`
   margin-right: 0.4em;
   color: dodgerblue;
   font-weight: bold;
+  cursor: pointer;
 `
 
 const CommentForm = (props: { onSubmit: (text: string) => void }) => {
