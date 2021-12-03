@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react"
 import Profile from "../Profile"
 import newpost from "./newpost.svg"
 import "./TopBar.css"
-import { Link, useHistory } from "react-router-dom"
+import { Link } from "react-router-dom"
 import AuthContext from "../../context/authContext"
 import axios from "axios"
 import { backServer } from "../../configs/env"
@@ -56,14 +56,14 @@ const TopBar = () => {
             <QuestionMarkIcon className={css`margin-right: 0.5em; vertical-align: middle;`} />
           </a>
 
-          {/* <img src={newpost} className={TopBarButtonStyle} onClick={() => { setIsNewPost(true) }} /> */}
+          <img src={newpost} className={TopBarButtonStyle} onClick={() => { setIsNewPost(true) }} />
         </span>
         <span className={TopBarProfile}>
-          <Profile nameHide user={user} imageStyle={css`width: 1.5em; height: 1.5em`} />
+          <Profile nameHide user={user} imageStyle={css`width: 1.5em; height: 1.5em;`} />
         </span>
       </span>
     </div >
   )
 }
 
-export default TopBar
+export default TopBar;
