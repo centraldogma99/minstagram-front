@@ -83,6 +83,12 @@ const postModalSide = css`
   height: 100%;
 `;
 
+const SPostTextContainerModal = css`
+  text-align: left;
+  margin-top: 0.7em;
+  margin-bottom: 0.2em;
+`;
+
 // --- 모달 post style 끝 ---
 
 const SPostTextContainer = css`
@@ -254,7 +260,7 @@ const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: 
                 </div>
                 <Divider />
                 <div className={postsTextContainer}>
-                  <div className={SPostTextContainer}>
+                  <div className={SPostTextContainerModal}>
                     <b>{post.author.name}</b> &nbsp; {post.text}
                   </div>
                   <div className={postTimestamp}>

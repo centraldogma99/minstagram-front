@@ -46,12 +46,12 @@ const PicturesPreviewTextEditorContainer = css`
 
 const PicturesPreviewTextEditor = css`
   margin: 0;
-  padding: 7px;
+  padding: 0.9em;
   border: 0;
   outline: none;
   resize: none;
   font-family: inherit;
-  width: 95%;
+  width: 92%;
   height: 100%;
 `
 
