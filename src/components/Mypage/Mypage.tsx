@@ -73,19 +73,29 @@ const thumbnailContainer = css`
 
 const Mypage = (props: { userName?: string }) => {
   const { user: me } = useContext(AuthContext);
+  // '내'가 이 유저를 팔로우 하는가?
   const [myFollows, setMyFollows] = useState<string[]>([])
+
   // react router로 param을 받거나 props로 userName을 받는다.
   const { userNameParam } = useParams<{ userNameParam: string }>();
   const userName = props.userName || userNameParam;
+
+  // 이 유저의 팔로우/팔로잉/포스트/정보/프로필
+  const [follows, setFollows] = useState<string[]>([])
+  const [followers, setFollowers] = useState<string[]>([])
   const [posts, setPosts] = useState<IPost[]>([]);
   const [user, setUser] = useState<IUser>()
   const [profile, setProfile] = useState<{ bio: string, name: string }>();
 
+  // 모달 상태
   const [changeAvatarOpen, setChangeAvatarOpen] = useState(false);
   const [postViewOpen, setPostViewOpen] = useState(false);
   const [changeProfileOpen, setChangeProfileOpen] = useState(false);
 
+  // 포스트뷰 모달이 뭘 보고 있는지.
   const [currentPost, setCurrentPost] = useState<number>(0);
+
+  // API 로딩 중인지?
   const [isFetching, setIsFetching] = useState<boolean>(true);
 
   // FIXME: res typed any
@@ -103,11 +113,12 @@ const Mypage = (props: { userName?: string }) => {
         return;
       }
       setUser(res.data);
-
+      const user = res.data
       const posts = await getPosts(res.data._id);
       const profile = await getProfile(res.data._id);
       setPosts(posts);
       setProfile(profile);
+
 
       const myFollows = await axios.get<string[]>(`${backServer}/users/follow`, {
         params: {
@@ -115,6 +126,21 @@ const Mypage = (props: { userName?: string }) => {
         }
       }).then(res => res.data)
       setMyFollows(myFollows);
+
+      if (user) {
+        const follows = await axios.get<string[]>(`${backServer}/users/follow`, {
+          params: {
+            userId: user._id
+          }
+        }).then(res => res.data)
+        setFollows(follows);
+        const followers = await axios.get<string[]>(`${backServer}/users/follower`, {
+          params: {
+            userId: user._id
+          }
+        }).then(res => res.data)
+        setFollowers(followers);
+      }
     }
     fetchPosts();
   }, [props.userName, userNameParam, me]);
@@ -209,10 +235,10 @@ const Mypage = (props: { userName?: string }) => {
                   게시물 <b>{posts.length}</b>
                 </div>
                 <div className={css`margin-right: 3em;`}>
-                  팔로우 <b>{posts.length}</b>
+                  팔로우 <b>{follows.length}</b>
                 </div>
                 <div className={css`margin-right: 3em;`}>
-                  팔로워 <b>{posts.length}</b>
+                  팔로워 <b>{followers.length}</b>
                 </div>
               </div>
               <div className={css`flex: 1;`}>
