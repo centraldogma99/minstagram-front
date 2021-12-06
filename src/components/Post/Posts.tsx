@@ -49,7 +49,9 @@ const Posts = (props: { posts?: IPost[], postIds?: string[] }) => {
       // if(currentPage )
       const f = async () => {
         try {
-          const res: any = await axios.get(`${backServer}/posts/`, { params: { pageSize: PAGE_SIZE, page: currentPage, userId: user._id } })
+          const res: any = await axios.get(`${backServer}/posts/`,
+            { params: { pageSize: PAGE_SIZE, page: currentPage, userId: user._id } }
+          )
           if (!res.data.data) {
             setHasNext(false)
             return;

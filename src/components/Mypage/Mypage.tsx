@@ -15,6 +15,7 @@ import ProfileEditModal from "../Modal/ProfileEditModal";
 import { useContext } from "react";
 import AuthContext from "../../context/authContext";
 import FollowButton from "./FollowButton";
+import FollowListModal from "./FollowListModal";
 
 const ContentWrapperCentered = styled.div`
   padding-top: 4em;
@@ -71,6 +72,11 @@ const thumbnailContainer = css`
   cursor: pointer;
 `
 
+const UserStat = styled.div`
+  margin-right: 3em;
+  cursor: ${(props: { clickable?: boolean }) => props.clickable ? "pointer" : undefined};
+`
+
 const Mypage = (props: { userName?: string }) => {
   const { user: me } = useContext(AuthContext);
   // '내'가 이 유저를 팔로우 하는가?
@@ -91,6 +97,8 @@ const Mypage = (props: { userName?: string }) => {
   const [changeAvatarOpen, setChangeAvatarOpen] = useState(false);
   const [postViewOpen, setPostViewOpen] = useState(false);
   const [changeProfileOpen, setChangeProfileOpen] = useState(false);
+  const [followListOpen, setFollowListOpen] = useState(false);
+  const [followerListOpen, setFollowerListOpen] = useState(false);
 
   // 포스트뷰 모달이 뭘 보고 있는지.
   const [currentPost, setCurrentPost] = useState<number>(0);
@@ -213,6 +221,20 @@ const Mypage = (props: { userName?: string }) => {
             onClose={() => setChangeProfileOpen(false)}
             bio={profile?.bio ?? ""}
           />
+          <FollowListModal
+            open={followListOpen}
+            onClose={() => setFollowListOpen(false)}
+            ids={follows}
+            title="팔로우"
+            width="23em"
+          />
+          <FollowListModal
+            open={followerListOpen}
+            onClose={() => setFollowerListOpen(false)}
+            ids={followers}
+            title="팔로워"
+            width="23em"
+          />
           <div className={UserProfileContainer}>
             <div onClick={() => setChangeAvatarOpen(true)}>
               <Profile user={user} imageStyle={css`width: 10em; height: 10em;`} nameHide />
@@ -231,15 +253,15 @@ const Mypage = (props: { userName?: string }) => {
                 }
               </div>
               <div className={css`padding-top: 1.3em; padding-bottom: 1.3em; display: flex; flex-direction: row;`}>
-                <div className={css`margin-right: 3em;`}>
+                <UserStat>
                   게시물 <b>{posts.length}</b>
-                </div>
-                <div className={css`margin-right: 3em;`}>
+                </UserStat>
+                <UserStat clickable onClick={() => setFollowListOpen(true)}>
                   팔로우 <b>{follows.length}</b>
-                </div>
-                <div className={css`margin-right: 3em;`}>
+                </UserStat>
+                <UserStat clickable onClick={() => setFollowerListOpen(true)}>
                   팔로워 <b>{followers.length}</b>
-                </div>
+                </UserStat>
               </div>
               <div className={css`flex: 1;`}>
                 {profile?.bio}
