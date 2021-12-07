@@ -14,8 +14,6 @@ import { IPost } from '../../types/postTypes';
 import PostsContext from '../../context/PostsContext';
 import PostContext from '../../context/postContext';
 
-const TEXT_MAX_LENGTH = 100;
-
 const Input = styled.input`
   display: none;
 `

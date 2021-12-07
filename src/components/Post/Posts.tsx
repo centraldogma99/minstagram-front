@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useLayoutEffect, useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { backServer } from "../../configs/env";
 import { IPost } from "../../types/postTypes"
 import { Snackbar } from "@mui/material";
@@ -9,6 +9,8 @@ import { css } from "@emotion/css"
 import FlipCameraAndroidIcon from '@mui/icons-material/FlipCameraAndroid';
 import PostsContext from "../../context/PostsContext";
 import _ from "lodash"
+import { useContext } from "react";
+import AuthContext from "../../context/authContext";
 
 const ReverseButton = css`
   position: fixed;
@@ -30,6 +32,7 @@ const PAGE_SIZE = 5;
 
 // post를 서버에서 가져오고 저장
 const Posts = (props: { posts?: IPost[], postIds?: string[] }) => {
+  const { user } = useContext(AuthContext)
   const [posts, setPosts] = useState<IPost[]>(props.posts ?? []);
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
@@ -46,7 +49,9 @@ const Posts = (props: { posts?: IPost[], postIds?: string[] }) => {
       // if(currentPage )
       const f = async () => {
         try {
-          const res: any = await axios.get(`${backServer}/posts/`, { params: { pageSize: PAGE_SIZE, page: currentPage } })
+          const res: any = await axios.get(`${backServer}/posts/`,
+            { params: { pageSize: PAGE_SIZE, page: currentPage, userId: user._id } }
+          )
           if (!res.data.data) {
             setHasNext(false)
             return;
@@ -121,12 +126,12 @@ const Posts = (props: { posts?: IPost[], postIds?: string[] }) => {
             setTopPost(i)
           }
         }} >
-          {!posts &&
+          {posts.length === 0 &&
             <div>
               표시할 포스트가 없습니다.
             </div>
           }
-          {posts && renderPosts()}
+          {posts.length > 0 && renderPosts()}
         </PostsContext.Provider>
       </ToastContext.Provider>
       <FlipCameraAndroidIcon

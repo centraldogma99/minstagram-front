@@ -4,7 +4,6 @@ import ModalMenuItem from "./ModalMenuItem";
 import { Link } from "react-router-dom"
 import DeleteConfirmModal from "./DeleteConfirmModal";
 import { useState } from "react";
-import { useEffect } from "react";
 import PostContext from "../../context/postContext";
 import MessageAndButtonsModal from "./MessageAndButtonsModal";
 import NewPostModal from "./NewPostModal";

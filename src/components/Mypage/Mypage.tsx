@@ -14,6 +14,8 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import ProfileEditModal from "../Modal/ProfileEditModal";
 import { useContext } from "react";
 import AuthContext from "../../context/authContext";
+import FollowButton from "./FollowButton";
+import FollowListModal from "./FollowListModal";
 
 const ContentWrapperCentered = styled.div`
   padding-top: 4em;
@@ -70,26 +72,45 @@ const thumbnailContainer = css`
   cursor: pointer;
 `
 
+const UserStat = styled.div`
+  margin-right: 3em;
+  cursor: ${(props: { clickable?: boolean }) => props.clickable ? "pointer" : undefined};
+`
+
 const Mypage = (props: { userName?: string }) => {
   const { user: me } = useContext(AuthContext);
+  // '내'가 이 유저를 팔로우 하는가?
+  const [myFollows, setMyFollows] = useState<string[]>([])
+
   // react router로 param을 받거나 props로 userName을 받는다.
   const { userNameParam } = useParams<{ userNameParam: string }>();
   const userName = props.userName || userNameParam;
+
+  // 이 유저의 팔로우/팔로잉/포스트/정보/프로필
+  const [follows, setFollows] = useState<string[]>([])
+  const [followers, setFollowers] = useState<string[]>([])
   const [posts, setPosts] = useState<IPost[]>([]);
   const [user, setUser] = useState<IUser>()
   const [profile, setProfile] = useState<{ bio: string, name: string }>();
 
+  // 모달 상태
   const [changeAvatarOpen, setChangeAvatarOpen] = useState(false);
   const [postViewOpen, setPostViewOpen] = useState(false);
   const [changeProfileOpen, setChangeProfileOpen] = useState(false);
+  const [followListOpen, setFollowListOpen] = useState(false);
+  const [followerListOpen, setFollowerListOpen] = useState(false);
 
+  // 포스트뷰 모달이 뭘 보고 있는지.
   const [currentPost, setCurrentPost] = useState<number>(0);
+
+  // API 로딩 중인지?
   const [isFetching, setIsFetching] = useState<boolean>(true);
 
   // FIXME: res typed any
   // load user info/posts
   useLayoutEffect(() => {
     async function fetchPosts() {
+      // 페이지에 표시할 유저 정보 받아오기
       const res: any = await axios.get(`${backServer}/users/name`, {
         params: {
           name: userName
@@ -100,16 +121,37 @@ const Mypage = (props: { userName?: string }) => {
         return;
       }
       setUser(res.data);
-
+      const user = res.data
       const posts = await getPosts(res.data._id);
       const profile = await getProfile(res.data._id);
-
-
       setPosts(posts);
       setProfile(profile);
+
+
+      const myFollows = await axios.get<string[]>(`${backServer}/users/follow`, {
+        params: {
+          userId: me._id
+        }
+      }).then(res => res.data)
+      setMyFollows(myFollows);
+
+      if (user) {
+        const follows = await axios.get<string[]>(`${backServer}/users/follow`, {
+          params: {
+            userId: user._id
+          }
+        }).then(res => res.data)
+        setFollows(follows);
+        const followers = await axios.get<string[]>(`${backServer}/users/follower`, {
+          params: {
+            userId: user._id
+          }
+        }).then(res => res.data)
+        setFollowers(followers);
+      }
     }
     fetchPosts();
-  }, [props.userName, userNameParam]);
+  }, [props.userName, userNameParam, me]);
 
   const getPosts = async (id: string): Promise<IPost[]> => {
     if (!id) throw Error("no id given");
@@ -121,6 +163,28 @@ const Mypage = (props: { userName?: string }) => {
     if (!id) throw Error("no id given");
     const res: any = await axios.get(`${backServer}/users/${id}/profile`);
     return res.data;
+  }
+
+  const onClickFollow = async () => {
+    const isFollowing = myFollows.includes((user as IUser)._id);
+    if (!isFollowing) {
+      axios.post(`${backServer}/users/follow`,
+        {
+          followId: user?._id
+        }, { withCredentials: true }
+      )
+      setMyFollows(prev => [...prev, (user as IUser)._id])
+    } else {
+      axios.post(`${backServer}/users/unfollow`,
+        {
+          followId: user?._id
+        }, { withCredentials: true }
+      )
+      setMyFollows(prev => {
+        const i = myFollows.indexOf((user as IUser)._id);
+        return [...prev.slice(0, i), ...prev.slice(i + 1)]
+      })
+    }
   }
 
   const renderPost = (post: IPost, i: number) => {
@@ -157,17 +221,47 @@ const Mypage = (props: { userName?: string }) => {
             onClose={() => setChangeProfileOpen(false)}
             bio={profile?.bio ?? ""}
           />
+          <FollowListModal
+            open={followListOpen}
+            onClose={() => setFollowListOpen(false)}
+            ids={follows}
+            title="팔로우"
+            width="23em"
+          />
+          <FollowListModal
+            open={followerListOpen}
+            onClose={() => setFollowerListOpen(false)}
+            ids={followers}
+            title="팔로워"
+            width="23em"
+          />
           <div className={UserProfileContainer}>
             <div onClick={() => setChangeAvatarOpen(true)}>
               <Profile user={user} imageStyle={css`width: 10em; height: 10em;`} nameHide />
             </div>
             <div className={UserDetailsContainer}>
               <div className={css`display: flex; flex-direction: row; align-items: center;`}>
-                <Profile user={user} nameStyle={css`font-size: 2.5em; font-weight: 250;`} avatarHide style={css`margin-right: 1em;`} />
-                {userName === me.name && <SettingsIcon className={css`cursor: pointer;`} onClick={() => setChangeProfileOpen(true)} />}
+                <Profile user={user}
+                  nameStyle={css`font-size: 2.5em; font-weight: 250;`}
+                  avatarHide
+                  style={css`margin-right: 1em;`} />
+                {userName != me.name &&
+                  <FollowButton isFollowed={myFollows.includes(user._id)} onClick={onClickFollow} />
+                }
+                {userName === me.name &&
+                  <SettingsIcon className={css`cursor: pointer;`} onClick={() => setChangeProfileOpen(true)} />
+                }
               </div>
-              <div className={css`padding-top: 1.3em; padding-bottom: 1.3em;`}>
-                게시물 <b>{posts.length}</b>
+              <div className={css`padding-top: 1.3em; padding-bottom: 1.3em; display: flex; flex-direction: row;`}>
+                <UserStat>
+                  게시물 <b>{posts.length}</b>
+                </UserStat>
+                <UserStat clickable onClick={() => setFollowListOpen(true)}>
+                  팔로우 <b>{follows.length}</b>
+                </UserStat>
+                <UserStat clickable onClick={() => setFollowerListOpen(true)}>
+                  팔로워 <b>{followers.length}</b>
+                </UserStat>
               </div>
               <div className={css`flex: 1;`}>
                 {profile?.bio}
@@ -179,7 +273,7 @@ const Mypage = (props: { userName?: string }) => {
             {posts?.length === 0 && <span className={css`font-size: 1.3em;`}>아직 아무 것도 올리지 않았어요.</span>}
             {posts?.length > 0 && posts.map(renderPost)}
           </Posts>
-        </ContentWrapperCentered>
+        </ContentWrapperCentered >
       }
     </>
   )

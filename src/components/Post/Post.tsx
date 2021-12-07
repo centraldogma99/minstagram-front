@@ -46,7 +46,7 @@ const postsTextContainer = css`
   flex: 1;
   display: flex;
   flex-direction: column;
-  font-size: 0.9em;
+  /* font-size: 0.9em; */
   padding-left: 0.9em;
   padding-right: 0.9em;
   padding-top: 0.2em;

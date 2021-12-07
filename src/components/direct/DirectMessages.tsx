@@ -2,7 +2,6 @@ import React, { useContext } from "react"
 import { IDirectRoom, IDirectMessage } from "../../types/directs";
 import AuthContext from "../../context/authContext";
 import { css } from "@emotion/css";
-import { backServer } from "../../configs/env";
 import Profile from "../Profile";
 
 const directMessageContainer = css`

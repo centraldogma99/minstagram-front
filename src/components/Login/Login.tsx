@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useLayoutEffect } from "react";
+import React, { useState, useContext, useLayoutEffect } from "react";
 import "./Login.css"
 import { backServer } from "../../configs/env";
 import axios from "axios"
@@ -59,14 +59,19 @@ const Login = () => {
     }
   }, [])
 
+  const validateName = (name: string) => {
+    if (name.match(/[^A-Za-z._0-9]/g)) return false;
+    else return true;
+  }
+
   const validate = (userInfo: { email: string, name: string, password: string }) => {
     let msg;
     const { email, name, password } = userInfo;
     if (!email.includes("@") || !email.includes(".")) {
       msg = "유효하지 않은 이메일 입니다."
       setInvalidTerms({ ...invalidTerms, email: true })
-    } else if (name.includes("dog")) {
-      msg = "계정 이름에 'dog'을 포함할 수 없습니다."
+    } else if (!validateName(name)) {
+      msg = "계정 이름은 소/대문자, 숫자, 점(.), 밑줄(_)만 가능합니다."
       setInvalidTerms({ ...invalidTerms, name: true })
     } else if (password.length < 8) {
       msg = "비밀번호는 8자 이상이어야 합니다."

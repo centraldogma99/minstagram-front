@@ -1,11 +1,10 @@
-import React, { useLayoutEffect, useContext, useState, useEffect } from "react";
+import React, { useLayoutEffect, useContext, useState } from "react";
 import { Box } from "@mui/system";
 import { backServer } from "../../configs/env";
 import axios from "axios";
 import AuthContext from "../../context/authContext";
 import { IDirectRoom } from "../../types/directs";
 import { ListItemText, ListItem } from "@mui/material";
-import DirectMessages from "./DirectMessages";
 import Direct from "./Direct";
 import { IUser } from "../../types/postTypes";
 import { css } from "@emotion/css"

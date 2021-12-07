@@ -3,16 +3,13 @@ import "./App.css";
 import Login from "./components/Login/Login";
 import Mypage from "./components/Mypage/Mypage";
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
-  Redirect
 } from "react-router-dom";
 import TopBar from "./components/TopBar/TopBar";
 import Posts from "./components/Post/Posts"
 import AuthContext from "./context/authContext";
 import { IUser } from "./types/postTypes";
-import EditPost from "./components/Post/EditPost";
 import DirectList from "./components/direct/DirectList";
 import Post from "./components/Post/Post"
 import { useEffect } from "react";

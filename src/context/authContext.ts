@@ -1,6 +1,5 @@
 import { createContext } from "react";
 import { IAuthContext } from "../types/contextTypes";
-import { IUser } from "../types/postTypes";
 
 const AuthContext = createContext<IAuthContext>({
   isAuthenticated: false,

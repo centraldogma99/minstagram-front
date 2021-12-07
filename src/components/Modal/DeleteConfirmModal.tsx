@@ -2,8 +2,6 @@ import React from "react"
 import { Divider } from "@mui/material";
 import ModalMenuItem from "./ModalMenuItem";
 import * as deletePostAPI from "../../modules/deletePost";
-import { useState } from "react";
-import { useEffect } from "react";
 import { useContext } from "react";
 import PostsContext from "../../context/PostsContext";
 import PostContext from "../../context/postContext";
