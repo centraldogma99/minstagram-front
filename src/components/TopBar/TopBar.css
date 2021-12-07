@@ -12,7 +12,8 @@
   width:100%;
   position:fixed;
   top:0px;
-  background-color: #eee;
+  background-color: #fff;
+  border-bottom: 0.5px solid gainsboro;
   z-index: 9;
 }
 

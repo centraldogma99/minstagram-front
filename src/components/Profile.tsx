@@ -8,7 +8,15 @@ import { css } from "@emotion/css"
 import defaultProfileImage from "../assets/defaultProfile.png"
 
 // name is ambiguous: recommend AvatarWithName
-const Profile = (props: { user: IUser, style?: string, imageStyle?: string, nameStyle?: string, onClick?: any, avatarHide?: boolean, nameHide?: boolean }) => {
+const Profile = (props: {
+  user: IUser,
+  style?: string,
+  imageStyle?: string,
+  nameStyle?: string,
+  onClick?: any,
+  avatarHide?: boolean,
+  nameHide?: boolean
+}) => {
   const profileStyle = css`
     display: flex;
     align-items: center;

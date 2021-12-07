@@ -10,6 +10,7 @@ import NewPostModal from "../Modal/NewPostModal"
 import { css } from "@emotion/css"
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import LogoutIcon from '@mui/icons-material/Logout';
+import SearchText from "../search/SearchText"
 
 const TopBarButtonStyle = css`
 
@@ -42,7 +43,7 @@ const TopBar = () => {
           Minstagram
         </span>
       </Link>
-
+      <SearchText />
       <span id="TopBarRightSide">
         <span id="TopBarButtons">
           {/* <Link to="/directs">

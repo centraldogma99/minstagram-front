@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import { css } from "@emotion/css";
 
 export const InputText = styled.input`
   font-size: 1em;

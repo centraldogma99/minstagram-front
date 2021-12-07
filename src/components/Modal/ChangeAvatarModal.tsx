@@ -7,8 +7,6 @@ import { useContext } from 'react';
 import AuthContext from '../../context/authContext';
 import { backServer } from '../../configs/env';
 import axios from 'axios';
-import { IUser } from '../../types/postTypes';
-import userEvent from '@testing-library/user-event';
 
 const Input = styled.input`
   display: none;
@@ -41,14 +39,6 @@ const PicturePreview = css`
   width: 100%;
   height: 100%;
   object-fit: cover;
-`
-
-const ErrorText = css`
-font-weight: bold;
-  margin-top: 1.2em;
-  padding: 0.5em;
-  font-size: 0.8em;
-  color: red;
 `
 
 const ChangeAvatarModal = (props: { open: boolean, onClose: () => void }) => {

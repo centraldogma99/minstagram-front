@@ -2,7 +2,6 @@ import React from "react"
 import { IUser } from "../../types/postTypes";
 import DirectMessages from "./DirectMessages";
 import { IDirectMessage, IDirectRoom } from "../../types/directs";
-import CommentForm from "../Post/CommentForm";
 import { useState, useContext } from "react";
 import { useEffect } from "react";
 import axios from "axios";
