@@ -16,6 +16,7 @@ import { useContext } from "react";
 import AuthContext from "../../context/authContext";
 import FollowButton from "./FollowButton";
 import FollowListModal from "./FollowListModal";
+import UnknownError from "../Error/UnknownError";
 
 const ContentWrapperCentered = styled.div`
   padding-top: 4em;
@@ -106,51 +107,65 @@ const Mypage = (props: { userName?: string }) => {
   // API 로딩 중인지?
   const [isFetching, setIsFetching] = useState<boolean>(true);
 
+  const [isError, setIsError] = useState<{ error: boolean, reason: string }>({ error: false, reason: "" });
+
   // FIXME: res typed any
   // load user info/posts
   useLayoutEffect(() => {
     async function fetchPosts() {
       // 페이지에 표시할 유저 정보 받아오기
-      const res: any = await axios.get(`${backServer}/users/name`, {
-        params: {
-          name: userName
-        }
-      }).catch(e => e.response)
-      setIsFetching(false);
-      if (res.status === 404) {
-        return;
-      }
-      setUser(res.data);
-      const user = res.data
-      const posts = await getPosts(res.data._id);
-      const profile = await getProfile(res.data._id);
-      setPosts(posts);
-      setProfile(profile);
-
-
-      const myFollows = await axios.get<string[]>(`${backServer}/users/follow`, {
-        params: {
-          userId: me._id
-        }
-      }).then(res => res.data)
-      setMyFollows(myFollows);
-
-      if (user) {
-        const follows = await axios.get<string[]>(`${backServer}/users/follow`, {
+      try {
+        const res = await axios.get<IUser>(`${backServer}/users/name`, {
           params: {
-            userId: user._id
+            name: userName
+          }
+        })
+        if (res instanceof Error) throw res;
+        setIsFetching(false)
+
+        const user = res.data;
+        setUser(user);
+        const posts = await getPosts(user._id);
+        const profile = await getProfile(user._id);
+        setPosts(posts);
+        setProfile(profile);
+
+
+        const myFollows = await axios.get<string[]>(`${backServer}/users/follow`, {
+          params: {
+            userId: me._id
           }
         }).then(res => res.data)
-        setFollows(follows);
-        const followers = await axios.get<string[]>(`${backServer}/users/follower`, {
-          params: {
-            userId: user._id
+        setMyFollows(myFollows);
+
+        if (user) {
+          const follows = await axios.get<string[]>(`${backServer}/users/follow`, {
+            params: {
+              userId: user._id
+            }
+          }).then(res => res.data)
+          setFollows(follows);
+          const followers = await axios.get<string[]>(`${backServer}/users/follower`, {
+            params: {
+              userId: user._id
+            }
+          }).then(res => res.data)
+          setFollowers(followers);
+        }
+      } catch (e) {
+        if (axios.isAxiosError(e)) {
+          if (e.response?.status === 404) {
+            setIsError({ error: true, reason: "404" })
+            return;
+          } else {
+            setIsError({ error: true, reason: "" });
           }
-        }).then(res => res.data)
-        setFollowers(followers);
+        } else {
+          setIsError({ error: true, reason: "" });
+        }
       }
     }
-    fetchPosts();
+    fetchPosts()
   }, [props.userName, userNameParam, me]);
 
   const getPosts = async (id: string): Promise<IPost[]> => {
@@ -204,7 +219,8 @@ const Mypage = (props: { userName?: string }) => {
   // useLayoutEffect에서 user를 만들기 때문에 type assertion 했다.
   return (
     <>
-      {(!isFetching && !user) && <WrongLink />}
+      {(isError.error && isError.reason === "404") && <WrongLink />}
+      {(isError.error && isError.reason === "") && <UnknownError />}
       {!isFetching && user && profile &&
         <ContentWrapperCentered>
           <ChangeAvatarModal

@@ -289,7 +289,7 @@ const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: 
       </>} */}
         </PostContext.Provider >
       }
-      {!post && <WrongLink />}
+      {(!isInitialLoad && !post) && <WrongLink />}
     </>
   );
 }
