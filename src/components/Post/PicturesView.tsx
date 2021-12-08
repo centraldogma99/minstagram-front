@@ -1,9 +1,10 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { backServer } from "../../configs/env";
 import { useState } from "react";
 import before from '../../assets/before.svg'
 import next from '../../assets/next.svg'
 import { css } from "@emotion/css"
+import axios from "axios";
 
 const navButton = css`
   position: absolute;
@@ -28,6 +29,7 @@ const beforeButton = css`
 // 넘기기 기능 구현할것
 const PicturesView = (props: { pictures: string[], isURL?: boolean, sizeCalc?: boolean, style?: string, containerStyle?: string }) => {
   const [viewSize, setViewSize] = useState<{ height: number, width: number }>()
+  const [pictures, setPictures] = useState<HTMLImageElement[]>([]);
 
   // newPost에서는 isURL = true
   const PostPictureContainer = css`
@@ -50,6 +52,16 @@ const PicturesView = (props: { pictures: string[], isURL?: boolean, sizeCalc?: b
   const [current, setCurrent] = useState<number>(0);
 
   const view = useRef<any>();
+
+  useEffect(() => {
+    if (!props.isURL) {
+      props.pictures.forEach(picture => {
+        const img = new Image();
+        img.src = `${backServer}/images/${picture}`;
+        // setPictures(prev => [...prev, img])
+      })
+    }
+  }, [])
 
   const onLoad = () => {
     if (!viewSize && current === 0)
