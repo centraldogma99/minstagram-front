@@ -75,7 +75,7 @@ const Posts = (props: { posts?: IPost[], postIds?: string[] }) => {
 
   // Attach the scroll listener to the div
   useEffect(() => {
-    const throttled = _.throttle(handleScroll, 300)
+    const throttled = _.throttle(handleScroll, 150)
     if (ref.current) {
       ref.current.addEventListener('scroll', throttled)
     }
