@@ -1,12 +1,12 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { createContext } from "react";
 import { IAuthContext } from "../types/contextTypes";
 
 const AuthContext = createContext<IAuthContext>({
   isAuthenticated: false,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   setIsAuthenticated: () => { },
+  checkCookie: () => { return false; },
   user: { _id: "", name: "", avatar: "", email: "" },
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   setUser: () => { }
 });
 

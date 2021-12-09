@@ -2,7 +2,6 @@ import React, { useState, useContext, useLayoutEffect } from "react";
 import "./Login.css"
 import { backServer } from "../../configs/env";
 import axios from "axios"
-import Cookies from 'js-cookie';
 import AuthContext from "../../context/authContext";
 import { Divider } from "@mui/material";
 import { css } from "@emotion/css";
@@ -33,9 +32,6 @@ const willYouRegister = css`
 `
 
 const Login = () => {
-  // const [email, setEmail] = useState<string>("");
-  // const [password, setPassword] = useState<string>("");
-  // const [name, setName] = useState<string>("");
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -43,7 +39,7 @@ const Login = () => {
   })
   const [isRegister, setIsRegister] = useState<boolean>(false);
   const [statusText, setStatusText] = useState<string>("");
-  const { setIsAuthenticated, setUser } = useContext(AuthContext);
+  const { setIsAuthenticated, setUser, checkCookie } = useContext(AuthContext);
   const [invalidTerms, setInvalidTerms] = useState({
     email: false,
     name: false,
@@ -51,11 +47,10 @@ const Login = () => {
   })
 
   // 이미 로그인되어 있을 경우
-  // useEffect를 쓸 필요도 없을지도?
   useLayoutEffect(() => {
+    // 브라우저를 닫았다 열었을 때를 처리하기 위해, local storage에 정보 저장
     const storageUser = localStorage.getItem('user')
-    if (storageUser && Cookies.get('credential')) {
-      setIsAuthenticated(true);
+    if (storageUser && checkCookie()) {
       setUser(JSON.parse(storageUser))
     }
   }, [])

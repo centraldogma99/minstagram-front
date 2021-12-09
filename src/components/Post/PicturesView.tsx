@@ -4,7 +4,6 @@ import { useState } from "react";
 import before from '../../assets/before.svg'
 import next from '../../assets/next.svg'
 import { css } from "@emotion/css"
-import axios from "axios";
 
 const navButton = css`
   position: absolute;
@@ -29,7 +28,6 @@ const beforeButton = css`
 // 넘기기 기능 구현할것
 const PicturesView = (props: { pictures: string[], isURL?: boolean, sizeCalc?: boolean, style?: string, containerStyle?: string }) => {
   const [viewSize, setViewSize] = useState<{ height: number, width: number }>()
-  const [pictures, setPictures] = useState<HTMLImageElement[]>([]);
 
   // newPost에서는 isURL = true
   const PostPictureContainer = css`
