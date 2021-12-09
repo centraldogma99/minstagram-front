@@ -1,1 +1,0 @@
-export const backServer = "http://www.dogmadevs.com:9000"

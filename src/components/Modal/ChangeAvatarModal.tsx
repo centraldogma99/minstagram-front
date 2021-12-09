@@ -5,7 +5,7 @@ import styled from "@emotion/styled"
 import { css } from "@emotion/css"
 import { useContext } from 'react';
 import AuthContext from '../../context/authContext';
-import { backServer } from '../../configs/env';
+const backServer = process.env.REACT_APP_backServer;
 import axios from 'axios';
 
 const Input = styled.input`

@@ -7,7 +7,7 @@ import styled from '@emotion/styled';
 import { useContext } from 'react';
 import AuthContext from '../../context/authContext';
 import axios from 'axios';
-import { backServer } from '../../configs/env';
+const backServer = process.env.REACT_APP_backServer;
 import { Divider } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import _ from 'lodash'

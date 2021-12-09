@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import axios from "axios"
-import { backServer } from "../../configs/env"
+const backServer = process.env.REACT_APP_backServer;
 import { useHistory, useLocation, useParams } from "react-router-dom"
 
 const EditPost = () => {

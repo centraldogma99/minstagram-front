@@ -1,9 +1,9 @@
 import React from "react"
 // import useProfile from "../hooks/useProfile";
 import { IUser } from "../types/postTypes";
-import { backServer } from "../configs/env";
 import { Link } from "react-router-dom";
 import { css } from "@emotion/css"
+const backServer = process.env.REACT_APP_backServer;
 
 import defaultProfileImage from "../assets/defaultProfile.png"
 

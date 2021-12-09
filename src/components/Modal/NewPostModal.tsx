@@ -6,7 +6,7 @@ import { css } from "@emotion/css"
 import Profile from '../Profile';
 import { useContext } from 'react';
 import AuthContext from '../../context/authContext';
-import { backServer } from '../../configs/env';
+const backServer = process.env.REACT_APP_backServer;
 import axios from 'axios';
 import PicturesView from '../Post/PicturesView';
 import TextEditorWithLength from '../TextEditorWithLength/TextEditorWithLength';

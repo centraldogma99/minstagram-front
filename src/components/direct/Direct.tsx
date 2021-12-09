@@ -5,7 +5,7 @@ import { IDirectMessage, IDirectRoom } from "../../types/directs";
 import { useState, useContext } from "react";
 import { useEffect } from "react";
 import axios from "axios";
-import { backServer } from "../../configs/env";
+const backServer = process.env.REACT_APP_backServer;
 import { io } from "socket.io-client";
 import Cookies from "js-cookie";
 import AuthContext from "../../context/authContext";
@@ -66,6 +66,7 @@ const Direct = (props: { users: IUser[] }) => {
   //
   useEffect(() => {
     if (direct === null) return;
+    if (!backServer) return;
     const socket = io(backServer);
 
     socket.on("connect", () => {

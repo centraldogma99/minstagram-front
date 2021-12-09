@@ -14,9 +14,9 @@ import DirectList from "./components/direct/DirectList";
 import Post from "./components/Post/Post"
 import { useLayoutEffect } from "react";
 import axios from "axios";
-import { backServer } from "./configs/env";
 import { PostsStyle } from "./components/Post/Posts"
 import Cookies from "js-cookie";
+const backServer = process.env.REACT_APP_backServer;
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);

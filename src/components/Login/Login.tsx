@@ -1,6 +1,6 @@
 import React, { useState, useContext, useLayoutEffect } from "react";
 import "./Login.css"
-import { backServer } from "../../configs/env";
+const backServer = process.env.REACT_APP_backServer;
 import axios from "axios"
 import AuthContext from "../../context/authContext";
 import { Divider } from "@mui/material";

@@ -5,7 +5,7 @@ import "./TopBar.css"
 import { Link } from "react-router-dom"
 import AuthContext from "../../context/authContext"
 import axios from "axios"
-import { backServer } from "../../configs/env"
+const backServer = process.env.REACT_APP_backServer;
 import NewPostModal from "../Modal/NewPostModal"
 import { css } from "@emotion/css"
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';

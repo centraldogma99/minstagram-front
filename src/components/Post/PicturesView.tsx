@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { backServer } from "../../configs/env";
+const backServer = process.env.REACT_APP_backServer;
 import { useState } from "react";
 import before from '../../assets/before.svg'
 import next from '../../assets/next.svg'

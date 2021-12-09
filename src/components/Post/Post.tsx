@@ -12,7 +12,7 @@ import { useParams } from "react-router-dom";
 import AuthContext from "../../context/authContext";
 import PostContext from "../../context/postContext"
 import axios from "axios"
-import { backServer } from "../../configs/env";
+const backServer = process.env.REACT_APP_backServer;
 import CommentForm from "./CommentForm";
 import { Divider } from "@mui/material";
 import { css } from "@emotion/css"

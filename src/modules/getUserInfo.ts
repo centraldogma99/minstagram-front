@@ -1,5 +1,5 @@
 import axios from "axios";
-import { backServer } from "../configs/env"
+const backServer = process.env.REACT_APP_backServer;
 
 const getUserInfo = async (id?: string) => {
   let res: any;

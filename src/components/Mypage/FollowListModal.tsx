@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import axios from 'axios';
 import React, { useLayoutEffect } from 'react'
 import { useState } from 'react';
-import { backServer } from '../../configs/env';
+const backServer = process.env.REACT_APP_backServer;
 import { IUser } from '../../types/postTypes';
 import MinstagramModal from '../Modal/MinstagramModal';
 import Profile from '../Profile';

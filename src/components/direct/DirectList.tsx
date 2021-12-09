@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useContext, useState } from "react";
 import { Box } from "@mui/system";
-import { backServer } from "../../configs/env";
+const backServer = process.env.REACT_APP_backServer;
 import axios from "axios";
 import AuthContext from "../../context/authContext";
 import { IDirectRoom } from "../../types/directs";

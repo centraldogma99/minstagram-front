@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { backServer } from "../../configs/env";
+const backServer = process.env.REACT_APP_backServer;
 import { IPost } from "../../types/postTypes"
 import { Snackbar } from "@mui/material";
 import Post from "./Post";

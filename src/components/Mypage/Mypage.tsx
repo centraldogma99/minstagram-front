@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useState } from "react";
 import { IPost, IUser } from "../../types/postTypes"
-import { backServer } from "../../configs/env";
+const backServer = process.env.REACT_APP_backServer;
 import axios from "axios"
 import styled from "styled-components";
 import Profile from "../Profile";

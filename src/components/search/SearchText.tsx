@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React from 'react'
 import { useState, useEffect } from 'react';
-import { backServer } from '../../configs/env';
+const backServer = process.env.REACT_APP_backServer;
 import { Popover } from '@mui/material';
 import { IUser } from '../../types/postTypes';
 import styled from '@emotion/styled';
