@@ -81,18 +81,21 @@ const postModalSide = css`
   flex: 1;
   flex-direction: column;
   height: 100%;
+  min-width: 35%;
+  word-break: break-word;
 `;
 
 const SPostTextContainerModal = css`
   text-align: left;
   margin-top: 0.7em;
   margin-bottom: 0.2em;
+  font-size: 0.9em;
 `;
 
 // --- 모달 post style 끝 ---
 
 const SPostTextContainer = css`
-  font-size: 0.9em;
+  word-break: break-word;
   text-align: left;
   margin-top: 0.7em;
   margin-bottom: 0.2em;
@@ -105,6 +108,7 @@ const SCommentsContainerStyle = css`
 `
 
 const SCommentsStyle = css`
+  font-size: 0.9em;
   padding-bottom: 0.2em;
   /* margin-top: 1em; */
 `
@@ -224,7 +228,7 @@ const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: 
               {/* {likes.length > 0 && <Likes likes={likes} />} */}
               <div className={postsTextContainer}>
                 <div className={SPostTextContainer}>
-                  <b>{post.author.name}</b> &nbsp; {post.text}
+                  <span className={css`font-weight: bold; margin-right: 1em;`}>{post.author.name}</span>{post.text}
                 </div>
                 <div className={postTimestamp}>
                   {dayjs(new Date(post.timestamp)).fromNow()}
@@ -261,7 +265,7 @@ const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: 
                 <Divider />
                 <div className={postsTextContainer}>
                   <div className={SPostTextContainerModal}>
-                    <b>{post.author.name}</b> &nbsp; {post.text}
+                    <span className={css`font-weight: bold; margin-right: 1em;`}>{post.author.name}</span>{post.text}
                   </div>
                   <div className={postTimestamp}>
                     {dayjs(new Date(post.timestamp)).fromNow()}

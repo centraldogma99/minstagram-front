@@ -14,7 +14,7 @@ dayjs.locale('ko')
 
 const commentTimestamp = css`
   font-size: 0.8em;
-  margin-top: 0.5em;
+  margin-top: 0.8em;
   margin-bottom: 1em;
 `
 
@@ -35,7 +35,7 @@ const Comment = (props: { comment: IComment, index: number, style?: string, time
   `;
 
   const CommentAuthorName = css`
-    display: inline-block;
+    display: inline;
     font-weight: bold;
     margin-right: 1em;
     ${style}
@@ -50,14 +50,14 @@ const Comment = (props: { comment: IComment, index: number, style?: string, time
         width="18em"
         isAuthor={comment.author._id === user._id}
       />
-      <div className={css`display: flex; flex-direction: row; justify-content: space-between`}>
+      <div className={css`display: flex; flex-direction: row; justify-content: space-between;`}>
         <div>
           <Link to={`/${comment.author.name}`}>
             <span className={CommentAuthorName}>{comment.author.name}</span>
           </Link>
           <span className={CommentContent}>{comment.content}</span>
         </div>
-        <img src={optionImg} className={css`width: 1em; height: 1em; cursor: pointer;`} onClick={() => { setOpen(true) }} />
+        <img src={optionImg} className={css`width: 1em; height: 1em; cursor: pointer; padding-left: 0.3em;`} onClick={() => { setOpen(true) }} />
       </div>
       {props.timestamp && <div className={commentTimestamp}>
         {dayjs(new Date(comment.timestamp)).fromNow()}

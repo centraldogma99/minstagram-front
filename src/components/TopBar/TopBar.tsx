@@ -25,8 +25,9 @@ const TopBarProfile = css`
 `
 
 const TopBar = () => {
-  const { user, setIsAuthenticated, setUser } = useContext(AuthContext);
+  const { user, setIsAuthenticated, setUser, isAuthenticated } = useContext(AuthContext);
   const [isNewPost, setIsNewPost] = useState(false);
+
   const useLogout = () => {
     axios.get(`${backServer}/users/logout`, { withCredentials: true })
     setIsAuthenticated(false);

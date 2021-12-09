@@ -16,6 +16,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import { backServer } from "./configs/env";
 import { PostsStyle } from "./components/Post/Posts"
+import Cookies from "js-cookie";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
@@ -36,18 +37,22 @@ function App() {
   //   )
   // }
 
+  // 유저 정보 refresh
   useEffect(() => {
     (async () => {
       if (isAuthenticated && user._id.length > 0) {
         try {
-          const res = await axios.get(`${backServer}/users/${user._id}`, { withCredentials: true });
-          setUser(res.data as IUser);
+          const res = await axios.get<IUser>(`${backServer}/users/${user._id}`, { withCredentials: true });
+          setUser(res.data);
+          console.log(res.data)
         } catch (e) {
           console.log(e);
         }
       }
     })();
   }, [isAuthenticated, user._id])
+
+  // if (!Cookies.get('credentials')) setIsAuthenticated(false);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, user, setUser }}>
@@ -76,7 +81,6 @@ function App() {
               </Route>
             </Switch>
           </div>
-
         </>}
       </div>
     </AuthContext.Provider>

@@ -130,13 +130,15 @@ const Mypage = (props: { userName?: string }) => {
         setPosts(posts);
         setProfile(profile);
 
+        if (me._id != '') {
+          const myFollows = await axios.get<string[]>(`${backServer}/users/follow`, {
+            params: {
+              userId: me._id
+            }
+          }).then(res => res.data)
+          setMyFollows(myFollows);
+        }
 
-        const myFollows = await axios.get<string[]>(`${backServer}/users/follow`, {
-          params: {
-            userId: me._id
-          }
-        }).then(res => res.data)
-        setMyFollows(myFollows);
 
         if (user) {
           const follows = await axios.get<string[]>(`${backServer}/users/follow`, {
@@ -221,7 +223,7 @@ const Mypage = (props: { userName?: string }) => {
     <>
       {(isError.error && isError.reason === "404") && <WrongLink />}
       {(isError.error && isError.reason === "") && <UnknownError />}
-      {!isFetching && user && profile &&
+      {(!isError.error && !isFetching && user && profile) &&
         <ContentWrapperCentered>
           <ChangeAvatarModal
             open={changeAvatarOpen}

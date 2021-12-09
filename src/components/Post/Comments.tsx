@@ -5,6 +5,7 @@ import Comment from "./Comment";
 import PostContext from "../../context/postContext";
 
 const moreComment = css`
+  font-size: 0.9em;
   margin-top: 0.6em;
   color: darkgray;
 `

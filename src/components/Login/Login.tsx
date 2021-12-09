@@ -8,6 +8,7 @@ import { Divider } from "@mui/material";
 import { css } from "@emotion/css";
 import styled from "@emotion/styled"
 import { InputText, Button } from "../styled/InputText";
+import { IUser } from "../../types/postTypes";
 
 const LoginInputText = styled(InputText)`
   width: 20em;
@@ -103,11 +104,11 @@ const Login = () => {
     e.preventDefault();
     setInvalidTerms({ email: false, name: false, password: false })
     if (!isRegister) {
-      const res = await axios.post(backServer + "/users/login", {
+      const res = await axios.post<IUser>(backServer + "/users/login", {
         email: form.email,
         password: form.password
       }, { withCredentials: true })
-        .catch((e: any) => e.response);
+        .catch(e => e.response);
       if (res?.status === 200) {
         localStorage.setItem('user', JSON.stringify((res as any).data));
         setIsAuthenticated(true);
@@ -191,7 +192,6 @@ const Login = () => {
           {statusText}
         </div>
         <LoginButton>{isRegister ? '가입' : '로그인'}</LoginButton>
-
 
         {!isRegister &&
           <>
