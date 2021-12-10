@@ -1,11 +1,11 @@
 import React from "react"
 import { Divider } from "@mui/material";
-import ModalMenuItem from "./ModalMenuItem";
+import ModalMenuItem from "../Modal/ModalMenuItem";
 import * as deletePostAPI from "../../modules/deletePost";
 import { useContext } from "react";
 import PostsContext from "../../context/PostsContext";
 import PostContext from "../../context/postContext";
-import MessageAndButtonsModal from "./MessageAndButtonsModal";
+import MessageAndButtonsModal from "../Modal/MessageAndButtonsModal";
 import ToastContext from "../../context/ToastContext";
 import axios from "axios";
 const backServer = process.env.REACT_APP_backServer;

@@ -6,7 +6,7 @@ import Comments from "./Comments"
 import styled from "styled-components";
 import { IPost } from "../../types/postTypes";
 import option from "../../assets/option.svg"
-import PostMenuModal from "../Modal/PostMenuModal";
+import PostMenuModal from "./PostMenuModal";
 import getPost from "../../modules/getPost";
 import { useParams } from "react-router-dom";
 import AuthContext from "../../context/authContext";
@@ -17,7 +17,7 @@ import CommentForm from "./CommentForm";
 import { Divider } from "@mui/material";
 import { css } from "@emotion/css"
 import WrongLink from "../Error/WrongLink";
-import PostViewModal from "../Modal/PostViewModal";
+import PostViewModal from "./PostViewModal";
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko'
 import relativeTime from 'dayjs/plugin/relativeTime'

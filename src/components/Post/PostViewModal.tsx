@@ -1,6 +1,6 @@
 import React from "react";
-import MinstagramModal from "./MinstagramModal";
-import Post from "../Post/Post";
+import MinstagramModal from "../Modal/MinstagramModal";
+import Post from "./Post";
 import { IPost } from "../../types/postTypes";
 import { css } from "@emotion/css"
 

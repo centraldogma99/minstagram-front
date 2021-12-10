@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { css } from '@emotion/css'
 import { IComment } from "../../types/postTypes";
 import { Link } from 'react-router-dom';
-import CommentMenuModal from '../Modal/CommentMenuModal';
+import CommentMenuModal from './CommentMenuModal';
 import optionImg from '../../assets/option.svg'
 import { useContext } from 'react';
 import AuthContext from '../../context/authContext';

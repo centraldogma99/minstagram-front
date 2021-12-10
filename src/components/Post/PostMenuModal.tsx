@@ -1,12 +1,12 @@
 import React, { useContext } from "react"
 import { Divider } from "@mui/material";
-import ModalMenuItem from "./ModalMenuItem";
+import ModalMenuItem from "../Modal/ModalMenuItem";
 import { Link } from "react-router-dom"
 import DeleteConfirmModal from "./DeleteConfirmModal";
 import { useState } from "react";
 import PostContext from "../../context/postContext";
-import MessageAndButtonsModal from "./MessageAndButtonsModal";
-import NewPostModal from "./NewPostModal";
+import MessageAndButtonsModal from "../Modal/MessageAndButtonsModal";
+import NewPostModal from "../TopBar/NewPostModal";
 
 const redBoldStyle = {
   fontWeight: 'bold',

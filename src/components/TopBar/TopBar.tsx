@@ -6,7 +6,7 @@ import { Link } from "react-router-dom"
 import AuthContext from "../../context/authContext"
 import axios from "axios"
 const backServer = process.env.REACT_APP_backServer;
-import NewPostModal from "../Modal/NewPostModal"
+import NewPostModal from "./NewPostModal"
 import { css } from "@emotion/css"
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import LogoutIcon from '@mui/icons-material/Logout';

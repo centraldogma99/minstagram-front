@@ -28,6 +28,14 @@ export const PostsStyle = css`
   padding-top: 4em;
 `
 
+interface PostsRes {
+  totalPosts: number,
+  totalPages: number,
+  currentPage: number,
+  pageSize: number,
+  data: IPost[]
+}
+
 const PAGE_SIZE = 5;
 
 // post를 서버에서 가져오고 저장
@@ -39,32 +47,36 @@ const Posts = (props: { posts?: IPost[], postIds?: string[] }) => {
   const [isReverse, setIsReverse] = useState(false);
   const [topPost, setTopPost] = useState<number>();
 
+  const [isFetching, setIsFetching] = useState<boolean>(true);
+
   // 현재 보고 있는 페이지
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [hasNext, setHasNext] = useState<boolean>(true);
   const ref = useRef<any>();
 
   useEffect(() => {
-    if (!props.posts && hasNext) {
+    console.log(user)
+    if (!props.posts && hasNext && user._id != '') {
       // if(currentPage )
       const f = async () => {
         try {
-          const res: any = await axios.get(`${backServer}/posts/`,
+          const res = await axios.get<PostsRes>(`${backServer}/posts/`,
             { params: { pageSize: PAGE_SIZE, page: currentPage, userId: user._id } }
           )
           if (!res.data.data) {
             setHasNext(false)
             return;
           }
-          setPosts(prev => [...prev, ...(res.data.data as IPost[])])
+          setPosts(prev => [...prev, ...res.data.data])
         } catch (e: any) {
           // if (e.response && e.response.status === 400) setHasNext(false);
           console.log(e);
         }
+        setIsFetching(false);
       }
       f();
     }
-  }, [currentPage, hasNext])
+  }, [currentPage, hasNext, user])
 
   // The scroll listener
   const handleScroll = useCallback((e) => {
@@ -126,7 +138,7 @@ const Posts = (props: { posts?: IPost[], postIds?: string[] }) => {
             setTopPost(i)
           }
         }} >
-          {posts.length === 0 &&
+          {!isFetching && posts.length === 0 &&
             <div>
               표시할 포스트가 없습니다.
             </div>

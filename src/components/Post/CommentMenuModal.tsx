@@ -2,8 +2,8 @@ import React from 'react'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import DeleteConfirmModal from './DeleteConfirmModal'
-import MessageAndButtonsModal from './MessageAndButtonsModal'
-import ModalMenuItem from './ModalMenuItem'
+import MessageAndButtonsModal from '../Modal/MessageAndButtonsModal'
+import ModalMenuItem from '../Modal/ModalMenuItem'
 import { Divider } from '@mui/material'
 
 const CommentMenuModal = (props: { open: boolean, onClose: () => void, index: number, isAuthor?: boolean, width?: string }) => {

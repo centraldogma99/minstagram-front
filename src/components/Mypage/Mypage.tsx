@@ -6,12 +6,12 @@ import styled from "styled-components";
 import Profile from "../Profile";
 import { useParams } from "react-router-dom";
 import { css } from '@emotion/css'
-import ChangeAvatarModal from "../Modal/ChangeAvatarModal";
-import PostViewModal from "../Modal/PostViewModal";
+import ChangeAvatarModal from "./ChangeAvatarModal";
+import PostViewModal from "../Post/PostViewModal";
 import { Divider } from "@mui/material";
 import WrongLink from "../Error/WrongLink";
 import SettingsIcon from '@mui/icons-material/Settings';
-import ProfileEditModal from "../Modal/ProfileEditModal";
+import ProfileEditModal from "./ProfileEditModal";
 import { useContext } from "react";
 import AuthContext from "../../context/authContext";
 import FollowButton from "./FollowButton";
@@ -61,7 +61,7 @@ const UserProfileContainer = css`
 const UserDetailsContainer = css`
   display: flex;
   flex-direction: column;
-  margin-left: 3em;
+  margin-left: 5em;
   text-align: left;
 `
 

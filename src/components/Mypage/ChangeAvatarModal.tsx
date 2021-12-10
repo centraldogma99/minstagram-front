@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import MinstagramModal from './MinstagramModal';
+import MinstagramModal from '../Modal/MinstagramModal';
 import { Button } from '@mui/material';
 import styled from "@emotion/styled"
 import { css } from "@emotion/css"
