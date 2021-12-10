@@ -12,7 +12,7 @@ const moreComment = css`
 
 const commentsDisplayed = 2;
 
-const Comments = (props: { comments: IComment[], isExpanded: boolean, style?: string, containerStyle?: string, timestamp?: boolean }) => {
+const Comments = (props: { comments: IComment[], isExpanded: boolean, style?: string, containerStyle?: string, timestamp?: boolean, menu?: boolean }) => {
   const { comments } = props;
   const [isExpanded, setIsExpanded] = useState<boolean>(props.isExpanded);
   const { setOpen } = useContext(PostContext)
@@ -25,7 +25,7 @@ const Comments = (props: { comments: IComment[], isExpanded: boolean, style?: st
   `
 
   const renderComment = (comment: IComment, index: number) =>
-    <Comment comment={comment} key={index} index={index} style={props.style} timestamp={props.timestamp} />
+    <Comment comment={comment} key={index} index={index} style={props.style} timestamp={props.timestamp} menu={props.menu} />
 
   // 처음 로드됐을 때, 댓글이 3개 이상이면 더 보기로 표시
   // 댓글이 추가되어 2개에서 3개로 된다면 더 보기로 표시하지 않고 바로 표시

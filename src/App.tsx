@@ -68,7 +68,7 @@ function App() {
               </Route>
               <Route exact path="/posts/:postId">
                 <div className={PostsStyle}>
-                  <Post />
+                  <Post commentMenu={true} />
                 </div>
               </Route>
               <Route path="/:userNameParam">

@@ -118,7 +118,7 @@ const SPostPictures = css`
   max-height: 100%;
 `
 
-const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: boolean } | Record<string, never>)) => {
+const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: boolean, commentMenu?: boolean } | Record<string, never>)) => {
   const { postId } = useParams<{ postId: string }>();
   const [post, setPost] = useState<IPost>();
   const [show, setShow] = React.useState(false);
@@ -238,6 +238,7 @@ const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: 
                   comments={post.comments}
                   isExpanded={false}
                   style={SCommentsStyle}
+                  menu={props.commentMenu}
                 />
               </div>
 
@@ -277,6 +278,7 @@ const Post = (props: ({ post?: IPost, order?: number, style?: string, isModal?: 
                     style={SCommentsStyle}
                     containerStyle={SCommentsContainerStyle}
                     timestamp={true}
+                    menu={true}
                   />
                 </div>
                 <div>
