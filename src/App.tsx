@@ -16,11 +16,16 @@ import { useLayoutEffect } from "react";
 import axios from "axios";
 import { PostsStyle } from "./components/Post/Posts"
 import Cookies from "js-cookie";
+import ToastContext from "./context/ToastContext";
+import { Snackbar } from "@mui/material";
 const backServer = process.env.REACT_APP_backServer;
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
   const [user, setUser] = useState<IUser>({ _id: "", name: "", avatar: "", email: "" });
+
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
   const checkCookie = () => {
     const cookie = Cookies.get('credential')
@@ -45,6 +50,17 @@ function App() {
     }
   }
 
+  const handleToastClose = (
+    event: React.SyntheticEvent | React.MouseEvent,
+    reason?: string,
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setToastOpen(false);
+  };
+
   // 로그인 되어있는지 여부 확인
   useLayoutEffect(() => {
     checkCookie();
@@ -54,34 +70,42 @@ function App() {
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, user, setUser, checkCookie }}>
-      <div className="App">
-        {!isAuthenticated && <Login />}
-        {isAuthenticated && <>
-          <TopBar />
-          <div id="contentWrapper">
-            <Switch>
-              <Route exact path="/directs">
-                <DirectList />
-              </Route>
-              <Route exact path="/login">
-                <Login />
-              </Route>
-              <Route exact path="/posts/:postId">
-                <div className={PostsStyle}>
-                  <Post commentMenu={true} />
-                </div>
-              </Route>
-              <Route path="/:userNameParam">
-                <Mypage />
-              </Route>
-              <Route exact path="/">
-                <Posts />
-              </Route>
-            </Switch>
-          </div>
-        </>}
-      </div>
-    </AuthContext.Provider>
+      <Snackbar
+        open={toastOpen}
+        autoHideDuration={6000}
+        onClose={handleToastClose}
+        message={toastMessage}
+      />
+      <ToastContext.Provider value={{ setToastOpen, toastMessage, setToastMessage }}>
+        <div className="App">
+          {!isAuthenticated && <Login />}
+          {isAuthenticated && <>
+            <TopBar />
+            <div id="contentWrapper">
+              <Switch>
+                <Route exact path="/directs">
+                  <DirectList />
+                </Route>
+                <Route exact path="/login">
+                  <Login />
+                </Route>
+                <Route exact path="/posts/:postId">
+                  <div className={PostsStyle}>
+                    <Post commentMenu={true} />
+                  </div>
+                </Route>
+                <Route path="/:userNameParam">
+                  <Mypage />
+                </Route>
+                <Route exact path="/">
+                  <Posts />
+                </Route>
+              </Switch>
+            </div>
+          </>}
+        </div>
+      </ToastContext.Provider>
+    </AuthContext.Provider >
   );
 }
 

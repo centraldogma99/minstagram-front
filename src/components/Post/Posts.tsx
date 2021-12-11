@@ -2,9 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState, useRef, useCallback } from "react";
 const backServer = process.env.REACT_APP_backServer;
 import { IPost } from "../../types/postTypes"
-import { Snackbar } from "@mui/material";
 import Post from "./Post";
-import ToastContext from "../../context/ToastContext";
 import { css } from "@emotion/css"
 import FlipCameraAndroidIcon from '@mui/icons-material/FlipCameraAndroid';
 import PostsContext from "../../context/PostsContext";
@@ -42,8 +40,6 @@ const PAGE_SIZE = 5;
 const Posts = (props: { posts?: IPost[], postIds?: string[] }) => {
   const { user } = useContext(AuthContext)
   const [posts, setPosts] = useState<IPost[]>(props.posts ?? []);
-  const [toastOpen, setToastOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
   const [isReverse, setIsReverse] = useState(false);
   const [topPost, setTopPost] = useState<number>();
 
@@ -55,7 +51,6 @@ const Posts = (props: { posts?: IPost[], postIds?: string[] }) => {
   const ref = useRef<any>();
 
   useEffect(() => {
-    console.log(user)
     if (!props.posts && hasNext && user._id != '') {
       // if(currentPage )
       const f = async () => {
@@ -112,49 +107,30 @@ const Posts = (props: { posts?: IPost[], postIds?: string[] }) => {
     return ps.map((post, i) => <Post key={post._id} post={post} order={isReverse ? ps.length - i - 1 : i} />)
   }
 
-  const handleToastClose = (
-    event: React.SyntheticEvent | React.MouseEvent,
-    reason?: string,
-  ) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setToastOpen(false);
-  };
-
   return (
     <div className={PostsStyle} ref={ref}>
-      <ToastContext.Provider value={{ setToastOpen, toastMessage, setToastMessage }}>
-        <PostsContext.Provider value={{
-          deletePost: (i: number) => {
-            setPosts(prev => [...prev.slice(0, i), ...prev.slice(i + 1)])
-          },
-          editPost: (i: number, text: string) => {
-            setPosts(prev =>
-              [...prev.slice(0, i),
-              { ...prev[i], text: text },
-              ...prev.slice(i + 1)])
-            setTopPost(i)
-          }
-        }} >
-          {!isFetching && posts.length === 0 &&
-            <div>
-              표시할 포스트가 없습니다.
-            </div>
-          }
-          {posts.length > 0 && renderPosts()}
-        </PostsContext.Provider>
-      </ToastContext.Provider>
+      <PostsContext.Provider value={{
+        deletePost: (i: number) => {
+          setPosts(prev => [...prev.slice(0, i), ...prev.slice(i + 1)])
+        },
+        editPost: (i: number, text: string) => {
+          setPosts(prev =>
+            [...prev.slice(0, i),
+            { ...prev[i], text: text },
+            ...prev.slice(i + 1)])
+          setTopPost(i)
+        }
+      }} >
+        {!isFetching && posts.length === 0 &&
+          <div>
+            표시할 포스트가 없습니다.
+          </div>
+        }
+        {posts.length > 0 && renderPosts()}
+      </PostsContext.Provider>
       <FlipCameraAndroidIcon
         className={ReverseButton}
         onClick={() => { setIsReverse(prev => !prev); setTopPost(undefined); }}
-      />
-      <Snackbar
-        open={toastOpen}
-        autoHideDuration={6000}
-        onClose={handleToastClose}
-        message={toastMessage}
       />
     </div >
   )

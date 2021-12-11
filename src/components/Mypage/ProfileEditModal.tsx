@@ -6,6 +6,7 @@ import { useContext } from 'react';
 import AuthContext from '../../context/authContext';
 import axios from 'axios';
 const backServer = process.env.REACT_APP_backServer;
+import ToastContext from '../../context/ToastContext';
 import { Divider } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import _ from 'lodash'
@@ -30,6 +31,7 @@ const ProfileEditModal = (props: { open: boolean, onClose: () => void, bio: stri
   const [isChanged, setIsChanged] = useState<{ name: boolean, bio: boolean }>({ name: false, bio: false });
 
   const history = useHistory();
+  const { setToastOpen, setToastMessage } = useContext(ToastContext)
 
   useEffect(() => {
     if (done) history.push(`/${name}`)
@@ -76,7 +78,15 @@ const ProfileEditModal = (props: { open: boolean, onClose: () => void, bio: stri
     else setIsChanged(prev => { return { ...prev, bio: true } })
   }
 
-  const onChangePassword = (setState: React.Dispatch<React.SetStateAction<string>>) => {
+  const onChangePrevPassword = (setState: React.Dispatch<React.SetStateAction<string>>) => {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      const s = e.target.value;
+      setState(s);
+      setPrevPasswordError(false);
+    }
+  }
+
+  const onChangeNewPassword = (setState: React.Dispatch<React.SetStateAction<string>>) => {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const s = e.target.value;
       setState(s);
@@ -85,14 +95,33 @@ const ProfileEditModal = (props: { open: boolean, onClose: () => void, bio: stri
   }
 
   const onSubmitPassword = async () => {
-    if (prevPW === "") setPrevPasswordError(true);
-    if (newPW != newPWRepeat) setNewPasswordError(true);
-    if (newPasswordError) return;
+    if (prevPW === "") {
+      setPrevPasswordError(true);
+      setToastMessage("이전 비밀번호를 입력해 주세요.")
+      setToastOpen(true)
+      return;
+    }
+    if (newPW != newPWRepeat) {
+      setNewPasswordError(true);
+      setToastMessage("비밀번호가 일치하지 않습니다.")
+      setToastOpen(true)
+      return;
+    }
+    if (newPasswordError || prevPasswordError) return;
 
-    await axios.post(`${backServer}/users/changePassword`,
-      { prevPassword: prevPW, newPassword: newPW },
-      { withCredentials: true })
-    setDone(true)
+    try {
+      await axios.post(`${backServer}/users/changePassword`,
+        { prevPassword: prevPW, newPassword: newPW },
+        { withCredentials: true })
+      setDone(true)
+    } catch (e: any) {
+      if (e.response?.status === 401) {
+        setPrevPasswordError(true);
+        setToastMessage("틀린 비밀번호입니다. 다시 확인해 주세요.")
+        setToastOpen(true)
+        return;
+      }
+    }
   }
 
   const checkName = async (name: string) => {
@@ -127,10 +156,10 @@ const ProfileEditModal = (props: { open: boolean, onClose: () => void, bio: stri
       <div className={containerStyle}>
         {(!done && !isPasswordChange) && <>
           <p className={css`font-size: 2em; font-weight: 350; margin-top: 2em; `}>나의 Minstagram 프로필</p>
-          <div className={css`margin-left: 5em; margin-right: 5em; margin-top: 5em;`}>
+          <div className={css`margin-left: 4em; margin-right: 4em; margin-top: 5em;`}>
             <FormItem>
               <FormItemName>이름</FormItemName>
-              <div className={css`flex: 1; display: flex; flex-direction: column; align-items: center;`}>
+              <div id="name" className={css`flex: 1; display: flex; flex-direction: column; align-items: center; flex: 1;`}>
                 <Text type="text" placeholder={user.name} value={name} onChange={_.throttle(onChangeName, 600)} error={nameError.error} />
                 {nameError && <div className={css`width: 100%; padding-left: 1em;`}>
                   <p className={css`margin: 0; margin-top: 0.2em; font-size: 0.8em; color: red; text-align: left;`}>
@@ -145,6 +174,7 @@ const ProfileEditModal = (props: { open: boolean, onClose: () => void, bio: stri
             <FormItem>
               <FormItemName>소개</FormItemName>
               <TextEditorWithLength
+                // id="bio"
                 textMaxLength={100}
                 setText={setBio}
                 style={css`flex: 1; height: 4em;`}
@@ -167,19 +197,19 @@ const ProfileEditModal = (props: { open: boolean, onClose: () => void, bio: stri
             <FormItem>
               <FormItemName big>이전 비밀번호</FormItemName>
               <Text type="password" placeholder="이전 비밀번호" value={prevPW}
-                onChange={_.throttle(onChangePassword(setPrevPW), 500)}
+                onChange={_.throttle(onChangePrevPassword(setPrevPW), 500)}
                 error={prevPasswordError} />
             </FormItem>
             <FormItem>
               <FormItemName big>새 비밀번호</FormItemName>
               <Text type="password" placeholder="새 비밀번호" value={newPW}
-                onChange={_.throttle(onChangePassword(setNewPW), 500)}
+                onChange={_.throttle(onChangeNewPassword(setNewPW), 500)}
                 error={newPasswordError} />
             </FormItem>
             <FormItem>
-              <FormItemName big>새 비밀번호 다시 입력</FormItemName>
+              <FormItemName big>다시 입력</FormItemName>
               <Text type="password" placeholder="새 비밀번호 다시 입력" value={newPWRepeat}
-                onChange={_.throttle(onChangePassword(setNewPWRepeat), 500)}
+                onChange={_.throttle(onChangeNewPassword(setNewPWRepeat), 500)}
                 error={newPasswordError} />
             </FormItem>
           </div>
@@ -194,7 +224,7 @@ const ProfileEditModal = (props: { open: boolean, onClose: () => void, bio: stri
           </ResultDiv>
         </>}
       </div>
-    </MinstagramModal>
+    </MinstagramModal >
   )
 }
 

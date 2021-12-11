@@ -26,7 +26,7 @@ export const FormItem = styled.div`
 export const FormItemName = styled.p<{ big?: boolean }>`
   padding-right: 2em;
   text-align: right;
-  width: ${props => props.big ? '15em' : '2em'};
+  width: ${props => props.big ? '10em' : '2em'};
   font-weight: bold;
 `
 
