@@ -19,7 +19,6 @@ const Comments = (props: { comments: IComment[], isExpanded: boolean, style?: st
 
   const containerStyle = css`
     text-align: left;
-    overflow-y: scroll;
     margin-bottom: 0.5em;
     ${props.containerStyle}
   `

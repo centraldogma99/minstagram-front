@@ -159,7 +159,7 @@ const ProfileEditModal = (props: { open: boolean, onClose: () => void, bio: stri
           <div className={css`margin-left: 4em; margin-right: 4em; margin-top: 5em;`}>
             <FormItem>
               <FormItemName>이름</FormItemName>
-              <div id="name" className={css`flex: 1; display: flex; flex-direction: column; align-items: center; flex: 1;`}>
+              <div className={css`flex: 1; display: flex; flex-direction: column; align-items: center; flex: 1;`}>
                 <Text type="text" placeholder={user.name} value={name} onChange={_.throttle(onChangeName, 600)} error={nameError.error} />
                 {nameError && <div className={css`width: 100%; padding-left: 1em;`}>
                   <p className={css`margin: 0; margin-top: 0.2em; font-size: 0.8em; color: red; text-align: left;`}>
@@ -174,7 +174,6 @@ const ProfileEditModal = (props: { open: boolean, onClose: () => void, bio: stri
             <FormItem>
               <FormItemName>소개</FormItemName>
               <TextEditorWithLength
-                // id="bio"
                 textMaxLength={100}
                 setText={setBio}
                 style={css`flex: 1; height: 4em;`}
@@ -207,7 +206,7 @@ const ProfileEditModal = (props: { open: boolean, onClose: () => void, bio: stri
                 error={newPasswordError} />
             </FormItem>
             <FormItem>
-              <FormItemName big>다시 입력</FormItemName>
+              <FormItemName big>비밀번호 확인</FormItemName>
               <Text type="password" placeholder="새 비밀번호 다시 입력" value={newPWRepeat}
                 onChange={_.throttle(onChangeNewPassword(setNewPWRepeat), 500)}
                 error={newPasswordError} />

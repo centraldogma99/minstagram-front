@@ -52,7 +52,6 @@ const Posts = (props: { posts?: IPost[], postIds?: string[] }) => {
 
   useEffect(() => {
     if (!props.posts && hasNext && user._id != '') {
-      // if(currentPage )
       const f = async () => {
         try {
           const res = await axios.get<PostsRes>(`${backServer}/posts/`,
